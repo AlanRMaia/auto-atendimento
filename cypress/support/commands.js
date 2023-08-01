@@ -99,3 +99,17 @@ Cypress.Commands.add('getElementList', (selector, element) => {
     }
   });
 });
+
+Cypress.Commands.add('dataCy',(selector, element) => {
+  cy.get(selector).each(($ele, index, list) => {
+    if ($ele.text() === element) {
+      cy.log('Elemento encontrado');
+      cy.wrap($ele).click();
+      cy.log('Valor atual', $ele.text());
+    } else {
+      cy.log('Elemento não encontrado');
+      cy.log('Valor esperado', element);
+      cy.log('Valor atual', $ele.text());
+    }
+  });
+});

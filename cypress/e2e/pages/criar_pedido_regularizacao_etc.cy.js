@@ -9,7 +9,7 @@ describe('', () => {
     cy.fixture('usuario').then((data) => {
       usuario = data;
     });
-    //cy.reload();
+    cy.reload();
   });
 
   it('Deve acessar a página de regularizacao e abrir um atendimento de renovação para empresa ', () => {
@@ -76,11 +76,14 @@ describe('', () => {
     //Confirmar titulo
     cy.get(path.generic.title).should('have.text', 'Enviar Documentos')
     //selecionando o tipo de documento
-    cy.xpath(path.operacaoEnviarDocumentos.tipoDocumento, {timeout: 10000}
-    ).click().getElementListXpath(
+    cy.get(path.operacaoEnviarDocumentos.tipoDocumento, {timeout: 10000}
+    ).click()    
+    
+    cy.getElementListXpath(
       path.operacaoEnviarDocumentos.selecionarDocumento,
       'Documento de Identidade'
-    );   
+    );  
+     
     //Anexando o documento Identidade
     cy.get(path.operacaoEnviarDocumentos.anexarDocumento
     ).selectFile(
@@ -97,14 +100,16 @@ describe('', () => {
       force: true,
     });
     //Confirmar titulo
-    cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Enviar Documentos')
+    cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Enviar Documentos').wait(4000)
 
     //selecionando o tipo de documento
-    cy.xpath(path.operacaoEnviarDocumentos.tipoDocumento, {timeout: 10000}      
-    ).click({force: true}).getElementListXpath(
+    cy.get(path.operacaoEnviarDocumentos.tipoDocumento, {timeout: 10000}      
+    ).click().xpath('/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span')
+    .should('have.text', 'Registro de RT').click()
+    /*cy.getElementListXpath(
       path.operacaoEnviarDocumentos.selecionarDocumento,
       'Registro de RT'
-    );   
+    );*/  
     
     //Anexando o documento RT
     cy.get(path.operacaoEnviarDocumentos.anexarDocumento
@@ -113,5 +118,8 @@ describe('', () => {
     );
     //Salvando a operação  
     cy.get(path.generic.botaoSubmit).click();
+
+
+
   });
 });

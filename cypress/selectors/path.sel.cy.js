@@ -69,14 +69,6 @@ module.exports = {
     //selecionarDocumento: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
     selecionarDocumento: '/html/body/div[8]/div/div[2]/div[1]',
     anexarDocumento: '[data-cy=documento]',
-    tipoDocumento : '/html/body/div[1]/div/div[2]/div[2]/div/div/div/form/label[1]/div/div[1]'
+    tipoDocumento : '[data-cy=selecionarDocumento]', //'/html/body/div[1]/div/div[2]/div[2]/div/div/div/form/label[1]/div/div[1]'
   }
 };
-//html/body/div[1]/div/div[2]/div[2]/div/div/div/form/label[1]/div/div[1]/div[1]/div[1]
-//html/body/div[1]/div/div[2]/div[2]/div/div/div/form/label[1]/div/div[1]/div[1]/div[1]/input
-///*[@id="q-app"]/div/div[2]/div[2]/div/div/div/form/label[1]
-//html/body/div[1]/div/div[2]/div[2]/div/div/div/form/label[1]
-/////*[@id="f_cf780459-38e3-495b-8bae-4eb5cb04fb43_0"]
-///html/body/div[8]/div/div[2]/div[1]
-/////*[@id="f_cf780459-38e3-495b-8bae-4eb5cb04fb43_0"]/div[2]/div/span
-//html/body/div[8]/div/div[2]/div[1]/div[2]/div/span
