@@ -2,124 +2,185 @@ import { faker } from '@faker-js/faker/locale/pt_BR';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
 
-
-describe('', () => {
-  let usuario;
-  beforeEach(() => {
-    cy.fixture('usuario').then((data) => {
-      usuario = data;
-    });
-    cy.reload();
+let usuario;
+  let cpfCnpj = '03113177000192'
+  let idPrePedido = '2071293'
+  var fakerBr = require('faker-br');
+  
+beforeEach(() => {
+  cy.fixture('usuario').then((data) => {
+    usuario = data;
   });
+  cy.reload();
+  cy.viewport(1280, 720);
+});
 
-  it('Deve acessar a página de regularizacao e abrir um atendimento de renovação para empresa ', () => {
-
-    var fakerBr = require('faker-br');
-    cy.viewport(1280, 720);
-    //Logar na página com o usuario
-    cy.login(usuario.cpf, usuario.senha);
-
-    //Clicar na opção Regularização RNTRC no menu lateral
-    cy.regularizacao();
-    //Selecionando o tipo de atendimento Renovação RNTRC
-    cy.get(path.regularizacaoPage.tipoAtendimento).click();
-    //
-    cy.get(path.criarPedidoRenovacao.inputTransportador)
-      .click()
-      .getElementListXpath(
-        path.criarPedidoRenovacao.tipoTransportador,
-        'Empresa'
-      );
+describe('Grupo de teste Atendimento Renovação', () => {  
+  
+    it(' Abrir Atendimento de Renovação', () => {
+  
+      cy.viewport(1280, 720);
+      //Logar na página com o usuario
+      cy.login(usuario.cpf, usuario.senha);
+  
+      //Clicar na opção Regularização RNTRC no menu lateral
+      cy.regularizacao();
+      //Selecionando o tipo de atendimento Renovação RNTRC
+      cy.get(path.regularizacaoPage.tipoAtendimento).click();
+      //
+      cy.get(path.criarPedidoRenovacao.inputTransportador)
+        .click()
+        .getElementListXpath(
+          path.criarPedidoRenovacao.tipoTransportador,
+          'Empresa'
+        );
+      
+      cy.xpath(path.criarPedidoRenovacao.inputETC).type(cpfCnpj);
+      cy.get(path.generic.botaoSubmit).click({ force: true });
+      
+     cy.get(path.generic.mensagemFeliz).then((element) => {      
+          expect('Atendimento criado com sucesso!').to.be.equal(element.text())
+          cy.get(path.generic.mensagemFechar).click();      
+        }     
+      )
+  
+      cy.get(path.generic.idAtendimento).then((element)=> {
+        idPrePedido = element.text();
+        expect(`Atendimento #${idPrePedido}`).to.be.equal(`Atendimento #${idPrePedido}`)
+      })
+    });       
     
-    cy.xpath(path.criarPedidoRenovacao.inputETC).type('02382953000197');
-    cy.get(path.generic.botaoSubmit).click({ force: true });
-    
-    /*cy.get(path.generic.mensagemNotificacao).then((element) => {      
-        expect(element).not.to.be.exist        
-      }     
-    )*/
-
-    
-
-    //Notificação de Transportador salvo com sucesso
-    /*cy.get(path.generic.mensagemFeliz, {timeout: 10000}).then((element) => {
-      //capturando a mensagem obtida na página
-      const mensagemObtida = element.text();
-      //comparando a mensagem
-      expect(mensagemObtida).should('have.text', 'Transportador salvo com sucesso');
-    });*/
-
-    //Criar operação Salvar transportador       
-    cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
-    .xpath(path.detalhamentoAtendimentoRenovacao.operacaoSalvarTransportador).click();  
-    //Na janela para incluir o Transportador no atendimento
-    cy.get(path.generic.title).should('have.text', 'Salvar Transportador')   
-   //Razão Social
-   cy.get(path.operacaoSalvarTransportador.razaoSocial ).type(faker.company.name());
-   //Nome fantasia
-   cy.get(path.operacaoSalvarTransportador.nomeFantasia ).type(faker.company.name());
-   //inscrição estadual
-   cy.get(path.operacaoSalvarTransportador.inscricaoEstadual).type(faker.number.int({ min: 1000, max: 2000 }));
-   //checkBox comunicado ANTT
-   cy.get(path.operacaoSalvarTransportador.checkBoxComunicacaoANTT).should('not.be.checked')
-   //checkbox capacidade financeira
-   cy.get(path.operacaoSalvarTransportador.checkBoxCapacidadeFinanceira).should('not.be.checked')
-   //botao Salvar
-   cy.get(path.generic.botaoSubmit).click({ force: true });
-
-     //operação de enviar documentos
-    //Clicando no botão com a lista de operações e escolhendo a operação  Enviar Documentos  
-    cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
-    .xpath(path.detalhamentoAtendimentoRenovacao.operacaoEnviarDocumentos).click({
-      force: true,
-    });
-    //Confirmar titulo
-    cy.get(path.generic.title).should('have.text', 'Enviar Documentos')
-    //selecionando o tipo de documento
-    cy.get(path.operacaoEnviarDocumentos.tipoDocumento, {timeout: 10000}
-    ).click()    
-    
-    cy.getElementListXpath(
-      path.operacaoEnviarDocumentos.selecionarDocumento,
-      'Documento de Identidade'
-    );  
+    it('Criar operação Salvar transportador', () => {
+      cy.login(usuario.cpf, usuario.senha);
+      cy.acessarPedido(idPrePedido);
+        cy.salvarTransportador(faker)
+    });  
+      
+    it('Criar operação Enviar documentos do tipo Identidade', () => {
+        //operação de enviar documentos
+      //Clicando no botão com a lista de operações e escolhendo a operação  Enviar Documentos  
+      
+      cy.login(usuario.cpf, usuario.senha);
+      cy.acessarPedido(idPrePedido);
+      cy.enviarDocumentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
+      
+    });  
+      
+    it('Criar operação Enviar documento do tipo Registro RT ', () => {
+        
+      //operação de enviar documentos
+      //Clicando no botão com a lista de operações e escolhendo a operação  Enviar Documentos  
+      cy.login(usuario.cpf, usuario.senha);
+      cy.acessarPedido(idPrePedido);
+      cy.enviarDocumentosRT('D:/Imagens para teste/Apresentação .pdf')
      
-    //Anexando o documento Identidade
-    cy.get(path.operacaoEnviarDocumentos.anexarDocumento
-    ).selectFile(
-      'D:/Imagens para teste/Apresentação .pdf'
-    );
-    //Salvando a operação  
-    cy.get(path.generic.botaoSubmit).click();
-
-    //operação de enviar documentos
-    //Clicando no botão com a lista de operações e escolhendo a operação  Enviar Documentos  
-
-    cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
-    .xpath(path.detalhamentoAtendimentoRenovacao.operacaoEnviarDocumentos).click({
-      force: true,
-    });
-    //Confirmar titulo
-    cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Enviar Documentos').wait(4000)
-
-    //selecionando o tipo de documento
-    cy.get(path.operacaoEnviarDocumentos.tipoDocumento, {timeout: 10000}      
-    ).click().xpath('/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span')
-    .should('have.text', 'Registro de RT').click()
-    /*cy.getElementListXpath(
-      path.operacaoEnviarDocumentos.selecionarDocumento,
-      'Registro de RT'
-    );*/  
+    }); 
+      
+    it('Criar operação Incluir Contato Email', () => {
+      cy.login(usuario.cpf, usuario.senha)
+      cy.acessarPedido(idPrePedido)
+      cy.incluirContatoEmail(faker)      
+    }); 
+  
+    it('Criar operação Incluir Contato Celular', () => {
+      cy.login(usuario.cpf, usuario.senha)
+      cy.acessarPedido(idPrePedido)
+      cy.incluirContatoCelular(faker)      
+    });       
+  
+    it('Criar operação Incluir Contato Telefone', () => {
+      cy.login(usuario.cpf, usuario.senha)
+      cy.acessarPedido(idPrePedido)
+      cy.incluirContatoTelefone(faker)     
+    });   
+      
+    it('Criar operação Incluir Contato Fax', () => {
+      cy.login(usuario.cpf, usuario.senha)
+      cy.acessarPedido(idPrePedido)
+      cy.incluirContatoFax(faker)     
+    });    
+      
+    it('Criar operação Excluir Contato Email', () => {
+      cy.login(usuario.cpf, usuario.senha)
+      cy.acessarPedido(idPrePedido)
+      cy.incluirContatoEmail(faker)      
+    }); 
+  
+    it('Criar operação Excluir Contato Telefone', () => {
+     // cy.login(usuario.cpf, usuario.senha)
+      //cy.acessarPedido(idPrePedido)
+      cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+      .get('[data-cy=operacao]', {timeout: 10000})   
+      .each(($ele, index, list) => {
+          if ($ele.text() === 'Excluir Contato') 
+          cy.wrap($ele).click();      
+      })
+      cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Excluir Contato')
+      cy.get(path.operacaoIncluirContato.tipoContato).click()
+      .xpath('/html/body/div[8]/div/div[2]/div[4]/div[2]/div/span')
+      .should('have.text', 'Telefone').click()      
+      cy.get(path.operacaoIncluirContato.tipoContatoValor).type(faker.internet.email(),)    
+      cy.get(path.operacaoIncluirContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
+      cy.get(path.generic.botaoSubmit).click()
+    }); 
     
-    //Anexando o documento RT
-    cy.get(path.operacaoEnviarDocumentos.anexarDocumento
-    ).selectFile(
-      'D:/Imagens para teste/Apresentação .pdf'
-    );
-    //Salvando a operação  
-    cy.get(path.generic.botaoSubmit).click();
-
-
-
-  });
+      it('Criar operação Excluir Contato Celular', () => {
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+        .get('[data-cy=operacao]', {timeout: 10000})   
+        .each(($ele, index, list) => {
+            if ($ele.text() === 'Excluir Contato') 
+            cy.wrap($ele).click();      
+        })
+        cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Excluir Contato')
+        cy.get(path.operacaoIncluirContato.tipoContato).click()
+        .xpath('/html/body/div[8]/div/div[2]/div[4]/div[2]/div/span')
+        .should('have.text', 'Celular').click()      
+        cy.get(path.operacaoIncluirContato.tipoContatoValor).type(faker.internet.email(),)    
+        cy.get(path.operacaoIncluirContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
+        cy.get(path.generic.botaoSubmit).click()
+      });   
+    
+      it('Criar operação Excluir Contato Fax', () => {
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+        .get('[data-cy=operacao]', {timeout: 10000})   
+        .each(($ele, index, list) => {
+            if ($ele.text() === 'Excluir Contato') 
+            cy.wrap($ele).click();      
+        })
+        cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Excluir Contato')
+        cy.get(path.operacaoIncluirContato.tipoContato).click()
+        .xpath('/html/body/div[8]/div/div[2]/div[4]/div[2]/div/span')
+        .should('have.text', 'Fax').click()      
+        cy.get(path.operacaoIncluirContato.tipoContatoValor).type(faker.internet.email(),)    
+        cy.get(path.operacaoIncluirContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
+        cy.get(path.generic.botaoSubmit).click()
+      }); 
+    
+      it('Criar operação Incluir Endereço Comercial', () => {
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.incluirEnderecoComercial(fakerBr)
+      });
+      
+      it.only('Criar operação Incluir Endereço Correspondência', () => {
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.incluirEnderecoCorrespondencia(fakerBr)
+      });
+        
+      it('Criar operação Incluir Gestor', () => {
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.incluirGestor(fakerBr)
+      });
+      
+      it('Criar operação Incluir Filial', () => {
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.incluirFilial(fakerBr)
+      });
 });
