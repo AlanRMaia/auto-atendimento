@@ -264,6 +264,28 @@ Cypress.Commands.add('incluirGestor', (faker)=>{
   cy.get(path.generic.botaoSubmit).click()
 })
 
+// Cypress.Commands.add('incluirFilial', (faker)=>{
+//   let uf = faker.random.arrayElement(path.generic.uf)
+  
+//   cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+//         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
+//         .each(($ele, index, list) => {
+//             if ($ele.text() === operacao.IncluirFilial) 
+//             cy.wrap($ele).click();      
+//         })
+          
+//   cy.get(path.generic.title).should('have.text', operacao.IncluirFilial)  
+
+//   cy.get(path.operacaoFilial.cnpj).type(faker.br.cnpj())
+//   cy.get(path.operacaoFilial.nome).type(faker.company.companyName())
+//   cy.get(path.operacaoFilial.capitalSocial).type(faker.random.number())
+//   cy.get(path.operacaoFilial.uf).click()  
+//   .xpath(uf.path)
+//   .should('have.text', uf.nome).click()
+
+//   cy.get(path.generic.botaoSubmit).click()
+// })
+
 Cypress.Commands.add('incluirFilial', (faker)=>{
   let uf = faker.random.arrayElement(path.generic.uf)
   
@@ -284,4 +306,120 @@ Cypress.Commands.add('incluirFilial', (faker)=>{
   .should('have.text', uf.nome).click()
 
   cy.get(path.generic.botaoSubmit).click()
+})
+
+Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, faker)=>{
+  let uf = fakerBr.random.arrayElement(path.generic.uf)
+  let dataFaker = '20/02/2000'
+  
+  
+  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+        .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
+        .each(($ele, index, list) => {
+            if ($ele.text() === operacao.IncluirResponsavelTecnico) 
+            cy.wrap($ele).click();      
+        })
+          
+  cy.get(path.generic.title).should('have.text', operacao.IncluirResponsavelTecnico)  
+
+  cy.get(path.operacaoResponsavelTecnico.cpf).type(fakerBr.br.cpf())
+  cy.get(path.operacaoResponsavelTecnico.nome).type(fakerBr.company.companyName())
+  cy.get(path.operacaoResponsavelTecnico.email).type(fakerBr.internet.email())
+  cy.get(path.operacaoResponsavelTecnico.telefone).type(fakerBr.phone.phoneNumber())
+  cy.get(path.operacaoResponsavelTecnico.identidade).type(fakerBr.random.number())
+  cy.get(path.operacaoResponsavelTecnico.orgaoEmissor).type(fakerBr.lorem.word({length: {min: 3, max: 5}}))
+  cy.get(path.operacaoResponsavelTecnico.dataNascimento).type(dataFaker)      
+  cy.get(path.operacaoFilial.uf).click()  
+  .xpath(uf.path)
+  .should('have.text', uf.nome).click()
+
+  cy.get(path.generic.botaoSubmit).click()
+})
+
+Cypress.Commands.add('incluirVeiculo', (veiculo)=>{ 
+  
+  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+        .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
+        .each(($ele, index, list) => {
+            if ($ele.text() === operacao.IncluirVeiculo) 
+            cy.wrap($ele).click();      
+        })
+          
+  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirVeiculo)  
+
+  cy.get(path.operacaoVeiculo.placa).type(veiculo.placa)
+  cy.get(path.operacaoVeiculo.renavam).type(veiculo.renavam)
+  cy.get(path.operacaoVeiculo.radioAutomotor).click();
+
+  veiculo.tipoVeiculo != 'Implemento' ?
+    cy.get(path.operacaoVeiculo.radioAutomotor).click():
+    cy.get(path.operacaoVeiculo.radioImplemento).click()
+      
+  cy.get(path.operacaoVeiculo.tipoPropriedade).click()
+
+  switch (veiculo.propriedade) {
+    case 'Próprio':
+      cy.xpath(path.operacaoVeiculo.tipoPropriedadeProprio)
+      .should('have.text', veiculo.propriedade).click()
+      .get(path.operacaoVeiculo.tipoPropriedade)
+      .should('have.text', veiculo.propriedade)      
+      break;
+
+    case 'Arrendado':
+      cy.xpath(path.operacaoVeiculo.tipoPropriedadeArrendado)
+      .should('have.text', veiculo.propriedade).click()
+      .get(path.operacaoVeiculo.tipoPropriedade)
+      .should('have.text', veiculo.propriedade)   
+      
+      cy.get(path.operacaoVeiculo.cpfCnpjProprietario).type(veiculo.proprietario);
+      break;
+  
+    case 'Leasing':
+      cy.xpath(path.operacaoVeiculo.tipoPropriedadeLeasing)
+      .should('have.text', veiculo.propriedade).click()
+      .get(path.operacaoVeiculo.tipoPropriedade)
+      .should('have.text', veiculo.propriedade)
+
+      cy.get(path.operacaoVeiculo.instituicoesFinanceiras).click()
+      .xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span')
+      .should('have.text', 'BANCO POTTENCIAL S.A.').click();
+      break;   
+
+      default:
+        cy.log(` ---- Propriedade digitada incorretamente:${veiculo.propriedade} ----`)
+        break
+  }
+
+
+
+
+  cy.get(path.generic.botaoSubmit).click()
+})
+
+Cypress.Commands.add('anexarDocumentosVeiculo', (crlv, placa )=>{
+  cy.get('.q-py-lg').find('.q-card__section > .text-brand-primary').each((ele, index, list)=> {
+    if (ele.text() === placa) {
+      cy.log(ele)
+      cy.wrap(ele).get(`:nth-child(${index+1}) > .q-card__actions > :nth-child(1) > .q-btn__content`).click()
+    } else {
+      cy.log(`não encontrou o valor: ${ele.text()}`)
+    }
+  })
+  
+  
+  // .each((ele, index, list) => {
+  //   //cy.wrap(ele).get('.q-card__section > .text-brand-primary').should('have.text', 'DAY7G42').click()
+  //   let element = ele.text()
+  //   if (element === 'DAY7G42') {
+  //     cy.log(`achou o valor: ${element}`)
+  //   } else {
+  //     cy.log(`não achou o valor: ${element}`)
+      
+  //   }
+  // })
+
+  
+  //cy.get(':nth-child(1) > .cursor-pointer > :nth-child(1) > .q-card__section > .text-brand-primary').should('have.text', 'DAY7G42')
+
+  
 })

@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker/locale/pt_BR';
+import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
 
@@ -166,7 +166,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
         cy.incluirEnderecoComercial(fakerBr)
       });
       
-      it.only('Criar operação Incluir Endereço Correspondência', () => {
+      it('Criar operação Incluir Endereço Correspondência', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)
         cy.incluirEnderecoCorrespondencia(fakerBr)
@@ -183,4 +183,55 @@ describe('Grupo de teste Atendimento Renovação', () => {
         cy.acessarPedido(idPrePedido)
         cy.incluirFilial(fakerBr)
       });
+
+      it('Criar operação Incluir Responsável Técnico', () => {
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.incluirResponsavelTecnico(fakerBr, faker)
+      });
+
+      it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
+        let veiculo1 = {
+         placa: 'IAQ-9412',
+         renavam: '00562957308',
+         tipoVeiculo: 'Automotor',
+         propriedade: 'Leasing',
+         proprietario: ''
+        }
+
+        let veiculo2 = {
+          placa: 'DAY-7G42',
+          renavam: '00772718105',
+          tipoVeiculo: 'Automotor',
+          propriedade: 'Arrendado',
+          proprietario: '09562140709'
+         }
+        
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.incluirVeiculo(veiculo1)
+        cy.incluirVeiculo(veiculo2)
+      });
+
+      it('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
+        let veiculo = {
+         placa: 'DAY-7G42',
+         renavam: '00772718105',
+         tipoVeiculo: 'Automotor',
+         propriedade: 'Arrendado',
+         proprietario: '09562140709'
+        }
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.incluirVeiculo(veiculo)
+      });
+
+      it.only('Anexar crlv na operação de inclusão de veículo', () => {
+        let selectFile = 'D:/Imagens para teste/Apresentação .pdf'
+        let placa = 'DAY7G42'
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.anexarDocumentosVeiculo(selectFile, placa )
+      });
+
 });

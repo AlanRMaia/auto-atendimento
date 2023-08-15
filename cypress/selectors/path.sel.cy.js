@@ -142,5 +142,29 @@ module.exports = {
     nome: '[data-cy=nome]',
     capitalSocial: '[data-cy=capitalSocial]',
     uf: '[data-cy=uf]'
+  },
+
+  operacaoResponsavelTecnico: {
+    cpf: '[data-cy=cpf]',
+    nome: '[data-cy=nome]',
+    email: '[data-cy=email]',
+    telefone: '[data-cy=telefone]',
+    identidade: '[data-cy=identidade]',
+    orgaoEmissor: '[data-cy=orgaoEmissor]',
+    dataNascimento: '[data-cy=dataNascimento]',
+    uf: '[data-cy=uf]'
+  },
+
+  operacaoVeiculo: {
+    placa: '[data-cy=placa]',
+    renavam: '[data-cy=renavam]',
+    tipoPropriedade: '[data-cy=tipoPropriedade]',
+    cpfCnpjProprietario: '[data-cy=cpfCnpjProprietario]',
+    instituicoesFinanceiras: '[data-cy=instituicoesFinanceiras]',
+    radioAutomotor: '[data-cy=radioAutomotor]',
+    radioImplemento: '[data-cy=radioImplemento]',
+    tipoPropriedadeProprio: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
+    tipoPropriedadeArrendado: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
+    tipoPropriedadeLeasing: '/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span'
   }
 };
