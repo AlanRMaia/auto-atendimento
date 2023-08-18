@@ -1,8 +1,7 @@
 module.exports = {
   generic :{
     mensagemNotificacao : '.q-notification__message',
-    mensagemFeliz: '.q-notification__message',
-    
+    mensagemFeliz: '.q-notification__message',    
     mensagemFechar: '.q-notification__actions > .q-btn > .q-btn__content > .q-icon',
     title: '[data-cy=title]',
     botaoSubmit: '[data-cy=submit]',
@@ -11,15 +10,21 @@ module.exports = {
     idAtendimento: '[data-cy=idAtendimento]',
     botaoConfirmar: '[data-cy=confirmar]',
     tabela: '[data-cy=tabela]',
+    corrigir: '[data-cy=corrigir]',
+    finalizar: '[data-cy=finalizar]',
+    lista: '[data-cy=lista]',   
+    gridOperacao: '[data-cy=gridOperacoes]', 
+    isLoading: '[data-cy=isLoading]',
+
     uf : [
-      { path: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', nome: 'Acre'},
-      { path: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span', nome: 'Alagoas'},
-      { path: '/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span', nome: 'Amazonas'},
-      { path: '/html/body/div[8]/div/div[2]/div[4]/div[2]/div/span', nome: 'Amapá'},
+      {path: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', nome: 'Acre'},
+      {path: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span', nome: 'Alagoas'},
+      {path: '/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span', nome: 'Amazonas'},
+      {path: '/html/body/div[8]/div/div[2]/div[4]/div[2]/div/span', nome: 'Amapá'},
       {path: '/html/body/div[8]/div/div[2]/div[5]/div[2]/div/span', nome: 'Bahia'},
       {path: '/html/body/div[8]/div/div[2]/div[6]/div[2]/div/span', nome: 'Ceará'},
-      { path: '/html/body/div[8]/div/div[2]/div[7]/div[2]/div/span', nome: 'Distrito Federal'},
-      { path:'/html/body/div[8]/div/div[2]/div[8]/div[2]/div/span', nome: 'Espirito Santo' },
+      {path: '/html/body/div[8]/div/div[2]/div[7]/div[2]/div/span', nome: 'Distrito Federal'},
+      {path:'/html/body/div[8]/div/div[2]/div[8]/div[2]/div/span', nome: 'Espirito Santo' },
       {path: '/html/body/div[8]/div/div[2]/div[9]/div[2]/div/span', nome: 'Goiás'},
       {path: '/html/body/div[8]/div/div[2]/div[10]/div[2]/div/span', nome: 'Maranhão'},
       {path: '/html/body/div[8]/div/div[2]/div[11]/div[2]/div/span', nome: 'Minas Gerais'},
@@ -177,6 +182,12 @@ module.exports = {
 
   confirmarAtendimento: {
     pontosAtendimento: '[data-cy=pontosAtendimento]',
+  },
+
+  validacaoPedido: {
+    atendimentoValido: '[data-cy=atendimentoValido]',
+    atendimentoInvalido: '[data-cy=atendimentoInvalido]',
+
   }
 
 };

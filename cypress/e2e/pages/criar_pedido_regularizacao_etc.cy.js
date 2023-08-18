@@ -252,7 +252,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
         cy.anexarDocumentosVeiculo(selectFile, veiculo )
       });
 
-      it.only('Selecionar o sindicato e gerar valor  ', () => {
+      it('Selecionar o sindicato e gerar valor  ', () => {
         
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)
@@ -296,11 +296,92 @@ describe('Grupo de teste Atendimento Renovação', () => {
             //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>:nth-child(2)`).should('have.text', 'R$231.00')
             //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>.text-center`).should('have.text', '2')
             //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>:nth-child(4)`).should('have.text', 'R$462.00')
-
            
         });
 
         cy.get(path.generic.botaoConfirmar).click({force: true});
+      });
+
+      it.only('Validação do pedido - Pedido rejeitado', () => {
+
+        let selectFile = {
+          crlv: 'D:/Imagens para teste/Apresentação .pdf',
+          contratoArrendamento: 'D:/Imagens para teste/ALAN MAIA - INFORME REND 2022.pdf'
+         }        
+         let veiculo = { placa: 'BSG1253', propriedade: 'Arrendado' }
+
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        
+        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').trigger('mouseover').click({force: true}).click();
+
+        cy.get(path.generic.title, {timeout: 10000})
+        .should('have.text', 'Selecione o Ponto de Atendimento')
+
+        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})
+        .each((ele, index, list) => {
+            let value = ele.text()
+            if (value === 'SETCAL') 
+            cy.wrap($ele).click();      
+        
+        })
+
+        cy.get(`[data-cy=tabela]`, {timeout: 20000})
+        .then((ele) => {
+          
+          cy.log(ele.text())
+           
+             cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
+             cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$231.00')
+             cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
+             cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$462.00')
+
+             cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
+             cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
+             cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
+             cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
+
+             cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
+             cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$154.00')
+             cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
+             cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$154.00')
+             cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$154.00')
+             cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$616.00')
+
+                 
+            //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>.text-left`).should('have.text', 'Inclusão de Automotor')
+            //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>:nth-child(2)`).should('have.text', 'R$231.00')
+            //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>.text-center`).should('have.text', '2')
+            //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>:nth-child(4)`).should('have.text', 'R$462.00')
+           
+        });
+
+        cy.get(path.generic.botaoConfirmar).click({force: true});
+        cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title').should('have.text', 'Validação do Pedido');
+        cy.get('.text-6').should('have.text', ' Atendimento Inválido ');
+        cy.get('.q-stepper__step-inner > .q-list > :nth-child(1) > .q-item__section > :nth-child(1)')
+        .should('have.text', 'Imagem de Contrato de Arrendamento Obrigatória.')
+        cy.get('.q-stepper__step-inner > .q-list > :nth-child(1) > .q-item__section > .q-item__label--caption')
+        .should('have.text', 'É necessário realizar upload do contrato de arrendamento para a placa BSG1253')
+
+        cy.get('.q-stepper__step-inner > .q-list > :nth-child(3) > .q-item__section > :nth-child(1)')
+        .should('have.text', 'Imagem do CLRV Obrigatória.')
+        cy.get('.q-stepper__step-inner > .q-list > :nth-child(3) > .q-item__section > .q-item__label--caption')
+        .should('have.text', 'É necessário realizar upload do CLRV para a placa BSG1253')
+        
+        cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]/a').click() 
+        
+        cy.anexarDocumentosVeiculo(selectFile, veiculo )
+
+        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click()        
+
+        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click()
+
+        cy.get('.text-6').should('have.text', 'Atendimento Válido')
+
+        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click()
+
+        
       });
 
 });

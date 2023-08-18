@@ -394,26 +394,5 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
   cy.get(path.generic.botaoSubmit).click()
 })
 
-Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo)=>{
-  cy.get('.q-py-lg').find('.q-card__section > .text-brand-primary').each((ele, index, list)=> {
-    if (ele.text() === veiculo.placa) {
-      cy.log(ele)
-      cy.wrap(ele)
-      .get(`:nth-child(${index+1}) > .q-card__actions > :nth-child(1) > .q-btn__content`).click()
-    } else {
-      cy.log(`não encontrou o valor: ${ele.text()}`)
-    }
-  })  
 
-  cy.get(path.generic.title).should('have.text', ` Arquivos Veículo ${veiculo.placa}`)
-
-  if (veiculo.propriedade != 'Arrendado') {
-    cy.get(path.anexarDocumentoVeiculo.crlv).selectFile(selectFile.crlv)
-  } else {
-    cy.get(path.anexarDocumentoVeiculo.crlv).selectFile(selectFile.crlv)
-    cy.get(path.anexarDocumentoVeiculo.contratoArrendamento).selectFile(selectFile.contratoArrendamento)
-    
-  }
-  cy.get(path.generic.botaoSubmit).click()
-})
 

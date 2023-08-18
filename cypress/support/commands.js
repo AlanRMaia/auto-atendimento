@@ -107,3 +107,27 @@ Cypress.Commands.add('acessarPedido', (idPedido) => {
   cy.get(path.atendimentoPage.numeroPedido).type(idPedido).get(path.generic.botaoSubmit).click()
   .get(path.generic.idAtendimento, {timeout: 20000}).should('have.text', ` Atendimento #${idPedido}`);
 });
+
+Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo)=>{
+  cy.get('.q-py-lg', {timeout: 20000}).find('.q-card__section > .text-brand-primary').each((ele, index, list)=> {
+    if (ele.text() === veiculo.placa) {
+      cy.log(ele).debug()
+      cy.wrap(ele)
+      .get(`:nth-child(${index+1}) > .q-card__actions > :nth-child(1) > .q-btn__content`).click()
+    } else {
+      cy.log(`não encontrou o valor: ${ele.text()}`)
+    }
+  })  
+
+  cy.get(path.generic.title).should('have.text', ` Arquivos Veículo ${veiculo.placa}`)
+
+  if (veiculo.propriedade != 'Arrendado') {
+    cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv)
+  } else {
+    cy.get(path.anexarDocumentoVeiculo.contratoArrendamento, {timeout: 10000})
+    .selectFile(selectFile.contratoArrendamento)
+    cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv)
+        
+  }
+  cy.get(path.generic.botaoSubmit).click()
+})
