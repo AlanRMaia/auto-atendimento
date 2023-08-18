@@ -41,11 +41,11 @@ Cypress.Commands.add('enviarDocumentosIdentidade', (selectFile) => {
         
       })
       //Confirmar titulo
-      cy.get(path.generic.title).should('have.text', operacao.EnviarDocumentos)
-      cy.wait(1000);
+      cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.EnviarDocumentos)
+      //.wait(5000)
       //selecionando o tipo de documento
-      cy.get(path.operacaoEnviarDocumentos.tipoDocumento, {timeout: 10000}
-        ).click()         
+      cy.get(path.operacaoEnviarDocumentos.tipoDocumento)
+      .click().wait(3000).click()        
       
       cy.getElementListXpath(
          path.operacaoEnviarDocumentos.documentoIdentidade,
@@ -71,11 +71,11 @@ Cypress.Commands.add('enviarDocumentosRT', (selectFile) => {
         
       })
       //Confirmar titulo
-      cy.get(path.generic.title).should('have.text', 'Enviar Documentos')
+      cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Enviar Documentos')
+      //.wait(5000)
       //selecionando o tipo de documento
-      cy.wait(1000);
-      cy.get(path.operacaoEnviarDocumentos.tipoDocumento, {timeout: 10000}
-      ).click()         
+      cy.get(path.operacaoEnviarDocumentos.tipoDocumento)
+      .click().wait(3000).click()        
       
       cy.getElementListXpath(
          path.operacaoEnviarDocumentos.registroRT,
@@ -391,35 +391,29 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
   }
 
 
-
-
   cy.get(path.generic.botaoSubmit).click()
 })
 
-Cypress.Commands.add('anexarDocumentosVeiculo', (crlv, placa )=>{
+Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo)=>{
   cy.get('.q-py-lg').find('.q-card__section > .text-brand-primary').each((ele, index, list)=> {
-    if (ele.text() === placa) {
+    if (ele.text() === veiculo.placa) {
       cy.log(ele)
-      cy.wrap(ele).get(`:nth-child(${index+1}) > .q-card__actions > :nth-child(1) > .q-btn__content`).click()
+      cy.wrap(ele)
+      .get(`:nth-child(${index+1}) > .q-card__actions > :nth-child(1) > .q-btn__content`).click()
     } else {
       cy.log(`não encontrou o valor: ${ele.text()}`)
     }
-  })
-  
-  
-  // .each((ele, index, list) => {
-  //   //cy.wrap(ele).get('.q-card__section > .text-brand-primary').should('have.text', 'DAY7G42').click()
-  //   let element = ele.text()
-  //   if (element === 'DAY7G42') {
-  //     cy.log(`achou o valor: ${element}`)
-  //   } else {
-  //     cy.log(`não achou o valor: ${element}`)
-      
-  //   }
-  // })
+  })  
 
-  
-  //cy.get(':nth-child(1) > .cursor-pointer > :nth-child(1) > .q-card__section > .text-brand-primary').should('have.text', 'DAY7G42')
+  cy.get(path.generic.title).should('have.text', ` Arquivos Veículo ${veiculo.placa}`)
 
-  
+  if (veiculo.propriedade != 'Arrendado') {
+    cy.get(path.anexarDocumentoVeiculo.crlv).selectFile(selectFile.crlv)
+  } else {
+    cy.get(path.anexarDocumentoVeiculo.crlv).selectFile(selectFile.crlv)
+    cy.get(path.anexarDocumentoVeiculo.contratoArrendamento).selectFile(selectFile.contratoArrendamento)
+    
+  }
+  cy.get(path.generic.botaoSubmit).click()
 })
+

@@ -9,6 +9,8 @@ module.exports = {
     botaoVoltar: '[data-cy=voltar]',
     floatButton: '/html/body/div[1]/div/div[2]/div/main/div[3]/div/button', //'[data-cy=floatButton]'
     idAtendimento: '[data-cy=idAtendimento]',
+    botaoConfirmar: '[data-cy=confirmar]',
+    tabela: '[data-cy=tabela]',
     uf : [
       { path: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', nome: 'Acre'},
       { path: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span', nome: 'Alagoas'},
@@ -104,7 +106,7 @@ module.exports = {
     registroRT: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
     documentoIdentidade: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
     anexarDocumento: '[data-cy=documento]',
-    tipoDocumento : '[data-cy=tipoDocumento]', //'/html/body/div[1]/div/div[2]/div[2]/div/div/div/form/label[1]/div/div[1]'
+    tipoDocumento :  '[data-cy=tipoDocumento]',
   },
 
   operacaoContato:{
@@ -166,5 +168,15 @@ module.exports = {
     tipoPropriedadeProprio: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
     tipoPropriedadeArrendado: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
     tipoPropriedadeLeasing: '/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span'
+  },
+
+  anexarDocumentoVeiculo: {
+    contratoArrendamento: '[data-cy=contratoArrendamento]',
+    crlv: '[data-cy=crlv]',    
+  },
+
+  confirmarAtendimento: {
+    pontosAtendimento: '[data-cy=pontosAtendimento]',
   }
+
 };

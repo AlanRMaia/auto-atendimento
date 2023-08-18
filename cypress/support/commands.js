@@ -74,7 +74,7 @@ Cypress.Commands.add('regularizacao', () => {
 });
 
 Cypress.Commands.add('getElementListXpath', (xpath, element) => {
-  cy.xpath(xpath).each(($ele, index, list) => {
+  cy.xpath(xpath, {timeout: 10000}).each(($ele, index, list) => {
     let value = $ele.text()
     if (value === element) {
       cy.log('Elemento encontrado');

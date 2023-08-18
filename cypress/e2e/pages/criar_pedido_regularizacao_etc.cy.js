@@ -11,8 +11,9 @@ beforeEach(() => {
   cy.fixture('usuario').then((data) => {
     usuario = data;
   });
-  cy.reload();
+  cy.reload();  
   cy.viewport(1280, 720);
+  cy.wait(2000)
 });
 
 describe('Grupo de teste Atendimento Renovação', () => {  
@@ -226,12 +227,80 @@ describe('Grupo de teste Atendimento Renovação', () => {
         cy.incluirVeiculo(veiculo)
       });
 
-      it.only('Anexar crlv na operação de inclusão de veículo', () => {
-        let selectFile = 'D:/Imagens para teste/Apresentação .pdf'
-        let placa = 'DAY7G42'
+      it('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
+        let veiculo = {
+         placa: 'BSG1253',
+         renavam: '00411395718',
+         tipoVeiculo: 'Implemento',
+         propriedade: 'Arrendado',
+         proprietario: '07866722000172'
+        }
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)
-        cy.anexarDocumentosVeiculo(selectFile, placa )
+        cy.incluirVeiculo(veiculo)
+      });
+
+      it('Anexar crlv na operação de inclusão de veículo', () => {
+        let selectFile = {
+         crlv: 'D:/Imagens para teste/Apresentação .pdf',
+         contratoArrendamento: 'D:/Imagens para teste/ALAN MAIA - INFORME REND 2022.pdf'
+        }        
+        let veiculo = { placa: 'IAQ9412', propriedade: 'Próprio' } 
+
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.anexarDocumentosVeiculo(selectFile, veiculo )
+      });
+
+      it.only('Selecionar o sindicato e gerar valor  ', () => {
+        
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
+
+        cy.get(path.generic.title, {timeout: 10000})
+        .should('have.text', 'Selecione o Ponto de Atendimento')
+
+        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})
+        .each((ele, index, list) => {
+            let value = ele.text()
+            if (value === 'SETCAL') 
+            cy.wrap($ele).click();      
+        
+        })
+
+        cy.get(`[data-cy=tabela]`, {timeout: 10000})
+        .then((ele) => {
+          
+          cy.log(ele.text())
+           
+             cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
+             cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$231.00')
+             cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
+             cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$462.00')
+
+             cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
+             cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
+             cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
+             cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
+
+             cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
+             cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$154.00')
+             cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
+             cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$154.00')
+             cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$154.00')
+             cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$616.00')
+
+                 
+            //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>.text-left`).should('have.text', 'Inclusão de Automotor')
+            //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>:nth-child(2)`).should('have.text', 'R$231.00')
+            //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>.text-center`).should('have.text', '2')
+            //  cy.wrap(ele).get(`tbody>:nth-child(${index + 1})>:nth-child(4)`).should('have.text', 'R$462.00')
+
+           
+        });
+
+        cy.get(path.generic.botaoConfirmar).click({force: true});
       });
 
 });
