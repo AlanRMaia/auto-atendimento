@@ -3,9 +3,10 @@ import { faker } from '@faker-js/faker';
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 
-let usuario;
-  let cpfCnpj = '03113177000192'
-  let idPrePedido = '2071350'
+
+  let usuario;
+  let cpfCnpj = '05161400862'
+  let idPrePedido = '2071343'
   var fakerBr = require('faker-br');
 
   let veiculoIAQ9412 = {
@@ -38,12 +39,13 @@ let usuario;
      let selectFileBSG1253 = {
       crlv: 'D:/Imagens para teste/Apresentação .pdf',
       contratoArrendamento: 'D:/Imagens para teste/ALAN MAIA - INFORME REND 2022.pdf'
-     }     
+     } 
+
      let selectFileDAY7G42 = {
       crlv: 'D:/Imagens para teste/Apresentação .pdf',
       contratoArrendamento: 'D:/Imagens para teste/ALAN MAIA - INFORME REND 2022.pdf'
-     }  
-  
+     }        
+     
   
 beforeEach(() => {
   cy.fixture('usuario').then((data) => {
@@ -68,18 +70,18 @@ describe('Grupo de teste Atendimento Renovação', () => {
         cy.get(path.regularizacaoPage.tipoAtendimento).click();
         //
         cy.get(path.criarPedidoRenovacao.inputTransportador)
-          .click()
-          .getElementListXpath(
-            path.criarPedidoRenovacao.tipoTransportador,
-            'Empresa'
-          );
+          .click({force: true})
+          .xpath(
+            '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
+            
+          ).should('have.text', 'Autônomo').click()
         
-        cy.get(path.criarPedidoRenovacao.cnpj).type(cpfCnpj);
+        cy.get(path.criarPedidoRenovacao.cpf).type(cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
         
-            cy.notificacao(mensagem.AtendimentoCriadoSucesso)
+        cy.notificacao(mensagem.AtendimentoCriadoSucesso)    
       
-        cy.get(path.generic.idAtendimento).then((element)=> {          
+        cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
           idPrePedido = element.text().substring(14,21);
           expect(element.text()).to.be.equal(` Atendimento #${idPrePedido}`)
         })
@@ -88,28 +90,20 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       // ------ Criar operação Salvar transportador -----//
       it('Criar operação Salvar transportador', () => { 
-      cy.login(usuario.cpf, usuario.senha) 
-      cy.acessarPedido(idPrePedido)       
-      cy.salvarTransportador(faker, 'ETC')
-      cy.notificacao(mensagem.SalvarTransportador)
+        cy.login(usuario.cpf, usuario.senha) 
+        cy.acessarPedido(idPrePedido)       
+        cy.salvarTransportador(fakerBr, 'TAC')
+        cy.notificacao(mensagem.SalvarTransportador)      
       });
       
-      //-------- Criar operação Enviar documentos do tipo Identidade ------//             
+      //-------- Criar operação Enviar documentos do tipo Identidade ------//              
       it('Criar operação Enviar documentos do tipo Identidade', () => {  
       cy.login(usuario.cpf, usuario.senha)      
       cy.acessarPedido(idPrePedido)      
       cy.enviarDocumentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
       cy.get(path.generic.mensagemFechar).click();      
       });
-      
-      // -------- Criar operação Enviar documento do tipo Registro RT ------//        
-      it('Criar operação Enviar documento do tipo Registro RT', () => { 
-      cy.login(usuario.cpf, usuario.senha)      
-      cy.acessarPedido(idPrePedido)       
-      cy.enviarDocumentosRT('D:/Imagens para teste/Apresentação .pdf')
-      cy.get(path.generic.mensagemFechar).click();      
-      });
-      
+
       // ------ Criar operação Incluir Contato Email ------//
       it('Criar operação Incluir Contato Email', () => { 
       cy.login(usuario.cpf, usuario.senha)
@@ -140,158 +134,108 @@ describe('Grupo de teste Atendimento Renovação', () => {
       cy.acessarPedido(idPrePedido)    
       cy.incluirContatoFax(faker)     
       cy.get(path.generic.mensagemFechar).click();      
-      });
-      
-      // ------- Criar operação Excluir Contato Email ------//
-      it('Criar operação Excluir Contato Email', () => {
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)        
-      cy.incluirContatoEmail(faker)      
-      cy.get(path.generic.mensagemFechar).click();      
-      });
-      
-      // ------ Criar operação Excluir Contato Telefone -----//
-      it('Criar operação Excluir Contato Telefone', () => {
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)        
-      cy.excluirContatoTelefone(faker, '(94) 0335-1433')
-      cy.get(path.generic.mensagemFechar).click();      
-      });
-      
-      // ------- Criar operação Excluir Contato Celular ------//
-      
-      // cy.excluirContatoCelular(faker)
-      // cy.get(path.generic.mensagemFechar).click();      
-      
-      // -------- Criar operação Excluir Contato Fax -------//
-      it('Criar operação Excluir Contato Fax', () => {  
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)       
-      cy.excluirContatoFax(faker, '(94) 0335-1132' )
-      cy.get(path.generic.mensagemFechar).click();      
-      });
-      
-      // ------- Criar operação Incluir Endereço Comercial -------//
-      
-      // cy.incluirEnderecoComercial(fakerBr)
-      // cy.get(path.generic.mensagemFechar).click();      
+      });       
       
       // -------- Criar operação Incluir Endereço Correspondência --------//
       it('Criar operação Incluir Endereço Correspondência', () => { 
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)        
-      cy.incluirEnderecoCorrespondencia(fakerBr)
-      cy.get(path.generic.mensagemFechar).click();      
-      });
-      
-      // ------- Criar operação Incluir Gestor ------// 
-      it.only('Criar operação Incluir Gestor', () => {
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)               
-      cy.incluirGestor(fakerBr,'Sócio')
-      cy.get(path.generic.mensagemFechar).click();      
-      });
-      
-      // -------- Criar operação Incluir Filial ------//
-      it.only('Criar operação Incluir Filial', () => { 
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)        
-      cy.incluirFilial(fakerBr)
-      cy.get(path.generic.mensagemFechar).click();      
-      });
-      
-      // ---------- Criar operação Incluir Responsável Técnico --------//
-      it.only('Criar operação Incluir Responsável Técnico', () => { 
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)        
-      cy.incluirResponsavelTecnico(fakerBr, faker)
-      cy.get(path.generic.mensagemFechar).click();      
-      }); 
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)        
+        cy.incluirEnderecoCorrespondencia(fakerBr)
+        //cy.get(path.generic.mensagemFechar).click();      
+      });  
+
+     // --------- Criar operacao Incluir Motorista -----//
+     it('Criar operacao Incluir Motorista', () => {
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)
+        cy.incluirMotorista(fakerBr)
+        cy.get(path.generic.mensagemFechar).click();
+     });     
       
       // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-      it.only('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)          
-      cy.incluirVeiculo(veiculoIAQ9412)
-      cy.get(path.generic.mensagemFechar).click();      
-      
-      cy.incluirVeiculo(veiculoDAY7G42)
-      cy.get(path.generic.mensagemFechar).click();
-      cy.anexarDocumentosVeiculo(selectFileDAY7G42, veiculoDAY7G42) 
-      cy.get(path.generic.mensagemFechar).click();
-
+      it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)          
+        cy.incluirVeiculo(veiculoIAQ9412)
+        cy.get(path.generic.mensagemFechar).click();      
+        
+        cy.incluirVeiculo(veiculoDAY7G42)
+        cy.get(path.generic.mensagemFechar).click();  
+        cy.anexarDocumentosVeiculo(selectFileDAY7G42, veiculoDAY7G42 )
+        cy.get(path.generic.mensagemFechar).click();  
       });
       
       // --------- Criar operação Incluir Veiculo Automotor/Arrendado ---------//       
       // it('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
-      //   cy.login(usuario.cpf, usuario.senha)
-      //   cy.acessarPedido(idPrePedido)          
-      // cy.incluirVeiculo(veiculoDAY7G42)
-      // cy.get(path.generic.mensagemFechar).click();
+      //     cy.login(usuario.cpf, usuario.senha)
+      //     cy.acessarPedido(idPrePedido)          
+      //   cy.incluirVeiculo(veiculoDAY7G42)
+      //   cy.get(path.generic.mensagemFechar).click();
       // });
       
       // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
-      it.only('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)        
-      cy.incluirVeiculo(veiculoBSG1253)
-      cy.get(path.generic.mensagemFechar).click();      
+      it('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)        
+        cy.incluirVeiculo(veiculoBSG1253)
+        cy.get(path.generic.mensagemFechar).click();      
       }); 
       
       // --------- Anexar crlv na operação de inclusão de veículo -------//        
-      it.only('Anexar crlv na operação de inclusão de veículo', () => {
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)          
-      cy.anexarDocumentosVeiculo(selectFileIAQ9412, veiculoIAQ9412 )
-      cy.get(path.generic.mensagemFechar).click();      
+      it('Anexar crlv na operação de inclusão de veículo', () => {
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)          
+        cy.anexarDocumentosVeiculo(selectFileIAQ9412, veiculoIAQ9412 )
+        cy.get(path.generic.mensagemFechar).click();      
       });
       
       // ------- Selecionar o sindicato e gerar valor -------//        
-      it.only('Selecionar o sindicato e gerar valor', () => {
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)          
-      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
-      
-      cy.get(path.generic.title, {timeout: 10000})
-      .should('have.text', 'Selecione o Ponto de Atendimento')
-      
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).wait(2000)
+      it('Selecionar o sindicato e gerar valor', () => {
+            cy.login(usuario.cpf, usuario.senha)
+            cy.acessarPedido(idPrePedido)          
+          cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
+          
+          cy.get(path.generic.title, {timeout: 10000})
+          .should('have.text', 'Selecione o Ponto de Atendimento').wait(3000)
+          
+          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).type('FETAC-MG').wait(2000)
+
+      cy.xpath('/html/body/div[8]/div', {timeout: 10000})
       .each((ele, index, list) => {
           let value = ele.text()
-          if (value === 'SETCAL') 
-          cy.wrap($ele).click();      
-      
+          if (value === 'FETAC-MG') 
+          cy.wrap($ele).click();     
       })
-      
-      cy.get(path.generic.tabela, {timeout: 10000})
-      .then((ele) => {
-        
-        cy.log(ele.text())
-        
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$231.00')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$462.00')
-      
-          cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
-          cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
-          cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
-          cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
-      
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$154.00')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$154.00')
-          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$616.00')          
-        
-      });
-      
-      cy.get(path.generic.botaoConfirmar).click({force: true});
+          
+          cy.get(path.generic.tabela, {timeout: 10000})
+          .then((ele) => {
+            
+            cy.log(ele.text())
+            
+              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
+              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$240.00')
+              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
+              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$480.00')
+          
+              cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
+              cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
+              cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
+              cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
+          
+              cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
+              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$175.00')
+              cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
+              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$175.00')
+              cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$655.00')          
+            
+          });
+          
+          cy.get(path.generic.botaoConfirmar).click({force: true});
       });
       
       
       // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
-      it.only('Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253', () => {
+      it('Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)  
       cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
@@ -299,13 +243,14 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       cy.get(path.generic.title, {timeout: 10000})
       .should('have.text', 'Selecione o Ponto de Atendimento')
-      
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).wait(2000)
+        
+      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).type('FETAC-MG').wait(2000)
+
+      cy.xpath('/html/body/div[8]/div', {timeout: 10000})
       .each((ele, index, list) => {
           let value = ele.text()
-          if (value === 'SETCAL') 
-          cy.wrap($ele).click();      
-      
+          if (value === 'FETAC-MG') 
+          cy.wrap($ele).click();     
       })
       
       cy.get(path.generic.tabela, {timeout: 20000})        
@@ -314,9 +259,9 @@ describe('Grupo de teste Atendimento Renovação', () => {
         cy.log(ele.text())
         
           cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$231.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$240.00')
           cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$462.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$480.00')
       
           cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
           cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
@@ -324,10 +269,10 @@ describe('Grupo de teste Atendimento Renovação', () => {
           cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
       
           cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$154.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$175.00')
           cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$154.00')
-          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$616.00')           
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$175.00')
+          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$655.00')           
         
       })
       
@@ -370,9 +315,9 @@ describe('Grupo de teste Atendimento Renovação', () => {
         cy.log(ele.text())
         
           cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$231.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$240.00')
           cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$462.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$480.00')
       
           cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
           cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
@@ -380,10 +325,10 @@ describe('Grupo de teste Atendimento Renovação', () => {
           cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
       
           cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$154.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$175.00')
           cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$154.00')
-          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$616.00')           
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$175.00')
+          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$655.00')           
         
       })     
       });          

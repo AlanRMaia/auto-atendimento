@@ -1,7 +1,7 @@
 module.exports = {
   generic :{
+    
     mensagemNotificacao : '.q-notification__message',
-    mensagemFeliz: '.q-notification__message',    
     mensagemFechar: '.q-notification__actions > .q-btn > .q-btn__content > .q-icon',
     title: '[data-cy=title]',
     botaoSubmit: '[data-cy=submit]',
@@ -15,6 +15,7 @@ module.exports = {
     lista: '[data-cy=lista]',   
     gridOperacao: '[data-cy=gridOperacoes]', 
     isLoading: '[data-cy=isLoading]',
+    alert: '[data-cy=alert]',
 
     uf : [
       {path: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', nome: 'Acre'},
@@ -65,8 +66,9 @@ module.exports = {
   criarPedidoRenovacao: {
     //tipoTransportador: '[data-cy=tipoTransportador]',
     inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
-    tipoTransportador: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
-    inputETC: '/html/body/div[1]/div/div[2]/div[2]/div/div/div/form/div[1]/label/div/div[1]/div/input',    //'[data-cy=inputETC]',
+    tipoTransportador: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',    
+    cnpj: '[data-cy=cnpj]',
+    cpf: '[data-cy=cpf]',
   },
   //src/pages/DetalheAtendimentoPage.vue
   detalhamentoAtendimentoRenovacao: {
@@ -117,7 +119,11 @@ module.exports = {
   operacaoContato:{
     tipoContato: '[data-cy=tipoContato]',
     tipoContatoValor: '[data-cy=tipoContatoValor]',
-    tipoDescricao: '[data-cy=contatoDescricao]'
+    tipoDescricao: '[data-cy=contatoDescricao]',
+    email: '/html/body/div[8]/div/div[2]/div[4]/div[2]/div/span',
+    fax: '/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span',
+    celular: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
+    telefone: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span'
   },
 
   operacaoEndereco: {
@@ -188,6 +194,19 @@ module.exports = {
     atendimentoValido: '[data-cy=atendimentoValido]',
     atendimentoInvalido: '[data-cy=atendimentoInvalido]',
 
+  },
+
+  operacaoMotorista: {
+    cpf: '[data-cy=cpf]',
+    nome: '[data-cy=nome]',
+    dataNascimento: '[data-cy=dataNascimento]',
+    dataPopup: '[data-cy=dataPopup]',
+    email: '[data-cy=email]',
+    telefone: '[data-cy=telefone]',
+    cnh: '[data-cy=cnh]',
+    categoria: '[data-cy=categoria]',
+    radioMasculino: '[data-cy=radioMasculino]',
+    radioFeminino: '[data-cy=radioFeminino]'
   }
 
 };

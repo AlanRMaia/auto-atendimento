@@ -131,3 +131,11 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo)=>{
   }
   cy.get(path.generic.botaoSubmit).click()
 })
+
+Cypress.Commands.add('notificacao', (mensagem) => {
+  cy.get(path.generic.mensagemNotificacao).then((element) => {      
+    expect(mensagem).to.be.equal(element.text())
+    cy.get(path.generic.mensagemFechar).click();      
+  }     
+)
+})
