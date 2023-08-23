@@ -3,10 +3,9 @@ import { faker } from '@faker-js/faker';
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 
-
   let usuario;
   let cpfCnpj = '05161400862'
-  let idPrePedido = '2071343'
+  let idPrePedido = '2071354'
   var fakerBr = require('faker-br');
 
   let veiculoIAQ9412 = {
@@ -53,11 +52,10 @@ beforeEach(() => {
   });
   cy.reload();  
   cy.viewport(1280, 720);
-  cy.wait(2000)
-  
+  cy.wait(2000)  
 });
 
-describe('Grupo de teste Atendimento Renovação', () => {  
+describe('Grupo de teste Atendimento Renovação TAC', () => {  
   // ------ Abrir Atendimento de Renovação ------//
     it('Iniciando os testes', () => {
       
@@ -67,7 +65,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
         //Clicar na opção Regularização RNTRC no menu lateral
         cy.regularizacao();
         //Selecionando o tipo de atendimento Renovação RNTRC
-        cy.get(path.regularizacaoPage.tipoAtendimento).click();
+        cy.get(path.regularizacaoPage.tipoAtendimentoRenovacao).click();
         //
         cy.get(path.criarPedidoRenovacao.inputTransportador)
           .click({force: true})
@@ -196,16 +194,18 @@ describe('Grupo de teste Atendimento Renovação', () => {
           cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
           
           cy.get(path.generic.title, {timeout: 10000})
-          .should('have.text', 'Selecione o Ponto de Atendimento').wait(3000)
+          .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
           
-          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).type('FETAC-MG').wait(2000)
+          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+          .type('FETAC-MG').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
+          .click({force: true})         
 
-      cy.xpath('/html/body/div[8]/div', {timeout: 10000})
-      .each((ele, index, list) => {
-          let value = ele.text()
-          if (value === 'FETAC-MG') 
-          cy.wrap($ele).click();     
-      })
+          // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
+          // .each((ele, index, list) => {
+          //     let value = ele.text()
+          //     if (value === 'FETAC-MG') 
+          //     cy.wrap($ele).click();     
+          // })
           
           cy.get(path.generic.tabela, {timeout: 10000})
           .then((ele) => {
@@ -213,9 +213,9 @@ describe('Grupo de teste Atendimento Renovação', () => {
             cy.log(ele.text())
             
               cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$240.00')
+              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
               cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$480.00')
+              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
           
               cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
               cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
@@ -223,14 +223,14 @@ describe('Grupo de teste Atendimento Renovação', () => {
               cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
           
               cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$175.00')
+              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
               cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$175.00')
-              cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$655.00')          
+              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
+              cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')          
             
           });
           
-          cy.get(path.generic.botaoConfirmar).click({force: true});
+          cy.get(path.generic.botaoConfirmar).click({multiple: true});
       });
       
       
@@ -239,19 +239,21 @@ describe('Grupo de teste Atendimento Renovação', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)  
       cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
-      .trigger('mouseover').click({force: true}).click();
+      .click({force: true});
       
       cy.get(path.generic.title, {timeout: 10000})
-      .should('have.text', 'Selecione o Ponto de Atendimento')
-        
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).type('FETAC-MG').wait(2000)
+      .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
 
-      cy.xpath('/html/body/div[8]/div', {timeout: 10000})
-      .each((ele, index, list) => {
-          let value = ele.text()
-          if (value === 'FETAC-MG') 
-          cy.wrap($ele).click();     
-      })
+      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+      .type('FETAC-MG').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
+      .click({force: true})
+
+      // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
+      // .each((ele, index, list) => {
+      //     let value = ele.text()
+      //     if (value === 'FETAC-MG') 
+      //     cy.wrap($ele).click();     
+      // })
       
       cy.get(path.generic.tabela, {timeout: 20000})        
       .then((ele) => {
@@ -259,9 +261,9 @@ describe('Grupo de teste Atendimento Renovação', () => {
         cy.log(ele.text())
         
           cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$240.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
           cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$480.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
       
           cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
           cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
@@ -269,14 +271,14 @@ describe('Grupo de teste Atendimento Renovação', () => {
           cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
       
           cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$175.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
           cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$175.00')
-          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$655.00')           
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
+          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')           
         
       })
       
-      cy.get(path.generic.botaoConfirmar).click({force: true});
+      cy.get(path.generic.botaoConfirmar).click({multiple: true});
       cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
       .should('have.text', 'Validação do Pedido');
       
@@ -296,16 +298,16 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       cy.anexarDocumentosVeiculo(selectFileBSG1253, veiculoBSG1253 )
       
-      cy.get(path.generic.mensagemFechar).click({multiple: true})
-      cy.get(path.generic.mensagemFechar).click({multiple: true})
+      cy.get(path.generic.mensagemFechar, {timeout: 10000}).click({multiple: true}).wait(1000)
+      cy.get(path.generic.mensagemFechar,{timeout: 10000}).click({multiple: true})
       
-      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click()        
+      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({multiple: true})        
       
-      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click()
+      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({multiple: true})
       
-      cy.get('.text-6').should('have.text', 'Atendimento Válido')
+      cy.get('.text-6').should('have.text', ' Atendimento Válido ')
       
-      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).click({force: true})
+      cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
       
       cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
       
@@ -315,9 +317,9 @@ describe('Grupo de teste Atendimento Renovação', () => {
         cy.log(ele.text())
         
           cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$240.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
           cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$480.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
       
           cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
           cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
@@ -325,10 +327,10 @@ describe('Grupo de teste Atendimento Renovação', () => {
           cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
       
           cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$175.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
           cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$175.00')
-          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$655.00')           
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
+          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')           
         
       })     
       });          

@@ -61,14 +61,21 @@ module.exports = {
   },
   regularizacaoPage: {
     //tipoAtendimento: '[data-cy=tipoAtendimento]',
-    tipoAtendimento: '.text-size-16 > :nth-child(2)',
+    tipoAtendimentoCadastro: '.text-size-16 > :nth-child(1)',
+    tipoAtendimentoRenovacao: '.text-size-16 > :nth-child(2)',
   },
   criarPedidoRenovacao: {
     //tipoTransportador: '[data-cy=tipoTransportador]',
     inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
-    tipoTransportador: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',    
+    tipoTransportador: '',    
     cnpj: '[data-cy=cnpj]',
     cpf: '[data-cy=cpf]',
+  },
+  criarPedidoCadastro: {
+    inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
+    tipoTransportador: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
+    cnpj: '[data-cy=cnpj]',
+    cpf: '[data-cy=cpf]'
   },
   //src/pages/DetalheAtendimentoPage.vue
   detalhamentoAtendimentoRenovacao: {
@@ -147,7 +154,8 @@ module.exports = {
     nome: '[data-cy=nome]',
     email: '[data-cy=email]',
     telefone: '[data-cy=telefone]',
-    cargo: '[data-cy=cargo]'
+    cargo: '[data-cy=cargo]',
+    dataNascimento: '[data-cy=dataNascimento]'
   },
 
   operacaoFilial: {

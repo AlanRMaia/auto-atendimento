@@ -16,7 +16,7 @@ Cypress.Commands.add('salvarTransportador', (faker, tipoTransportador) => {
     //.xpath(path.detalhamentoAtendimentoRenovacao.operacaoSalvarTransportador).click();  
     //Na janela para incluir o Transportador no atendimento
     cy.get(path.generic.title).should('have.text', operacao.SalvarTransportador) 
-    if (tipoTransportador != 'TAC') {
+    if (tipoTransportador == 'ETC') {
        //Razão Social
       cy.get(path.operacaoSalvarTransportador.razaoSocial ).clear().type(faker.company.name());
       //Nome fantasia
@@ -28,13 +28,24 @@ Cypress.Commands.add('salvarTransportador', (faker, tipoTransportador) => {
       cy.get(path.operacaoSalvarTransportador.checkBoxComunicacaoANTT).should('not.be.checked')
       //checkbox capacidade financeira
       cy.get(path.operacaoSalvarTransportador.checkBoxCapacidadeFinanceira).should('not.be.checked')
+    } else if (tipoTransportador == 'CTC') {
+       //Razão Social
+       cy.get(path.operacaoSalvarTransportador.razaoSocial ).clear().type(faker.company.name());
+       //Nome fantasia
+       cy.get(path.operacaoSalvarTransportador.nomeFantasia ).clear().type(faker.company.name()); 
+       //inscrição estadual
+       cy.get(path.operacaoSalvarTransportador.inscricaoEstadual).clear().type(faker.number.int({ min: 1000, max: 2000 }));
+       //junta comercial
+       cy.get(path.operacaoSalvarTransportador.juntaComercial).clear().type(faker.number.int({ min: 1000, max: 2000 }));
+       //inscricao OCB
+       cy.get(path.operacaoSalvarTransportador.inscricaoOCB).clear().type(faker.number.int({ min: 1000, max: 2000 }));
+
     } else {
       //Nome
       cy.get(path.operacaoSalvarTransportador.razaoSocial ).clear().type(`${faker.name.firstName()} ${faker.name.lastName()}`);
       //identidade
-      cy.get(path.operacaoSalvarTransportador.identidade ).clear().type(faker.random.number());      
-    }  
-  
+      cy.get(path.operacaoSalvarTransportador.identidade ).clear().type(faker.random.number());
+    }    
   
    //botao Salvar
    cy.get(path.generic.botaoSubmit).click({ force: true });  
@@ -230,7 +241,7 @@ Cypress.Commands.add('excluirContatoTelefone', (faker, phone) => {
 Cypress.Commands.add('incluirEnderecoComercial', (faker) => {
   let uf = faker.random.arrayElement(path.generic.uf)
 
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.xpath(path.generic.floatButton, {timeout: 20000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirEndereco) 
@@ -247,24 +258,28 @@ Cypress.Commands.add('incluirEnderecoComercial', (faker) => {
         cy.get(path.operacaoEndereco.logradouro)
         .type(faker.address.streetAddress())
 
+        cy.get('.q-inner-loading', {timeout: 20000}).should('be.visible')
+
+        cy.get('.q-inner-loading', {timeout: 20000}).should('not.exist')
+
         cy.get(path.operacaoEndereco.numero)
         .type(faker.random.number(), {force: true})
 
-        cy.get(path.operacaoEndereco.complemento)
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.complemento)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.bairro)
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.bairro)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.cidade)
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.cidade)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.pontoDeReferencia)
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.pontoDeReferencia)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.uf).click()        
-        .xpath(uf.path)        
-        .should('have.text', uf.nome).click()              
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .xpath(uf.path)        
+        // .should('have.text', uf.nome).click()              
         
         cy.get(path.generic.botaoSubmit).click()
 })
@@ -315,7 +330,7 @@ Cypress.Commands.add('incluirEnderecoCorrespondencia', (faker) => {
         cy.get(path.generic.botaoSubmit).click()
 })
 
-Cypress.Commands.add('incluirGestor', (faker, gestor)=>{
+Cypress.Commands.add('incluirGestor', (faker, gestor, tipoTransportador)=>{
   cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
@@ -323,22 +338,38 @@ Cypress.Commands.add('incluirGestor', (faker, gestor)=>{
             cy.wrap($ele).click();      
         })
           
-  cy.get(path.generic.title).should('have.text', operacao.IncluirGestor)
-  cy.get(path.operacaoGestor.tipoVinculo).click()
+  cy.get(path.generic.title).should('have.text', operacao.IncluirGestor).wait(3000)
+  
+        
+    if (tipoTransportador == 'ETC' && gestor == 'Responsável Legal') {  
 
-    if (gestor == 'Sócio') {    
-      cy.xpath('/html/body/div[8]/div/div[2]/div/div/div[2]/div[1]/div[2]/div/span')
-        .should('have.text', gestor).click()
-    } else {
-      cy.xpath('/html/body/div[8]/div/div[2]/div/div/div[2]/div[2]/div[2]/div/span')
-        .should('have.text', gestor).click()
-    }  
+        cy.get(path.operacaoGestor.tipoVinculo, {timeout: 10000}).type(gestor)
+        cy.xpath('/html/body/div[8]/div/div[2]/div[2]')                
+         .click({force: true})
+        cy.get(path.operacaoGestor.cpfCnpj).type(faker.br.cpf())
+        cy.get(path.operacaoGestor.nome).type(`${faker.name.firstName()} ${faker.name.lastName()}`)
+        //cy.get(path.operacaoGestor.dataNascimento).type('20/05/2005')
+        cy.get(path.operacaoGestor.cargo).type(faker.company.catchPhraseDescriptor())  
+        cy.get(path.operacaoGestor.telefone).type(faker.phone.phoneNumber())
+        cy.get(path.operacaoGestor.email).type(faker.internet.email())
 
-  cy.get(path.operacaoGestor.cpfCnpj).type(faker.br.cpf())
-  cy.get(path.operacaoGestor.nome).type(`${faker.name.firstName()} ${faker.name.lastName()}`)
-  cy.get(path.operacaoGestor.email).type(faker.internet.email())
-  cy.get(path.operacaoGestor.telefone).type(faker.phone.phoneNumber())
-  cy.get(path.operacaoGestor.cargo).type(faker.company.catchPhraseDescriptor())
+    }else if (tipoTransportador == 'ETC' && gestor == 'Sócio'){
+
+      cy.get(path.operacaoGestor.cpfCnpj).type(faker.br.cpf())
+      cy.get(path.operacaoGestor.nome).type(`${faker.name.firstName()} ${faker.name.lastName()}`)
+      cy.get(path.operacaoGestor.dataNascimento).type('20/05/2005')
+      cy.get(path.operacaoGestor.cargo).type(faker.company.catchPhraseDescriptor())  
+      cy.get(path.operacaoGestor.telefone).type(faker.phone.phoneNumber())
+      cy.get(path.operacaoGestor.email).type(faker.internet.email())
+
+    }else{
+      cy.get(path.operacaoGestor.cpfCnpj).type(faker.br.cpf())
+      cy.get(path.operacaoGestor.nome).type(`${faker.name.firstName()} ${faker.name.lastName()}`)
+      cy.get(path.operacaoGestor.dataNascimento).type('20/05/2005')
+      cy.get(path.operacaoGestor.cargo).type(faker.company.catchPhraseDescriptor())  
+      cy.get(path.operacaoGestor.telefone).type(faker.phone.phoneNumber())
+      cy.get(path.operacaoGestor.email).type(faker.internet.email())
+    }   
 
   cy.get(path.generic.botaoSubmit).click()
 })

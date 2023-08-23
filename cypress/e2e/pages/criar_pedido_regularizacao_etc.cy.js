@@ -65,12 +65,12 @@ describe('Grupo de teste Atendimento Renovação', () => {
         //Clicar na opção Regularização RNTRC no menu lateral
         cy.regularizacao();
         //Selecionando o tipo de atendimento Renovação RNTRC
-        cy.get(path.regularizacaoPage.tipoAtendimento).click();
+        cy.get(path.regularizacaoPage.tipoAtendimentoRenovacao).click();
         //
         cy.get(path.criarPedidoRenovacao.inputTransportador)
           .click()
           .getElementListXpath(
-            path.criarPedidoRenovacao.tipoTransportador,
+            '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
             'Empresa'
           );
         
@@ -103,7 +103,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
       });
       
       // -------- Criar operação Enviar documento do tipo Registro RT ------//        
-      it('Criar operação Enviar documento do tipo Registro RT', () => { 
+      it.only('Criar operação Enviar documento do tipo Registro RT', () => { 
       cy.login(usuario.cpf, usuario.senha)      
       cy.acessarPedido(idPrePedido)       
       cy.enviarDocumentosRT('D:/Imagens para teste/Apresentação .pdf')
@@ -184,16 +184,16 @@ describe('Grupo de teste Atendimento Renovação', () => {
       cy.get(path.generic.mensagemFechar).click();      
       });
       
-      // ------- Criar operação Incluir Gestor ------// 
-      it.only('Criar operação Incluir Gestor', () => {
+      // ------- Criar operação Incluir Gestor Sócio------// 
+      it('Criar operação Incluir Gestor Sócio', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)               
-      cy.incluirGestor(fakerBr,'Sócio')
+      cy.incluirGestor(fakerBr,'Sócio', 'ETC')
       cy.get(path.generic.mensagemFechar).click();      
-      });
+    });
       
       // -------- Criar operação Incluir Filial ------//
-      it.only('Criar operação Incluir Filial', () => { 
+      it('Criar operação Incluir Filial', () => { 
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)        
       cy.incluirFilial(fakerBr)
@@ -201,15 +201,15 @@ describe('Grupo de teste Atendimento Renovação', () => {
       });
       
       // ---------- Criar operação Incluir Responsável Técnico --------//
-      it.only('Criar operação Incluir Responsável Técnico', () => { 
+      it('Criar operação Incluir Responsável Técnico', () => { 
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)        
       cy.incluirResponsavelTecnico(fakerBr, faker)
-      cy.get(path.generic.mensagemFechar).click();      
+      cy.get(path.generic.mensagemFechar, {timeout:8000}).click();      
       }); 
       
       // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-      it.only('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
+      it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)          
       cy.incluirVeiculo(veiculoIAQ9412)
@@ -231,7 +231,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
       // });
       
       // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
-      it.only('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
+      it('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)        
       cy.incluirVeiculo(veiculoBSG1253)
@@ -239,7 +239,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
       }); 
       
       // --------- Anexar crlv na operação de inclusão de veículo -------//        
-      it.only('Anexar crlv na operação de inclusão de veículo', () => {
+      it('Anexar crlv na operação de inclusão de veículo', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)          
       cy.anexarDocumentosVeiculo(selectFileIAQ9412, veiculoIAQ9412 )
@@ -247,21 +247,25 @@ describe('Grupo de teste Atendimento Renovação', () => {
       });
       
       // ------- Selecionar o sindicato e gerar valor -------//        
-      it.only('Selecionar o sindicato e gerar valor', () => {
+      it('Selecionar o sindicato e gerar valor', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)          
       cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
       
       cy.get(path.generic.title, {timeout: 10000})
-      .should('have.text', 'Selecione o Ponto de Atendimento')
+      .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
+
+      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+      .type('SETCAL').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'SETCAL ')
+      .click({force: true})
       
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).wait(2000)
-      .each((ele, index, list) => {
-          let value = ele.text()
-          if (value === 'SETCAL') 
-          cy.wrap($ele).click();      
+      // cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).wait(2000)
+      // .each((ele, index, list) => {
+      //     let value = ele.text()
+      //     if (value === 'SETCAL') 
+      //     cy.wrap($ele).click();      
       
-      })
+      // })
       
       cy.get(path.generic.tabela, {timeout: 10000})
       .then((ele) => {
@@ -291,22 +295,26 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       
       // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
-      it.only('Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253', () => {
+      it('Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)  
       cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
       .trigger('mouseover').click({force: true}).click();
       
       cy.get(path.generic.title, {timeout: 10000})
-      .should('have.text', 'Selecione o Ponto de Atendimento')
+      .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
+
+      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+      .type('SETCAL').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'SETCAL ')
+      .click({force: true})
+
+      // cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).wait(2000)
+      // .each((ele, index, list) => {
+      //     let value = ele.text()
+      //     if (value === 'SETCAL') 
+      //     cy.wrap($ele).click();      
       
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).wait(2000)
-      .each((ele, index, list) => {
-          let value = ele.text()
-          if (value === 'SETCAL') 
-          cy.wrap($ele).click();      
-      
-      })
+      // })
       
       cy.get(path.generic.tabela, {timeout: 20000})        
       .then((ele) => {
@@ -351,8 +359,8 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       cy.anexarDocumentosVeiculo(selectFileBSG1253, veiculoBSG1253 )
       
-      cy.get(path.generic.mensagemFechar).click({multiple: true})
-      cy.get(path.generic.mensagemFechar).click({multiple: true})
+      cy.get(path.generic.mensagemFechar, {timeout: 10000}).click({multiple: true}).wait(1000)
+      cy.get(path.generic.mensagemFechar,{timeout: 10000}).click({multiple: true})
       
       cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click()        
       
@@ -360,7 +368,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       cy.get('.text-6').should('have.text', 'Atendimento Válido')
       
-      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).click({force: true})
+      cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
       
       cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
       

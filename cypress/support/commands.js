@@ -60,9 +60,9 @@ Cypress.Commands.add('getByData', (selector) => {
 });
 
 Cypress.Commands.add('login', (cpf, senha) => {
-  cy.visit(urls.login);
+  cy.visit(urls.login, {timeout: 20000});
 
-  cy.get(path.loginPage.cpf).type(cpf);
+  cy.get(path.loginPage.cpf, {timeout:20000}).type(cpf);
   cy.get(path.loginPage.senha).type(senha);
   cy.get(path.generic.botaoSubmit).click();
   cy.get(path.generic.title, {timeout: 20000}).should('have.text', 'Atendimentos')

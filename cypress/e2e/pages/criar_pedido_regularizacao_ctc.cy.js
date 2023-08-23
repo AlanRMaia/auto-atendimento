@@ -1,10 +1,11 @@
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
+import mensagem from "../../support/mensagemAlertEnum";
 
   let usuario;
   let cpfCnpj = '15437304000198'
-  let idPrePedido = ''
+  let idPrePedido = '2071356'
   var fakerBr = require('faker-br');
 
   let veiculoIAQ9412 = {
@@ -37,7 +38,11 @@ import path from '../../selectors/path.sel.cy';
      let selectFileBSG1253 = {
       crlv: 'D:/Imagens para teste/Apresentação .pdf',
       contratoArrendamento: 'D:/Imagens para teste/ALAN MAIA - INFORME REND 2022.pdf'
-     }       
+     }     
+     let selectFileDAY7G42 = {
+      crlv: 'D:/Imagens para teste/Apresentação .pdf',
+      contratoArrendamento: 'D:/Imagens para teste/ALAN MAIA - INFORME REND 2022.pdf'
+     }  
   
   
 beforeEach(() => {
@@ -60,24 +65,17 @@ describe('Grupo de teste Atendimento Renovação', () => {
         //Clicar na opção Regularização RNTRC no menu lateral
         cy.regularizacao();
         //Selecionando o tipo de atendimento Renovação RNTRC
-        cy.get(path.regularizacaoPage.tipoAtendimento).click();
+        cy.get(path.regularizacaoPage.tipoAtendimentoRenovacao).click();
         //
-        cy.get(path.criarPedidoRenovacao.inputTransportador)
-          .click()
-          .getElementListXpath(
-            path.criarPedidoRenovacao.tipoTransportador,
-            'Cooperativa'
-          );
+        cy.get(path.criarPedidoRenovacao.inputTransportador).click({force: true})
+        .xpath('/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span').should('have.text', 'Cooperativa').click()
+          
         
-        cy.xpath(path.criarPedidoRenovacao.inputETC).type(cpfCnpj);
+        cy.get(path.criarPedidoRenovacao.cnpj).type(cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
         
-      cy.get(path.generic.mensagemFeliz).then((element) => {      
-            expect('Atendimento criado com sucesso!').to.be.equal(element.text())
-            cy.get(path.generic.mensagemFechar).click();      
-          }     
-        )
-      
+        cy.notificacao(mensagem.AtendimentoCriadoSucesso)
+
         cy.get(path.generic.idAtendimento).then((element)=> {          
           idPrePedido = element.text().substring(14,21);
           expect(element.text()).to.be.equal(` Atendimento #${idPrePedido}`)
@@ -141,35 +139,6 @@ describe('Grupo de teste Atendimento Renovação', () => {
       cy.get(path.generic.mensagemFechar).click();      
       });
       
-      // ------- Criar operação Excluir Contato Email ------//
-      // it('Criar operação Excluir Contato Email', () => {
-      //   cy.login(usuario.cpf, usuario.senha)
-      //   cy.acessarPedido(idPrePedido)        
-      // cy.incluirContatoEmail(faker)      
-      // cy.get(path.generic.mensagemFechar).click();      
-      // });
-      
-      // ------ Criar operação Excluir Contato Telefone -----//
-      // it('Criar operação Excluir Contato Telefone', () => {
-      //   cy.login(usuario.cpf, usuario.senha)
-      //   cy.acessarPedido(idPrePedido)        
-      // cy.excluirContatoTelefone(faker, '(94) 0335-1433')
-      // cy.get(path.generic.mensagemFechar).click();      
-      // });
-      
-      // ------- Criar operação Excluir Contato Celular ------//
-      
-      // cy.excluirContatoCelular(faker)
-      // cy.get(path.generic.mensagemFechar).click();      
-      
-      // -------- Criar operação Excluir Contato Fax -------//
-      // it('Criar operação Excluir Contato Fax', () => {  
-      //   cy.login(usuario.cpf, usuario.senha)
-      //   cy.acessarPedido(idPrePedido)       
-      // cy.excluirContatoFax(faker, '(94) 0335-1132' )
-      // cy.get(path.generic.mensagemFechar).click();      
-      // });
-      
       // ------- Criar operação Incluir Endereço Comercial -------//
       
       // cy.incluirEnderecoComercial(fakerBr)
@@ -183,13 +152,13 @@ describe('Grupo de teste Atendimento Renovação', () => {
       cy.get(path.generic.mensagemFechar).click();      
       });
       
-      // ------- Criar operação Incluir Gestor ------// 
-      it('Criar operação Incluir Gestor', () => {
+      // ------- Criar operação Incluir Gestor Responsável legal ------// 
+      it('Criar operação Incluir Gestor Responsável legal', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)               
-      cy.incluirGestor(fakerBr, 'Responsável Legal')
+      cy.incluirGestor(fakerBr,'Responsável legal', 'CTC')
       cy.get(path.generic.mensagemFechar).click();      
-      });
+    });
       
       // -------- Criar operação Incluir Filial ------//
       it('Criar operação Incluir Filial', () => { 
@@ -216,15 +185,17 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       cy.incluirVeiculo(veiculoDAY7G42)
       cy.get(path.generic.mensagemFechar).click();   
+      cy.anexarDocumentosVeiculo(selectFileDAY7G42, veiculoDAY7G42 )
+        cy.get(path.generic.mensagemFechar).click();
       });
       
-      // --------- Criar operação Incluir Veiculo Automotor/Arrendado ---------//       
-      it('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)          
-      cy.incluirVeiculo(veiculoDAY7G42)
-      cy.get(path.generic.mensagemFechar).click();
-      });
+      // // --------- Criar operação Incluir Veiculo Automotor/Arrendado ---------//       
+      // it('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
+      //   cy.login(usuario.cpf, usuario.senha)
+      //   cy.acessarPedido(idPrePedido)          
+      // cy.incluirVeiculo(veiculoDAY7G42)
+      // cy.get(path.generic.mensagemFechar).click();
+      // });
       
       // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
       it('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
@@ -250,14 +221,18 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       cy.get(path.generic.title, {timeout: 10000})
       .should('have.text', 'Selecione o Ponto de Atendimento')
+
+      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+      .type('OCERGS').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
+      .click({force: true})
       
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})
-      .each((ele, index, list) => {
-          let value = ele.text()
-          if (value === 'OCERGS') 
-          cy.wrap($ele).click();      
+      // cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})
+      // .each((ele, index, list) => {
+      //     let value = ele.text()
+      //     if (value === 'OCERGS') 
+      //     cy.wrap($ele).click();      
       
-      })
+      // })
       
       cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/table', {timeout: 10000})
       .then((ele) => {
@@ -295,15 +270,19 @@ describe('Grupo de teste Atendimento Renovação', () => {
       .trigger('mouseover').click({force: true}).click();
       
       cy.get(path.generic.title, {timeout: 10000})
-      .should('have.text', 'Selecione o Ponto de Atendimento')
+      .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
+
+      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+      .type('OCERGS').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
+      .click({force: true})
       
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})
-      .each((ele, index, list) => {
-          let value = ele.text()
-          if (value === 'OCERGS') 
-          cy.wrap($ele).click();      
+      // cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})
+      // .each((ele, index, list) => {
+      //     let value = ele.text()
+      //     if (value === 'OCERGS') 
+      //     cy.wrap($ele).click();      
       
-      })
+      // })
       
       cy.get(path.generic.tabela, {timeout: 20000})        
       .then((ele) => {
@@ -358,8 +337,8 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       cy.get('.text-6').should('have.text', 'Atendimento Válido')
       
-      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).click({force: true})
-      
+      cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
+            
       cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
       
       cy.get(path.generic.tabela, {timeout: 20000})        
