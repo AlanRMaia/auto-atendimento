@@ -540,15 +540,15 @@ Cypress.Commands.add('excluirVeiculo', (veiculo)=>{
   cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
-            if ($ele.text() === operacao.IncluirVeiculo) 
+            if ($ele.text() === operacao.ExcluirVeiculo) 
             cy.wrap($ele).click();      
         })
           
-  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirVeiculo)  
+  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirVeiculo)  
 
   cy.get(path.operacaoVeiculo.placa).type(veiculo.placa)
   cy.get(path.operacaoVeiculo.renavam).type(veiculo.renavam)
-  
+
   veiculo.tipoVeiculo != 'Implemento' ?
     cy.get(path.operacaoVeiculo.radioAutomotor).click():
     cy.get(path.operacaoVeiculo.radioImplemento).click()
@@ -561,11 +561,11 @@ Cypress.Commands.add('alterarVeiculo', (veiculo)=>{
   cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
-            if ($ele.text() === operacao.IncluirVeiculo) 
+            if ($ele.text() === operacao.AlterarVeiculo) 
             cy.wrap($ele).click();      
         })
           
-  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirVeiculo)  
+  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.AlterarVeiculo)  
 
   cy.get(path.operacaoVeiculo.placa).type(veiculo.placa)
   cy.get(path.operacaoVeiculo.renavam).type(veiculo.renavam)
