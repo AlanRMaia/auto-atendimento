@@ -16,6 +16,8 @@ module.exports = {
     gridOperacao: '[data-cy=gridOperacoes]', 
     isLoading: '[data-cy=isLoading]',
     alert: '[data-cy=alert]',
+    pagamento: '[data-cy=pagamento]',
+    email: '[data-cy=email]',
 
     uf : [
       {path: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', nome: 'Acre'},
@@ -63,6 +65,7 @@ module.exports = {
     //tipoAtendimento: '[data-cy=tipoAtendimento]',
     tipoAtendimentoCadastro: '.text-size-16 > :nth-child(1)',
     tipoAtendimentoRenovacao: '.text-size-16 > :nth-child(2)',
+    tipoAtendimentoInclusaoVeiculo: '.text-size-16 > :nth-child(4)'
   },
   criarPedidoRenovacao: {
     //tipoTransportador: '[data-cy=tipoTransportador]',
@@ -76,6 +79,17 @@ module.exports = {
     tipoTransportador: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
     cnpj: '[data-cy=cnpj]',
     cpf: '[data-cy=cpf]'
+  },
+  criarPedidoInclusaoVeiculo: {
+    inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
+    cnpj: '[data-cy=cnpj]',
+    cpf: '[data-cy=cpf]'
+  },
+  componentePagamento: {
+    pagamentoPix: '[data-cy=pagamentoPix]',
+    pagamentoBoleto: '[data-cy=pagamentoBoleto]',
+    codigoPix: '[data-cy=codigoPix]',
+    codigoBarra: '[data-cy=codigoBarra]'
   },
   //src/pages/DetalheAtendimentoPage.vue
   detalhamentoAtendimentoRenovacao: {
@@ -201,6 +215,10 @@ module.exports = {
   validacaoPedido: {
     atendimentoValido: '[data-cy=atendimentoValido]',
     atendimentoInvalido: '[data-cy=atendimentoInvalido]',
+
+  },
+
+  resumoPedido: {
 
   },
 

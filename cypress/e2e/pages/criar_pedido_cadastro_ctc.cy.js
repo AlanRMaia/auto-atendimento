@@ -352,9 +352,43 @@ describe('Grupo de teste Atendimento Cadastro CTC', () => {
           cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$60.00')
           cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
           cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$60.00')
-          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$180.00')           
+          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$180.00')   
+          
+          cy.get(path.generic.email).type(faker.internet.email())
+
+            cy.get(path.generic.finalizar).click()
+
+            cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
+            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()
+
+            cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
+
+            cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')
         
       })     
-  });            
+  });
+  
+  it('Meio de pagamento', () => {
+    cy.login(usuario.cpf, usuario.senha)
+    cy.acessarPedido(idPrePedido)
+    cy.get(path.generic.pagamento, {timeout: 20000}).click({force: true})
+
+    cy.get(path.componentePagamento.pagamentoPix).should('have.text', ' Pagamento por PIX ')
+
+    cy.get(path.componentePagamento.pagamentoBoleto).should('have.text', ' Pagamento por Boleto ')
+    
+    cy.get(path.componentePagamento.codigoPix, {timeout: 20000}).then(ele => {
+      let value = ele.val()
+      cy.log(value)
+      expect(value).not.be.null
+    })     
+
+    cy.get(path.componentePagamento.codigoBarra).then(ele =>{
+      let value = ele.val()
+      cy.log(value)
+      expect(ele).not.be.null
+    })    
+  
+});
 
 });

@@ -535,5 +535,84 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
   cy.get(path.generic.botaoSubmit).click()
 })
 
+Cypress.Commands.add('excluirVeiculo', (veiculo)=>{ 
+  
+  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+        .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
+        .each(($ele, index, list) => {
+            if ($ele.text() === operacao.IncluirVeiculo) 
+            cy.wrap($ele).click();      
+        })
+          
+  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirVeiculo)  
+
+  cy.get(path.operacaoVeiculo.placa).type(veiculo.placa)
+  cy.get(path.operacaoVeiculo.renavam).type(veiculo.renavam)
+  
+  veiculo.tipoVeiculo != 'Implemento' ?
+    cy.get(path.operacaoVeiculo.radioAutomotor).click():
+    cy.get(path.operacaoVeiculo.radioImplemento).click()
+      
+  cy.get(path.generic.botaoSubmit).click()
+})
+
+Cypress.Commands.add('alterarVeiculo', (veiculo)=>{ 
+  
+  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+        .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
+        .each(($ele, index, list) => {
+            if ($ele.text() === operacao.IncluirVeiculo) 
+            cy.wrap($ele).click();      
+        })
+          
+  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirVeiculo)  
+
+  cy.get(path.operacaoVeiculo.placa).type(veiculo.placa)
+  cy.get(path.operacaoVeiculo.renavam).type(veiculo.renavam)
+  cy.get(path.operacaoVeiculo.radioAutomotor).click();
+
+  veiculo.tipoVeiculo != 'Implemento' ?
+    cy.get(path.operacaoVeiculo.radioAutomotor).click():
+    cy.get(path.operacaoVeiculo.radioImplemento).click()
+      
+  cy.get(path.operacaoVeiculo.tipoPropriedade).click()
+
+  switch (veiculo.propriedade) {
+    case 'Próprio':
+      cy.xpath(path.operacaoVeiculo.tipoPropriedadeProprio)
+      .should('have.text', veiculo.propriedade).click()
+      .get(path.operacaoVeiculo.tipoPropriedade)
+      .should('have.text', veiculo.propriedade)      
+      break;
+
+    case 'Arrendado':
+      cy.xpath(path.operacaoVeiculo.tipoPropriedadeArrendado)
+      .should('have.text', veiculo.propriedade).click()
+      .get(path.operacaoVeiculo.tipoPropriedade)
+      .should('have.text', veiculo.propriedade)   
+      
+      cy.get(path.operacaoVeiculo.cpfCnpjProprietario).type(veiculo.proprietario);
+      break;
+  
+    case 'Leasing':
+      cy.xpath(path.operacaoVeiculo.tipoPropriedadeLeasing)
+      .should('have.text', veiculo.propriedade).click()
+      .get(path.operacaoVeiculo.tipoPropriedade)
+      .should('have.text', veiculo.propriedade)
+
+      cy.get(path.operacaoVeiculo.instituicoesFinanceiras).click()
+      .xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span')
+      .should('have.text', 'BANCO POTTENCIAL S.A.').click();
+      break;   
+
+      default:
+        cy.log(` ---- Propriedade digitada incorretamente:${veiculo.propriedade} ----`)
+        break
+  }
+
+
+  cy.get(path.generic.botaoSubmit).click()
+})
+
 
 
