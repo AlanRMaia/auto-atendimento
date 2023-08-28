@@ -6,7 +6,7 @@ module.exports = {
     title: '[data-cy=title]',
     botaoSubmit: '[data-cy=submit]',
     botaoVoltar: '[data-cy=voltar]',
-    floatButton: '/html/body/div[1]/div/div[2]/div/main/div[3]/div/button', //'[data-cy=floatButton]'
+    floatButton:  '[data-cy=floatButton]', //'/html/body/div[1]/div/div[2]/div/main/div[3]/div/button',
     idAtendimento: '[data-cy=idAtendimento]',
     botaoConfirmar: '[data-cy=confirmar]',
     tabela: '[data-cy=tabela]',
@@ -65,7 +65,8 @@ module.exports = {
     //tipoAtendimento: '[data-cy=tipoAtendimento]',
     tipoAtendimentoCadastro: '.text-size-16 > :nth-child(1)',
     tipoAtendimentoRenovacao: '.text-size-16 > :nth-child(2)',
-    tipoAtendimentoInclusaoVeiculo: '.text-size-16 > :nth-child(4)'
+    tipoAtendimentoInclusaoVeiculo: '.text-size-16 > :nth-child(4)',
+    tipoAtendimentoAlteracaoDados: '.text-size-16 > :nth-child(3)'
   },
   criarPedidoRenovacao: {
     //tipoTransportador: '[data-cy=tipoTransportador]',
@@ -83,8 +84,17 @@ module.exports = {
   criarPedidoInclusaoVeiculo: {
     inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
     cnpj: '[data-cy=cnpj]',
-    cpf: '[data-cy=cpf]'
+    cpf: '[data-cy=cpf]',
   },
+  
+  criarPedidoAlteracaoDados: {
+    inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
+    cnpj: '[data-cy=cnpj]',
+    cpf: '[data-cy=cpf]',
+    tipoTransportadorTAC: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span'
+
+  },
+
   componentePagamento: {
     pagamentoPix: '[data-cy=pagamentoPix]',
     pagamentoBoleto: '[data-cy=pagamentoBoleto]',
@@ -232,7 +242,8 @@ module.exports = {
     cnh: '[data-cy=cnh]',
     categoria: '[data-cy=categoria]',
     radioMasculino: '[data-cy=radioMasculino]',
-    radioFeminino: '[data-cy=radioFeminino]'
+    radioFeminino: '[data-cy=radioFeminino]',
+    categoria: '[data-cy="categotia"]'
   }
 
 };

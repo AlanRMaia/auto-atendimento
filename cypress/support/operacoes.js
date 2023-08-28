@@ -7,7 +7,7 @@ require('cypress-xpath');
 Cypress.Commands.add('salvarTransportador', (faker, tipoTransportador) => {    
     
     //Criar operação Salvar transportador       
-    cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+    cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
     .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
       let value = ele.text()
        if(value === operacao.SalvarTransportador)
@@ -54,7 +54,7 @@ Cypress.Commands.add('salvarTransportador', (faker, tipoTransportador) => {
 
 Cypress.Commands.add('enviarDocumentosIdentidade', (selectFile) => {
 
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
       .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
         let value = ele.text()
          if(value === operacao.EnviarDocumentos)
@@ -83,7 +83,7 @@ Cypress.Commands.add('enviarDocumentosIdentidade', (selectFile) => {
 
 Cypress.Commands.add('enviarDocumentosRT', (selectFile) => {
 
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
       .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
         let value = ele.text()
          if(value === operacao.EnviarDocumentos)
@@ -112,7 +112,7 @@ Cypress.Commands.add('enviarDocumentosRT', (selectFile) => {
 
 Cypress.Commands.add('incluirContatoEmail', (faker)=>{  
 
-      cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+      cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
       .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
         let value = ele.text()
          if(value === operacao.IncluirContato)
@@ -129,7 +129,7 @@ Cypress.Commands.add('incluirContatoEmail', (faker)=>{
 
 Cypress.Commands.add('incluirContatoFax', (faker)=>{  
 
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
   .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
     let value = ele.text()
      if(value === operacao.IncluirContato)
@@ -146,7 +146,7 @@ Cypress.Commands.add('incluirContatoFax', (faker)=>{
 
 Cypress.Commands.add('incluirContatoCelular', (faker)=>{  
 
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
   .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
     let value = ele.text()
      if(value === operacao.IncluirContato)
@@ -163,7 +163,7 @@ Cypress.Commands.add('incluirContatoCelular', (faker)=>{
 
 Cypress.Commands.add('incluirContatoTelefone', (faker)=>{  
 
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
   .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
     let value = ele.text()
      if(value === operacao.IncluirContato)
@@ -179,7 +179,7 @@ Cypress.Commands.add('incluirContatoTelefone', (faker)=>{
 })
 
 Cypress.Commands.add('excluirContatoFax', (faker, phone) =>{
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.ExcluirContato) 
@@ -194,13 +194,14 @@ Cypress.Commands.add('excluirContatoFax', (faker, phone) =>{
 })
 
 Cypress.Commands.add('excluirContatoCelular', (faker, phone) => {
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.ExcluirContato) 
             cy.wrap($ele).click();      
-        })
-        cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirContato)
+        })   
+           
+        //cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirContato)
         cy.get(path.operacaoContato.tipoContato).click()
         .xpath(path.operacaoContato.celular).should('have.text', 'Celular').click()      
         cy.get(path.operacaoContato.tipoContatoValor).type(phone)    
@@ -209,7 +210,7 @@ Cypress.Commands.add('excluirContatoCelular', (faker, phone) => {
 })
 
 Cypress.Commands.add('excluirContatoEmail', (faker, email) => {
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.ExcluirContato) 
@@ -224,7 +225,7 @@ Cypress.Commands.add('excluirContatoEmail', (faker, email) => {
 })
 
 Cypress.Commands.add('excluirContatoTelefone', (faker, phone) => {
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
       .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
       .each(($ele, index, list) => {
           if ($ele.text() === operacao.ExcluirContato) 
@@ -241,7 +242,7 @@ Cypress.Commands.add('excluirContatoTelefone', (faker, phone) => {
 Cypress.Commands.add('incluirEnderecoComercial', (faker) => {
   let uf = faker.random.arrayElement(path.generic.uf)
 
-  cy.xpath(path.generic.floatButton, {timeout: 20000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 20000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirEndereco) 
@@ -284,9 +285,55 @@ Cypress.Commands.add('incluirEnderecoComercial', (faker) => {
         cy.get(path.generic.botaoSubmit).click()
 })
 
+Cypress.Commands.add('alterarEnderecoComercial', (faker) => {
+  let uf = faker.random.arrayElement(path.generic.uf)
+
+  cy.get(path.generic.floatButton, {timeout: 20000}).click({force: true})
+        .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
+        .each(($ele, index, list) => {
+            if ($ele.text() === operacao.AlterarEndereco) 
+            cy.wrap($ele).click();      
+        })
+        cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.AlterarEndereco)
+        cy.get(path.operacaoEndereco.tipoEndereco).click()
+        .xpath(path.operacaoEndereco.comercial)
+        .should('have.text', 'Comercial').click()
+
+        cy.get(path.operacaoEndereco.cep)
+        .type(faker.address.zipCodeValid())
+
+        cy.get(path.operacaoEndereco.logradouro)
+        .type(faker.address.streetAddress())
+
+        cy.get('.q-inner-loading', {timeout: 20000}).should('be.visible')
+
+        cy.get('.q-inner-loading', {timeout: 20000}).should('not.exist')
+
+        cy.get(path.operacaoEndereco.numero)
+        .type(faker.random.number(), {force: true})
+
+        // cy.get(path.operacaoEndereco.complemento)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
+
+        // cy.get(path.operacaoEndereco.bairro)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
+
+        // cy.get(path.operacaoEndereco.cidade)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
+
+        // cy.get(path.operacaoEndereco.pontoDeReferencia)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
+
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .xpath(uf.path)        
+        // .should('have.text', uf.nome).click()              
+        
+        cy.get(path.generic.botaoSubmit).click()
+})
+
 Cypress.Commands.add('incluirEnderecoCorrespondencia', (faker) => {
   let uf = faker.random.arrayElement(path.generic.uf)
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirEndereco) 
@@ -331,7 +378,7 @@ Cypress.Commands.add('incluirEnderecoCorrespondencia', (faker) => {
 })
 
 Cypress.Commands.add('incluirGestor', (faker, gestor, tipoTransportador)=>{
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirGestor) 
@@ -375,7 +422,7 @@ Cypress.Commands.add('incluirGestor', (faker, gestor, tipoTransportador)=>{
 })
 
 Cypress.Commands.add('incluirMotorista', (faker) => {
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirMotorista) 
@@ -395,7 +442,7 @@ Cypress.Commands.add('incluirMotorista', (faker) => {
   //cy.get(path.generic.alert).should('not.exist')
   cy.get(path.operacaoMotorista.cnh).type(faker.random.number())
   //cy.get(path.generic.alert).should('not.exist')
-  cy.get('[data-cy="categotia"]').type('B')
+  cy.get(path.operacaoMotorista.categoria).type('B')
   //cy.get(path.generic.alert).should('not.exist')
 
   cy.get(path.operacaoMotorista.radioFeminino).click().wait(1000)
@@ -404,6 +451,70 @@ Cypress.Commands.add('incluirMotorista', (faker) => {
   cy.get(path.generic.botaoSubmit).click();
 
 })
+
+Cypress.Commands.add('alterarMotorista', (faker, cpf) => {
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
+        .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
+        .each(($ele, index, list) => {
+            if ($ele.text() === operacao.AlterarMotorista) 
+            cy.wrap($ele).click();      
+        })
+          
+  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.AlterarMotorista)
+  cy.get(path.operacaoMotorista.cpf).type(cpf)
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.nome).type(`${faker.name.firstName()} ${faker.name.lastName()}`)
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.dataNascimento).type('20/02/2005')
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.email).type(faker.internet.email())
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.telefone).type(faker.phone.phoneNumber())
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.cnh).type(faker.random.number())
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.categoria).type('B')
+  //cy.get(path.generic.alert).should('not.exist')
+
+  cy.get(path.operacaoMotorista.radioFeminino).click().wait(1000)
+  cy.get(path.operacaoMotorista.radioMasculino, {timeout: 10000}).click()
+
+  cy.get(path.generic.botaoSubmit).click();
+
+})
+
+Cypress.Commands.add('excluirMotorista', (faker, cpf) => {
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
+        .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
+        .each(($ele, index, list) => {
+            if ($ele.text() === operacao.ExcluirMotorista) 
+            cy.wrap($ele).click();      
+        })
+          
+  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirMotorista)
+  cy.get(path.operacaoMotorista.cpf).type(cpf)
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.nome).type(`${faker.name.firstName()} ${faker.name.lastName()}`)
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.dataNascimento).type('20/02/2005')
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.email).type(faker.internet.email())
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.telefone).type(faker.phone.phoneNumber())
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.cnh).type(faker.random.number())
+  //cy.get(path.generic.alert).should('not.exist')
+  cy.get(path.operacaoMotorista.categoria).type('B')
+  //cy.get(path.generic.alert).should('not.exist')
+
+  cy.get(path.operacaoMotorista.radioFeminino).click().wait(1000)
+  cy.get(path.operacaoMotorista.radioMasculino, {timeout: 10000}).click()
+
+  cy.get(path.generic.botaoSubmit).click();
+
+})
+
+
 
 // Cypress.Commands.add('incluirFilial', (faker)=>{
 //   let uf = faker.random.arrayElement(path.generic.uf)
@@ -430,7 +541,7 @@ Cypress.Commands.add('incluirMotorista', (faker) => {
 Cypress.Commands.add('incluirFilial', (faker)=>{
   let uf = faker.random.arrayElement(path.generic.uf)
   
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirFilial) 
@@ -454,7 +565,7 @@ Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, faker)=>{
   let dataFaker = '20/02/2000'
   
   
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirResponsavelTecnico) 
@@ -479,7 +590,7 @@ Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, faker)=>{
 
 Cypress.Commands.add('incluirVeiculo', (veiculo)=>{ 
   
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirVeiculo) 
@@ -537,7 +648,7 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
 
 Cypress.Commands.add('excluirVeiculo', (veiculo)=>{ 
   
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.ExcluirVeiculo) 
@@ -558,7 +669,7 @@ Cypress.Commands.add('excluirVeiculo', (veiculo)=>{
 
 Cypress.Commands.add('alterarVeiculo', (veiculo)=>{ 
   
-  cy.xpath(path.generic.floatButton, {timeout: 10000}).click({force: true})
+  cy.get(path.generic.floatButton, {timeout: 10000}).click({force: true})
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.AlterarVeiculo) 
