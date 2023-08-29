@@ -67,7 +67,7 @@ describe('Grupo de teste Atendimento Cadastro CTC', () => {
     cy.get(path.regularizacaoPage.tipoAtendimentoCadastro).click();
     //
     cy.get(path.criarPedidoCadastro.inputTransportador).click({force: true})
-        .xpath('/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span')
+        .xpath(path.criarPedidoAlteracaoDados.tipoTransportadorCTC)
         .should('have.text', 'Cooperativa').click()
     
     cy.get(path.criarPedidoCadastro.cnpj).type(cpfCnpj);

@@ -91,8 +91,9 @@ module.exports = {
     inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
     cnpj: '[data-cy=cnpj]',
     cpf: '[data-cy=cpf]',
-    tipoTransportadorTAC: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span'
-
+    tipoTransportadorTAC: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
+    tipoTransportadorETC: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
+    tipoTransportadorCTC: '/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span'
   },
 
   componentePagamento: {

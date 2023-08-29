@@ -167,7 +167,7 @@ Cypress.Commands.add('incluirContatoTelefone', (faker)=>{
   .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
     let value = ele.text()
      if(value === operacao.IncluirContato)
-        cy.wrap(ele).click();      
+        cy.wrap(ele).click();     
     
   })
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
@@ -231,7 +231,9 @@ Cypress.Commands.add('excluirContatoTelefone', (faker, phone) => {
           if ($ele.text() === operacao.ExcluirContato) 
           cy.wrap($ele).click();      
       })
-      cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirContato)
+      cy.get(path.generic.title, {timeout: 10000}).then( ele => {
+        expect(ele).to.be.equal(operacao.ExcluirContato).debug()
+      })
       cy.get(path.operacaoContato.tipoContato).click()
       .xpath(path.operacaoContato.telefone).should('have.text', 'Telefone').click()      
       cy.get(path.operacaoContato.tipoContatoValor).type(phone)    

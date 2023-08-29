@@ -4,11 +4,11 @@ import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 
   let usuario;
-  let cpfCnpj = '86263935804'
-  let idPrePedido = '2071406'
+  let cpfCnpj = '02155196000119'
+  let idPrePedido = '2071407'
   var fakerBr = require('faker-br');  
   
-describe('Grupo de teste Atendimento Alteração de dados TAC', () => { 
+describe('Grupo de teste Atendimento Alteração de dados ETC', () => { 
     
     beforeEach(() => {
         cy.fixture('usuario').then((data) => {
@@ -33,11 +33,10 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.get(path.criarPedidoAlteracaoDados.inputTransportador)
           .click({force: true})
           .xpath(
-            path.criarPedidoAlteracaoDados.tipoTransportadorTAC,
-            
-          ).should('have.text', 'Autônomo').click()
+            path.criarPedidoAlteracaoDados.tipoTransportadorETC,            
+          ).should('have.text', 'Empresa').click()
         
-        cy.get(path.criarPedidoAlteracaoDados.cpf).type(cpfCnpj);
+        cy.get(path.criarPedidoAlteracaoDados.cnpj).type(cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
         
         cy.notificacao(mensagem.AtendimentoCriadoSucesso)    
@@ -45,71 +44,78 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
           idPrePedido = element.text().substring(14,21);
           expect(element.text()).to.be.equal(` Atendimento #${idPrePedido}`)
-        })
-      
+        })      
     });
       
       // ------ Criar operação Salvar transportador -----//
       it('Criar operação Salvar transportador', () => { 
         cy.login(usuario.cpf, usuario.senha) 
         cy.acessarPedido(idPrePedido)       
-        cy.salvarTransportador(fakerBr, 'TAC')
+        cy.salvarTransportador(faker, 'ETC')
         cy.notificacao(mensagem.SalvarTransportador)      
       });
       
       //-------- Criar operação Enviar documentos do tipo Identidade ------//              
       it('Criar operação Enviar documentos do tipo Identidade', () => {  
-      cy.login(usuario.cpf, usuario.senha)      
-      cy.acessarPedido(idPrePedido)      
-      cy.enviarDocumentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
-      cy.get(path.generic.mensagemFechar).click();      
+        cy.login(usuario.cpf, usuario.senha)      
+        cy.acessarPedido(idPrePedido)      
+        cy.enviarDocumentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
+        cy.get(path.generic.mensagemFechar).click();      
+      });
+
+       // -------- Criar operação Enviar documento do tipo Registro RT ------//        
+      it('Criar operação Enviar documento do tipo Registro RT', () => { 
+        cy.login(usuario.cpf, usuario.senha)      
+        cy.acessarPedido(idPrePedido)       
+        cy.enviarDocumentosRT('D:/Imagens para teste/Apresentação .pdf')
+        cy.get(path.generic.mensagemFechar).click();      
       });
 
       // ------ Criar operação Incluir Contato Email ------//
       it('Criar operação Incluir Contato Email', () => { 
-      cy.login(usuario.cpf, usuario.senha)
-      cy.acessarPedido(idPrePedido)       
-      cy.incluirContatoEmail(faker)
-      cy.get(path.generic.mensagemFechar).click(); 
-      });
-      
-      // ------ Criar operação Excluir Contato Celular -----//
-      it('Criar operação Excluir Contato Celular', () => {
-      cy.login(usuario.cpf, usuario.senha)  
-      cy.acessarPedido(idPrePedido)        
-      cy.excluirContatoCelular(fakerBr,'11952634251')   
-      cy.get(path.generic.mensagemFechar).click();
-      
-      //TODO não está encontrando o titulo da página
-      });
-
-      // ------ Criar operação Excluir Contato Telefone -----//
-      it('Criar operação Excluir Contato Telefone', () => {   
         cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)     
-      cy.excluirContatoTelefone(fakerBr, '(11)2200-2200')  
-      cy.get(path.generic.mensagemFechar).click();    
-      //TODO  
+        cy.acessarPedido(idPrePedido)       
+        cy.incluirContatoEmail(faker)
+        cy.get(path.generic.mensagemFechar).click(); 
       });
+      
+      // // ------ Criar operação Excluir Contato Celular -----//
+      // it('Criar operação Excluir Contato Celular', () => {
+      // cy.login(usuario.cpf, usuario.senha)  
+      // cy.acessarPedido(idPrePedido)        
+      // cy.excluirContatoCelular(fakerBr,'11952634251')   
+      // cy.get(path.generic.mensagemFechar).click();
+      
+      // //TODO não está encontrando o titulo da página
+      // });
+
+      // // ------ Criar operação Excluir Contato Telefone -----//
+      // it('Criar operação Excluir Contato Telefone', () => {   
+      //   cy.login(usuario.cpf, usuario.senha)
+      //   cy.acessarPedido(idPrePedido)     
+      // cy.excluirContatoTelefone(fakerBr, '(11)2200-2200')  
+      // cy.get(path.generic.mensagemFechar).click();    
+      // //TODO  
+      // });
       
       // ------ Criar operação Incluir Contato Telefone -----//
-      it.only('Criar operação Incluir Contato Telefone', () => {   
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)     
-      cy.incluirContatoTelefone(faker)  
-      cy.get(path.generic.mensagemFechar).click();      
+      it('Criar operação Incluir Contato Telefone', () => {   
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)     
+        cy.incluirContatoTelefone(faker)  
+        cy.get(path.generic.mensagemFechar).click();      
       });
       
       // ------- Criar operação Incluir Contato Fax -------//
       it('Criar operação Incluir Contato Fax', () => {
-        cy.login(usuario.cpf, usuario.senha)      
-      cy.acessarPedido(idPrePedido)    
-      cy.incluirContatoFax(faker)     
-      cy.get(path.generic.mensagemFechar).click();      
+          cy.login(usuario.cpf, usuario.senha)      
+        cy.acessarPedido(idPrePedido)    
+        cy.incluirContatoFax(faker)     
+        cy.get(path.generic.mensagemFechar).click();      
       });       
       
       // -------- Criar operação Alterar Endereço Comercial --------//
-      it('Criar operação Alterar Endereço Correspondência', () => { 
+      it('Criar operação Alterar Endereço Comercial', () => { 
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
         cy.alterarEnderecoComercial(fakerBr)
@@ -118,28 +124,35 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
 
       // -------- Criar operação Alterar Endereço Correspondência --------//
       it('Criar operação Incluir Endereço Correspondência', () => { 
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)        
-      cy.incluirEnderecoCorrespondencia(fakerBr)
-      cy.get(path.generic.mensagemFechar).click();      
-    });  
-
-     // --------- Criar operacao Incluir Motorista -----//
-     it('Criar operacao Incluir Motorista', () => {
           cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)
-        cy.incluirMotorista(fakerBr)
-        cy.get(path.generic.mensagemFechar).click();
-     });  
-     
-     // --------- Criar operacao Alterar Motorista -----//
-     it('Criar operacao Alterar Motorista', () => {
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)
-      cy.alterarMotorista(fakerBr, '38489604860')
-      cy.get(path.generic.mensagemFechar).click();
-    });    
+          cy.acessarPedido(idPrePedido)        
+        cy.incluirEnderecoCorrespondencia(fakerBr)
+        cy.get(path.generic.mensagemFechar).click();      
+      });  
+
+     // ------- Criar operação Incluir Gestor Sócio ------// 
+      it('Criar operação Incluir Gestor Sócio', () => {
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)               
+        cy.incluirGestor(fakerBr,'Sócio', 'ETC')
+        cy.get(path.generic.mensagemFechar).click();      
+      });
+
+      // ------- Criar operação Incluir Gestor Responsável legal ------// 
+      it('Criar operação Incluir Gestor Responsável legal', () => {
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)               
+        cy.incluirGestor(fakerBr,'Responsável legal', 'ETC')
+        cy.get(path.generic.mensagemFechar).click();      
+      }); 
       
+          // ---------- Criar operação Incluir Responsável Técnico --------//
+      it('Criar operação Incluir Responsável Técnico', () => { 
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)        
+        cy.incluirResponsavelTecnico(fakerBr, faker)
+        cy.get(path.generic.mensagemFechar, {timeout:8000}).click();      
+      }); 
       
       // ------- Selecionar o sindicato responsável -------//        
       it('Selecionar o sindicato responsável', () => {
@@ -151,7 +164,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
           
           cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
-          .type('FETAC-MG').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
+          .type('SETCAL').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'SETCAL ')
           .click({force: true})         
 
           // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
@@ -191,7 +204,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
 
         cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
-        .type('FETAC-MG').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
+        .type('SETCAL').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'SETCAL ')
         .click({force: true})
 
         // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
