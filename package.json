@@ -9,6 +9,7 @@
   "dependencies": {
     "@faker-js/faker": "^8.0.2",
     "@quasar/quasar-app-extension-testing-e2e-cypress": "^4.0.2",
-    "faker-br": "^0.4.1"
+    "faker-br": "^0.4.1",
+    "nodemailer": "^6.9.4"
   }
 }

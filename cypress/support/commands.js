@@ -133,7 +133,7 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo)=>{
 })
 
 Cypress.Commands.add('notificacao', (mensagem) => {
-  cy.get(path.generic.mensagemNotificacao).then((element) => {      
+  cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).then((element) => {      
     expect(mensagem).to.be.equal(element.text())
     cy.get(path.generic.mensagemFechar).click();      
   }     

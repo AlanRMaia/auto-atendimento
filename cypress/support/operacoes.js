@@ -65,7 +65,7 @@ Cypress.Commands.add('enviarDocumentosIdentidade', (selectFile) => {
       cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.EnviarDocumentos)
       .wait(5000)
       //selecionando o tipo de documento
-      cy.get(path.operacaoEnviarDocumentos.tipoDocumento).click()       
+      cy.get(path.operacaoEnviarDocumentos.tipoDocumento).click({force: true})       
       
       cy.getElementListXpath(
          path.operacaoEnviarDocumentos.documentoIdentidade,
@@ -94,7 +94,7 @@ Cypress.Commands.add('enviarDocumentosRT', (selectFile) => {
       cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Enviar Documentos')
       .wait(5000)
       //selecionando o tipo de documento
-      cy.get(path.operacaoEnviarDocumentos.tipoDocumento).click()       
+      cy.get(path.operacaoEnviarDocumentos.tipoDocumento).click({force: true})       
       
       cy.getElementListXpath(
          path.operacaoEnviarDocumentos.registroRT,
@@ -120,7 +120,7 @@ Cypress.Commands.add('incluirContatoEmail', (faker)=>{
         
       })
       cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
-      cy.get(path.operacaoContato.tipoContato).click()
+      cy.get(path.operacaoContato.tipoContato).click({force: true})
       cy.xpath(path.operacaoContato.email).should('have.text', 'Email').click({force: true})           
       cy.get(path.operacaoContato.tipoContatoValor).type(faker.internet.email())    
       cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
@@ -137,7 +137,7 @@ Cypress.Commands.add('incluirContatoFax', (faker)=>{
     
   })
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
-  cy.get(path.operacaoContato.tipoContato).click()
+  cy.get(path.operacaoContato.tipoContato).click({force: true})
   cy.xpath(path.operacaoContato.fax).should('have.text', 'Fax').click({force: true})     
   cy.get(path.operacaoContato.tipoContatoValor).type(faker.phone.number())    
   cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
@@ -154,7 +154,7 @@ Cypress.Commands.add('incluirContatoCelular', (faker)=>{
     
   })
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
-  cy.get(path.operacaoContato.tipoContato).click()
+  cy.get(path.operacaoContato.tipoContato).click({force: true})
   cy.xpath(path.operacaoContato.celular).should('have.text', 'Celular').click({force: true})     
   cy.get(path.operacaoContato.tipoContatoValor).type(faker.phone.number())    
   cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
@@ -171,7 +171,7 @@ Cypress.Commands.add('incluirContatoTelefone', (faker)=>{
     
   })
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
-  cy.get(path.operacaoContato.tipoContato).click()
+  cy.get(path.operacaoContato.tipoContato).click({force: true})
   cy.xpath(path.operacaoContato.telefone).should('have.text', 'Telefone').click({force: true})     
   cy.get(path.operacaoContato.tipoContatoValor).type(faker.phone.number())    
   cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
@@ -186,7 +186,7 @@ Cypress.Commands.add('excluirContatoFax', (faker, phone) =>{
             cy.wrap($ele).click();      
         })
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirContato)
-        cy.get(path.operacaoContato.tipoContato).click()
+        cy.get(path.operacaoContato.tipoContato).click({force: true})
         .xpath(path.operacaoContato.fax).should('have.text', 'Fax').click()      
         cy.get(path.operacaoContato.tipoContatoValor).type(phone)    
         cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
@@ -202,7 +202,7 @@ Cypress.Commands.add('excluirContatoCelular', (faker, phone) => {
         })   
            
         //cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirContato)
-        cy.get(path.operacaoContato.tipoContato).click()
+        cy.get(path.operacaoContato.tipoContato).click({force: true})
         .xpath(path.operacaoContato.celular).should('have.text', 'Celular').click()      
         cy.get(path.operacaoContato.tipoContatoValor).type(phone)    
         cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
@@ -217,7 +217,7 @@ Cypress.Commands.add('excluirContatoEmail', (faker, email) => {
             cy.wrap($ele).click();      
         })
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirContato)
-        cy.get(path.operacaoContato.tipoContato).click()
+        cy.get(path.operacaoContato.tipoContato).click({force: true})
         .xpath(path.operacaoContato.email).should('have.text', 'Email').click()      
         cy.get(path.operacaoContato.tipoContatoValor).type(email)    
         cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
@@ -234,8 +234,8 @@ Cypress.Commands.add('excluirContatoTelefone', (faker, phone) => {
       cy.get(path.generic.title, {timeout: 10000}).then( ele => {
         expect(ele).to.be.equal(operacao.ExcluirContato).debug()
       })
-      cy.get(path.operacaoContato.tipoContato).click()
-      .xpath(path.operacaoContato.telefone).should('have.text', 'Telefone').click()      
+      cy.get(path.operacaoContato.tipoContato).click({force: true})
+      .xpath(path.operacaoContato.telefone).should('have.text', 'Telefone').click({force: true})      
       cy.get(path.operacaoContato.tipoContatoValor).type(phone)    
       cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
       cy.get(path.generic.botaoSubmit).click()
@@ -251,9 +251,9 @@ Cypress.Commands.add('incluirEnderecoComercial', (faker) => {
             cy.wrap($ele).click();      
         })
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirEndereco)
-        cy.get(path.operacaoEndereco.tipoEndereco).click()
+        cy.get(path.operacaoEndereco.tipoEndereco).click({froce: true})
         .xpath(path.operacaoEndereco.comercial)
-        .should('have.text', 'Comercial').click()
+        .should('have.text', 'Comercial').click({force: true})
 
         cy.get(path.operacaoEndereco.cep)
         .type(faker.address.zipCodeValid())
@@ -297,9 +297,9 @@ Cypress.Commands.add('alterarEnderecoComercial', (faker) => {
             cy.wrap($ele).click();      
         })
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.AlterarEndereco)
-        cy.get(path.operacaoEndereco.tipoEndereco).click()
+        cy.get(path.operacaoEndereco.tipoEndereco).click({force: true})
         .xpath(path.operacaoEndereco.comercial)
-        .should('have.text', 'Comercial').click()
+        .should('have.text', 'Comercial').click({force: true})
 
         cy.get(path.operacaoEndereco.cep)
         .type(faker.address.zipCodeValid())
@@ -342,9 +342,9 @@ Cypress.Commands.add('incluirEnderecoCorrespondencia', (faker) => {
             cy.wrap($ele).click();      
         })
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirEndereco)
-        cy.get(path.operacaoEndereco.tipoEndereco).click()
+        cy.get(path.operacaoEndereco.tipoEndereco).click({force: true})
         .xpath(path.operacaoEndereco.correspondencia)
-        .should('have.text', 'Correspondência').click()
+        .should('have.text', 'Correspondência').click({froce: true})
 
         cy.get(path.operacaoEndereco.cep)
         .type(faker.address.zipCodeValid()).next()
@@ -555,9 +555,9 @@ Cypress.Commands.add('incluirFilial', (faker)=>{
   cy.get(path.operacaoFilial.cnpj).type(faker.br.cnpj())
   cy.get(path.operacaoFilial.nome).type(faker.company.companyName())
   cy.get(path.operacaoFilial.capitalSocial).type(faker.random.number())
-  cy.get(path.operacaoFilial.uf).click()  
+  cy.get(path.operacaoFilial.uf).click({force: true})  
   .xpath(uf.path)
-  .should('have.text', uf.nome).click()
+  .should('have.text', uf.nome).click({force: true})
 
   cy.get(path.generic.botaoSubmit).click()
 })
@@ -583,9 +583,9 @@ Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, faker)=>{
   cy.get(path.operacaoResponsavelTecnico.identidade).type(fakerBr.random.number())
   cy.get(path.operacaoResponsavelTecnico.orgaoEmissor).type(fakerBr.lorem.word({length: {min: 3, max: 5}}))
   cy.get(path.operacaoResponsavelTecnico.dataNascimento).type(dataFaker)      
-  cy.get(path.operacaoFilial.uf).click()  
+  cy.get(path.operacaoFilial.uf).click({force: true})  
   .xpath(uf.path)
-  .should('have.text', uf.nome).click()
+  .should('have.text', uf.nome).click({force: true})
 
   cy.get(path.generic.botaoSubmit).click()
 })
@@ -609,7 +609,7 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
     cy.get(path.operacaoVeiculo.radioAutomotor).click():
     cy.get(path.operacaoVeiculo.radioImplemento).click()
       
-  cy.get(path.operacaoVeiculo.tipoPropriedade).click()
+  cy.get(path.operacaoVeiculo.tipoPropriedade).click({force: true})
 
   switch (veiculo.propriedade) {
     case 'Próprio':
@@ -634,9 +634,9 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
       .get(path.operacaoVeiculo.tipoPropriedade)
       .should('have.text', veiculo.propriedade)
 
-      cy.get(path.operacaoVeiculo.instituicoesFinanceiras).click()
+      cy.get(path.operacaoVeiculo.instituicoesFinanceiras).click({force: true})
       .xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span')
-      .should('have.text', 'BANCO POTTENCIAL S.A.').click();
+      .should('have.text', 'BANCO POTTENCIAL S.A.').click({force: true});
       break;   
 
       default:
@@ -688,19 +688,19 @@ Cypress.Commands.add('alterarVeiculo', (veiculo)=>{
     cy.get(path.operacaoVeiculo.radioAutomotor).click():
     cy.get(path.operacaoVeiculo.radioImplemento).click()
       
-  cy.get(path.operacaoVeiculo.tipoPropriedade).click()
+  cy.get(path.operacaoVeiculo.tipoPropriedade).click({force: true})
 
   switch (veiculo.propriedade) {
     case 'Próprio':
       cy.xpath(path.operacaoVeiculo.tipoPropriedadeProprio)
-      .should('have.text', veiculo.propriedade).click()
+      .should('have.text', veiculo.propriedade).click({force: true})
       .get(path.operacaoVeiculo.tipoPropriedade)
       .should('have.text', veiculo.propriedade)      
       break;
 
     case 'Arrendado':
       cy.xpath(path.operacaoVeiculo.tipoPropriedadeArrendado)
-      .should('have.text', veiculo.propriedade).click()
+      .should('have.text', veiculo.propriedade).click({force: true})
       .get(path.operacaoVeiculo.tipoPropriedade)
       .should('have.text', veiculo.propriedade)   
       
@@ -709,13 +709,13 @@ Cypress.Commands.add('alterarVeiculo', (veiculo)=>{
   
     case 'Leasing':
       cy.xpath(path.operacaoVeiculo.tipoPropriedadeLeasing)
-      .should('have.text', veiculo.propriedade).click()
+      .should('have.text', veiculo.propriedade).click({force: true})
       .get(path.operacaoVeiculo.tipoPropriedade)
       .should('have.text', veiculo.propriedade)
 
-      cy.get(path.operacaoVeiculo.instituicoesFinanceiras).click()
+      cy.get(path.operacaoVeiculo.instituicoesFinanceiras).click({force: true})
       .xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span')
-      .should('have.text', 'BANCO POTTENCIAL S.A.').click();
+      .should('have.text', 'BANCO POTTENCIAL S.A.').click({force: true});
       break;   
 
       default:

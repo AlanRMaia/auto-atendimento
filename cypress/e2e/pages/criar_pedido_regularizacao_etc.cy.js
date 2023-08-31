@@ -103,7 +103,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
       });
       
       // -------- Criar operação Enviar documento do tipo Registro RT ------//        
-      it.only('Criar operação Enviar documento do tipo Registro RT', () => { 
+      it('Criar operação Enviar documento do tipo Registro RT', () => { 
       cy.login(usuario.cpf, usuario.senha)      
       cy.acessarPedido(idPrePedido)       
       cy.enviarDocumentosRT('D:/Imagens para teste/Apresentação .pdf')

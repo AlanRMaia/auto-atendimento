@@ -51,11 +51,38 @@ module.exports = {
   },
 
   loginPage: {
+    sejaBemVindo: '[data-cy=sejaBemVindo]',
     cpf: '[data-cy=cpf]',
     senha: '[data-cy=senha]',
-    esqueciMinhaSenha: '[data-cy=esqueciMinhaSenha]',
+    esqueceuSenha: '[data-cy=esqueceuSenha]',
     cadastreSe: '[data-cy=cadastreSe]',
   },
+
+  loginCadatsro: {
+    sejaBemVindo: '[data-cy=sejaBemVindo]',
+    nome: '[data-cy=nome]',
+    cpf: '[data-cy=cpf]',
+    email: '[data-cy=email]',
+    celular: '[data-cy=celular]',
+    senha: '[data-cy=senha]',
+    verSenha: '[data-cy=verSenha]',
+    confirmeSenha: '[data-cy=confirmeSenha]',
+    verConfirmado: '[data-cy=verConfirmado]',
+    cnpj: '[data-cy=cnpj]',
+    facaLogin: '[data-cy=facaLogin]',    
+  },
+
+  esqueceuSenhaPage: {
+    cpf: '[data-cy=cpf]',
+    esqueceuSenha: '[data-cy=esqueceuSenha]',
+    voltarLoginPage: '[data-cy=voltarLoginPage]', 
+    validacao: '[data-cy=validacao]'
+  },
+
+  redefinirSenhaPage: {
+    
+  },
+
   atendimentoPage: {
     //regularizacao: "[data-cy=regularizacao]",
     regularizacao: '[href="#/regularizacao"]',
@@ -245,6 +272,11 @@ module.exports = {
     radioMasculino: '[data-cy=radioMasculino]',
     radioFeminino: '[data-cy=radioFeminino]',
     categoria: '[data-cy="categotia"]'
+  }, 
+
+  institucionalPage: {
+    login:   '.q-tabs__content > .q-btn > .q-btn__content > .block',   //[data-cy=login]',
+    cadastro: 'a.q-tab > .q-tab__content > .q-tab__label'  //'[data-cy=cadastro]'
   }
 
 };

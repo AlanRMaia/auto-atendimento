@@ -299,7 +299,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         cy.anexarDocumentosVeiculo(selectFileBSG1253, veiculoBSG1253 )
         
         cy.get(path.generic.mensagemFechar, {timeout: 10000}).click({multiple: true}).wait(1000)
-        cy.get(path.generic.mensagemFechar,{timeout: 10000}).click({multiple: true})
+        //cy.get(path.generic.mensagemFechar,{timeout: 10000}).click({multiple: true})
         
         cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({multiple: true})        
         
