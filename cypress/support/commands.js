@@ -78,7 +78,7 @@ Cypress.Commands.add('getElementListXpath', (xpath, element) => {
     let value = $ele.text()
     if (value === element) {
       cy.log('Elemento encontrado');
-      cy.wrap($ele).click();
+      cy.wrap($ele).click({force: true});
       cy.log('Valor atual', value);
     } else {
       cy.log('Elemento não encontrado');

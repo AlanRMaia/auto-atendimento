@@ -58,7 +58,7 @@ Cypress.Commands.add('enviarDocumentosIdentidade', (selectFile) => {
       .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
         let value = ele.text()
          if(value === operacao.EnviarDocumentos)
-            cy.wrap(ele).click();      
+            cy.wrap(ele).click({force: true});      
         
       })
       //Confirmar titulo
@@ -121,7 +121,7 @@ Cypress.Commands.add('incluirContatoEmail', (faker)=>{
       })
       cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
       cy.get(path.operacaoContato.tipoContato).click()
-      cy.xpath(path.operacaoContato.email).should('have.text', 'Email').click()           
+      cy.xpath(path.operacaoContato.email).should('have.text', 'Email').click({force: true})           
       cy.get(path.operacaoContato.tipoContatoValor).type(faker.internet.email())    
       cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
       cy.get(path.generic.botaoSubmit).click()
@@ -133,12 +133,12 @@ Cypress.Commands.add('incluirContatoFax', (faker)=>{
   .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
     let value = ele.text()
      if(value === operacao.IncluirContato)
-        cy.wrap(ele).click();      
+        cy.wrap(ele).click({force: true});      
     
   })
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
   cy.get(path.operacaoContato.tipoContato).click()
-  cy.xpath(path.operacaoContato.fax).should('have.text', 'Fax').click()     
+  cy.xpath(path.operacaoContato.fax).should('have.text', 'Fax').click({force: true})     
   cy.get(path.operacaoContato.tipoContatoValor).type(faker.phone.number())    
   cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
   cy.get(path.generic.botaoSubmit).click()
@@ -155,7 +155,7 @@ Cypress.Commands.add('incluirContatoCelular', (faker)=>{
   })
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
   cy.get(path.operacaoContato.tipoContato).click()
-  cy.xpath(path.operacaoContato.celular).should('have.text', 'Celular').click()     
+  cy.xpath(path.operacaoContato.celular).should('have.text', 'Celular').click({force: true})     
   cy.get(path.operacaoContato.tipoContatoValor).type(faker.phone.number())    
   cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
   cy.get(path.generic.botaoSubmit).click()
@@ -172,7 +172,7 @@ Cypress.Commands.add('incluirContatoTelefone', (faker)=>{
   })
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
   cy.get(path.operacaoContato.tipoContato).click()
-  cy.xpath(path.operacaoContato.telefone).should('have.text', 'Telefone').click()     
+  cy.xpath(path.operacaoContato.telefone).should('have.text', 'Telefone').click({force: true})     
   cy.get(path.operacaoContato.tipoContatoValor).type(faker.phone.number())    
   cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
   cy.get(path.generic.botaoSubmit).click()
@@ -614,14 +614,14 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
   switch (veiculo.propriedade) {
     case 'Próprio':
       cy.xpath(path.operacaoVeiculo.tipoPropriedadeProprio)
-      .should('have.text', veiculo.propriedade).click()
+      .should('have.text', veiculo.propriedade).click({force: true})
       .get(path.operacaoVeiculo.tipoPropriedade)
       .should('have.text', veiculo.propriedade)      
       break;
 
     case 'Arrendado':
       cy.xpath(path.operacaoVeiculo.tipoPropriedadeArrendado)
-      .should('have.text', veiculo.propriedade).click()
+      .should('have.text', veiculo.propriedade).click({force: true})
       .get(path.operacaoVeiculo.tipoPropriedade)
       .should('have.text', veiculo.propriedade)   
       
@@ -630,7 +630,7 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
   
     case 'Leasing':
       cy.xpath(path.operacaoVeiculo.tipoPropriedadeLeasing)
-      .should('have.text', veiculo.propriedade).click()
+      .should('have.text', veiculo.propriedade).click({force: true})
       .get(path.operacaoVeiculo.tipoPropriedade)
       .should('have.text', veiculo.propriedade)
 

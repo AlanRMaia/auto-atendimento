@@ -4,7 +4,7 @@ import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 
   let usuario;
-  let cpfCnpj = '22023105846'
+  let cpfCnpj = '20324337884'
   let idPrePedido = '2071350'
   var fakerBr = require('faker-br');
 
@@ -196,7 +196,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
           cy.get(path.generic.title, {timeout: 10000})
           .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
           
-          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
           .type('FETAC-MG').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
           .click({force: true})         
 

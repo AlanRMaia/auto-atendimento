@@ -216,7 +216,7 @@ describe('Grupo de teste Atendimento Cadastro CTC', () => {
     cy.get(path.generic.title, {timeout: 10000})
     .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
 
-    cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+    cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
     .type('OCERGS').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
     .click({force: true})
     
@@ -265,7 +265,7 @@ describe('Grupo de teste Atendimento Cadastro CTC', () => {
       cy.get(path.generic.title, {timeout: 10000})
       .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
 
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
       .type('OCERGS').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
       .click({force: true})
 
