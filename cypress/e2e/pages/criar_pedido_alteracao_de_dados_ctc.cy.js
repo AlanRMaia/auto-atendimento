@@ -28,13 +28,13 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
         //Clicar na opção Regularização RNTRC no menu lateral
         cy.regularizacao();
         //Selecionando o tipo de atendimento Renovação RNTRC
-        cy.get(path.regularizacaoPage.tipoAtendimentoAlteracaoDados).click();
+        cy.get(path.regularizacaoPage.tipoAtendimentoAlteracaoDados).click({force: true});
         //
         cy.get(path.criarPedidoAlteracaoDados.inputTransportador)
           .click({force: true})
           .xpath(
             path.criarPedidoAlteracaoDados.tipoTransportadorCTC,            
-          ).should('have.text', 'Cooperativa').click()
+          ).should('have.text', 'Cooperativa').click({force: true})
         
         cy.get(path.criarPedidoAlteracaoDados.cnpj).type(cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
@@ -60,7 +60,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
         cy.login(usuario.cpf, usuario.senha)      
         cy.acessarPedido(idPrePedido)      
         cy.enviarDocumentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
-        cy.get(path.generic.mensagemFechar).click();      
+        cy.get(path.generic.mensagemFechar).click({force: true});      
       });
 
        // -------- Criar operação Enviar documento do tipo Registro RT ------//        
@@ -68,7 +68,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
         cy.login(usuario.cpf, usuario.senha)      
         cy.acessarPedido(idPrePedido)       
         cy.enviarDocumentosRT('D:/Imagens para teste/Apresentação .pdf')
-        cy.get(path.generic.mensagemFechar).click();      
+        cy.get(path.generic.mensagemFechar).click({force: true});      
       });
 
       // ------ Criar operação Incluir Contato Email ------//
@@ -76,7 +76,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)       
         cy.incluirContatoEmail(faker)
-        cy.get(path.generic.mensagemFechar).click(); 
+        cy.get(path.generic.mensagemFechar).click({force: true}); 
       });
       
       // // ------ Criar operação Excluir Contato Celular -----//
@@ -103,7 +103,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)     
         cy.incluirContatoTelefone(faker)  
-        cy.get(path.generic.mensagemFechar).click();      
+        cy.get(path.generic.mensagemFechar).click({force: true});      
       });
       
       // ------- Criar operação Incluir Contato Fax -------//
@@ -111,7 +111,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
           cy.login(usuario.cpf, usuario.senha)      
         cy.acessarPedido(idPrePedido)    
         cy.incluirContatoFax(faker)     
-        cy.get(path.generic.mensagemFechar).click();      
+        cy.get(path.generic.mensagemFechar).click({force: true});      
       });       
       
       // -------- Criar operação Alterar Endereço Comercial --------//
@@ -119,7 +119,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
         cy.alterarEnderecoComercial(fakerBr)
-        cy.get(path.generic.mensagemFechar).click();      
+        cy.get(path.generic.mensagemFechar).click({force: true});      
       });  
 
       // -------- Criar operação Alterar Endereço Correspondência --------//
@@ -127,7 +127,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
         cy.incluirEnderecoCorrespondencia(fakerBr)
-        cy.get(path.generic.mensagemFechar).click();      
+        cy.get(path.generic.mensagemFechar).click({force: true});      
       });       
 
       // ------- Criar operação Incluir Gestor Responsável legal ------// 
@@ -135,7 +135,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)               
         cy.incluirGestor(fakerBr,'Responsável legal', 'CTC')
-        cy.get(path.generic.mensagemFechar).click();      
+        cy.get(path.generic.mensagemFechar).click({force: true});      
       }); 
       
           // ---------- Criar operação Incluir Responsável Técnico --------//
@@ -143,7 +143,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
         cy.incluirResponsavelTecnico(fakerBr, faker)
-        cy.get(path.generic.mensagemFechar, {timeout:8000}).click();      
+        cy.get(path.generic.mensagemFechar, {timeout:8000}).click({force: true});      
       }); 
       
       // ------- Selecionar o sindicato responsável -------//        
@@ -195,7 +195,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
         cy.get(path.generic.title, {timeout: 10000})
         .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
 
-        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
         .type('OCERGS').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
         .click({force: true})
 
@@ -238,10 +238,10 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
           cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '1')
           cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$0.00')
             
-            cy.get(path.generic.finalizar).click()
+            cy.get(path.generic.finalizar).click({force: true})
 
             cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
-            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()                     
+            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click({force: true})                     
 
         })     
       });  

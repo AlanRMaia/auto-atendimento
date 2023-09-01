@@ -80,13 +80,14 @@ module.exports = {
   },
 
   redefinirSenhaPage: {
-    
+
   },
 
   atendimentoPage: {
     //regularizacao: "[data-cy=regularizacao]",
     regularizacao: '[href="#/regularizacao"]',
-    numeroPedido: '[data-cy=numeroAtendimento]'
+    numeroPedido: '[data-cy=numeroAtendimento]',
+    consultaRNTRC: '[href="#/consulta"]'
   },
   regularizacaoPage: {
     //tipoAtendimento: '[data-cy=tipoAtendimento]',
@@ -95,6 +96,16 @@ module.exports = {
     tipoAtendimentoInclusaoVeiculo: '.text-size-16 > :nth-child(4)',
     tipoAtendimentoAlteracaoDados: '.text-size-16 > :nth-child(3)'
   },
+  consultaRNTRCPage: {
+    radioPorTransportador: '[data-cy=radioPorTransportador]',
+    radioPorLocalidade: '[data-cy=radioPorLocalidade]',
+    cpfCnpj: '[data-cy=cpfCnpj]',
+    rntrc: '[data-cy=rntrc]',
+    tipoTransportador: '[data-cy=tipoTransportador]',
+    uf: '[data-cy=uf]',
+    municipios: '[data-cy=municipios]',    
+  },
+
   criarPedidoRenovacao: {
     //tipoTransportador: '[data-cy=tipoTransportador]',
     inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',

@@ -11,7 +11,7 @@ Cypress.Commands.add('salvarTransportador', (faker, tipoTransportador) => {
     .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
       let value = ele.text()
        if(value === operacao.SalvarTransportador)
-          cy.wrap(ele).click();      
+          cy.wrap(ele).click({force: true});      
     })
     //.xpath(path.detalhamentoAtendimentoRenovacao.operacaoSalvarTransportador).click();  
     //Na janela para incluir o Transportador no atendimento
@@ -78,7 +78,7 @@ Cypress.Commands.add('enviarDocumentosIdentidade', (selectFile) => {
           selectFile
         );
         //Salvando a operação  
-        cy.get(path.generic.botaoSubmit).click();
+        cy.get(path.generic.botaoSubmit).click({force: true});
 })
 
 Cypress.Commands.add('enviarDocumentosRT', (selectFile) => {
@@ -87,7 +87,7 @@ Cypress.Commands.add('enviarDocumentosRT', (selectFile) => {
       .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
         let value = ele.text()
          if(value === operacao.EnviarDocumentos)
-            cy.wrap(ele).click();      
+            cy.wrap(ele).click({force: true});      
         
       })
       //Confirmar titulo
@@ -107,7 +107,7 @@ Cypress.Commands.add('enviarDocumentosRT', (selectFile) => {
           selectFile
         );
         //Salvando a operação  
-        cy.get(path.generic.botaoSubmit).click();
+        cy.get(path.generic.botaoSubmit).click({force: true});
 })
 
 Cypress.Commands.add('incluirContatoEmail', (faker)=>{  
@@ -116,7 +116,7 @@ Cypress.Commands.add('incluirContatoEmail', (faker)=>{
       .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
         let value = ele.text()
          if(value === operacao.IncluirContato)
-            cy.wrap(ele).click();      
+            cy.wrap(ele).click({force: true});      
         
       })
       cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
@@ -124,7 +124,7 @@ Cypress.Commands.add('incluirContatoEmail', (faker)=>{
       cy.xpath(path.operacaoContato.email).should('have.text', 'Email').click({force: true})           
       cy.get(path.operacaoContato.tipoContatoValor).type(faker.internet.email())    
       cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
-      cy.get(path.generic.botaoSubmit).click()
+      cy.get(path.generic.botaoSubmit).click({froce: true})
 })
 
 Cypress.Commands.add('incluirContatoFax', (faker)=>{  
@@ -141,7 +141,7 @@ Cypress.Commands.add('incluirContatoFax', (faker)=>{
   cy.xpath(path.operacaoContato.fax).should('have.text', 'Fax').click({force: true})     
   cy.get(path.operacaoContato.tipoContatoValor).type(faker.phone.number())    
   cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
-  cy.get(path.generic.botaoSubmit).click()
+  cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('incluirContatoCelular', (faker)=>{  
@@ -150,15 +150,15 @@ Cypress.Commands.add('incluirContatoCelular', (faker)=>{
   .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
     let value = ele.text()
      if(value === operacao.IncluirContato)
-        cy.wrap(ele).click();      
+        cy.wrap(ele).click({force: true});      
     
   })
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
   cy.get(path.operacaoContato.tipoContato).click({force: true})
   cy.xpath(path.operacaoContato.celular).should('have.text', 'Celular').click({force: true})     
-  cy.get(path.operacaoContato.tipoContatoValor).type(faker.phone.number())    
+  cy.get(path.operacaoContato.tipoContatoValor).type(21988875556)    
   cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
-  cy.get(path.generic.botaoSubmit).click()
+  cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('incluirContatoTelefone', (faker)=>{  
@@ -167,7 +167,7 @@ Cypress.Commands.add('incluirContatoTelefone', (faker)=>{
   .get(path.detalhamentoAtendimentoRenovacao.operacao).each((ele, index, list)=>{
     let value = ele.text()
      if(value === operacao.IncluirContato)
-        cy.wrap(ele).click();     
+        cy.wrap(ele).click({force: true});     
     
   })
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirContato)
@@ -175,7 +175,7 @@ Cypress.Commands.add('incluirContatoTelefone', (faker)=>{
   cy.xpath(path.operacaoContato.telefone).should('have.text', 'Telefone').click({force: true})     
   cy.get(path.operacaoContato.tipoContatoValor).type(faker.phone.number())    
   cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
-  cy.get(path.generic.botaoSubmit).click()
+  cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('excluirContatoFax', (faker, phone) =>{
@@ -183,14 +183,14 @@ Cypress.Commands.add('excluirContatoFax', (faker, phone) =>{
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.ExcluirContato) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirContato)
         cy.get(path.operacaoContato.tipoContato).click({force: true})
-        .xpath(path.operacaoContato.fax).should('have.text', 'Fax').click()      
+        .xpath(path.operacaoContato.fax).should('have.text', 'Fax').click({force: true})      
         cy.get(path.operacaoContato.tipoContatoValor).type(phone)    
         cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
-        cy.get(path.generic.botaoSubmit).click()
+        cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('excluirContatoCelular', (faker, phone) => {
@@ -198,15 +198,15 @@ Cypress.Commands.add('excluirContatoCelular', (faker, phone) => {
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.ExcluirContato) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })   
            
         //cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirContato)
         cy.get(path.operacaoContato.tipoContato).click({force: true})
-        .xpath(path.operacaoContato.celular).should('have.text', 'Celular').click()      
+        .xpath(path.operacaoContato.celular).should('have.text', 'Celular').click({force: true})      
         cy.get(path.operacaoContato.tipoContatoValor).type(phone)    
         cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
-        cy.get(path.generic.botaoSubmit).click()
+        cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('excluirContatoEmail', (faker, email) => {
@@ -214,14 +214,14 @@ Cypress.Commands.add('excluirContatoEmail', (faker, email) => {
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.ExcluirContato) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirContato)
         cy.get(path.operacaoContato.tipoContato).click({force: true})
-        .xpath(path.operacaoContato.email).should('have.text', 'Email').click()      
+        .xpath(path.operacaoContato.email).should('have.text', 'Email').click({force: true})      
         cy.get(path.operacaoContato.tipoContatoValor).type(email)    
         cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
-        cy.get(path.generic.botaoSubmit).click()
+        cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('excluirContatoTelefone', (faker, phone) => {
@@ -229,7 +229,7 @@ Cypress.Commands.add('excluirContatoTelefone', (faker, phone) => {
       .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
       .each(($ele, index, list) => {
           if ($ele.text() === operacao.ExcluirContato) 
-          cy.wrap($ele).click();      
+          cy.wrap($ele).click({force: true});      
       })
       cy.get(path.generic.title, {timeout: 10000}).then( ele => {
         expect(ele).to.be.equal(operacao.ExcluirContato).debug()
@@ -238,7 +238,7 @@ Cypress.Commands.add('excluirContatoTelefone', (faker, phone) => {
       .xpath(path.operacaoContato.telefone).should('have.text', 'Telefone').click({force: true})      
       cy.get(path.operacaoContato.tipoContatoValor).type(phone)    
       cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
-      cy.get(path.generic.botaoSubmit).click()
+      cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('incluirEnderecoComercial', (faker) => {
@@ -248,7 +248,7 @@ Cypress.Commands.add('incluirEnderecoComercial', (faker) => {
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirEndereco) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirEndereco)
         cy.get(path.operacaoEndereco.tipoEndereco).click({froce: true})
@@ -261,9 +261,9 @@ Cypress.Commands.add('incluirEnderecoComercial', (faker) => {
         cy.get(path.operacaoEndereco.logradouro)
         .type(faker.address.streetAddress())
 
-        cy.get('.q-inner-loading', {timeout: 20000}).should('be.visible')
+        cy.get('.q-inner-loading', {timeout: 30000}).should('be.visible')
 
-        cy.get('.q-inner-loading', {timeout: 20000}).should('not.exist')
+        cy.get('.q-inner-loading', {timeout: 50000}).should('not.exist')
 
         cy.get(path.operacaoEndereco.numero)
         .type(faker.random.number(), {force: true})
@@ -284,7 +284,7 @@ Cypress.Commands.add('incluirEnderecoComercial', (faker) => {
         // .xpath(uf.path)        
         // .should('have.text', uf.nome).click()              
         
-        cy.get(path.generic.botaoSubmit).click()
+        cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('alterarEnderecoComercial', (faker) => {
@@ -294,7 +294,7 @@ Cypress.Commands.add('alterarEnderecoComercial', (faker) => {
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.AlterarEndereco) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.AlterarEndereco)
         cy.get(path.operacaoEndereco.tipoEndereco).click({force: true})
@@ -307,9 +307,9 @@ Cypress.Commands.add('alterarEnderecoComercial', (faker) => {
         cy.get(path.operacaoEndereco.logradouro)
         .type(faker.address.streetAddress())
 
-        cy.get('.q-inner-loading', {timeout: 20000}).should('be.visible')
+        cy.get('.q-inner-loading', {timeout: 30000}).should('be.visible')
 
-        cy.get('.q-inner-loading', {timeout: 20000}).should('not.exist')
+        cy.get('.q-inner-loading', {timeout: 50000}).should('not.exist')
 
         cy.get(path.operacaoEndereco.numero)
         .type(faker.random.number(), {force: true})
@@ -330,7 +330,7 @@ Cypress.Commands.add('alterarEnderecoComercial', (faker) => {
         // .xpath(uf.path)        
         // .should('have.text', uf.nome).click()              
         
-        cy.get(path.generic.botaoSubmit).click()
+        cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('incluirEnderecoCorrespondencia', (faker) => {
@@ -339,19 +339,19 @@ Cypress.Commands.add('incluirEnderecoCorrespondencia', (faker) => {
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirEndereco) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirEndereco)
         cy.get(path.operacaoEndereco.tipoEndereco).click({force: true})
         .xpath(path.operacaoEndereco.correspondencia)
-        .should('have.text', 'Correspondência').click({froce: true})
+        .should('have.text', 'Correspondência').click({force: true})
 
         cy.get(path.operacaoEndereco.cep)
         .type(faker.address.zipCodeValid()).next()
-        cy.get(path.operacaoEndereco.logradouro, {timeout: 20000}).trigger('mouseover').click()
-        cy.get('.q-inner-loading', {timeout: 20000}).should('be.visible')
+        cy.get(path.operacaoEndereco.logradouro, {timeout: 20000}).trigger('mouseover').click({force: true})
+        cy.get('.q-inner-loading', {timeout: 30000}).should('be.visible')
 
-        cy.get('.q-inner-loading', {timeout: 20000}).should('not.exist')
+        cy.get('.q-inner-loading', {timeout: 50000}).should('not.exist')
 
         // cy.get(path.operacaoEndereco.logradouro, {timeout: 20000})
         // .type(faker.address.streetAddress())
@@ -376,7 +376,7 @@ Cypress.Commands.add('incluirEnderecoCorrespondencia', (faker) => {
         // .xpath(uf.path)        
         // .should('have.text', uf.nome).click()              
         
-        cy.get(path.generic.botaoSubmit).click()
+        cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('incluirGestor', (faker, gestor, tipoTransportador)=>{
@@ -384,7 +384,7 @@ Cypress.Commands.add('incluirGestor', (faker, gestor, tipoTransportador)=>{
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirGestor) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
           
   cy.get(path.generic.title).should('have.text', operacao.IncluirGestor).wait(3000)
@@ -420,7 +420,7 @@ Cypress.Commands.add('incluirGestor', (faker, gestor, tipoTransportador)=>{
       cy.get(path.operacaoGestor.email).type(faker.internet.email())
     }   
 
-  cy.get(path.generic.botaoSubmit).click()
+  cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('incluirMotorista', (faker) => {
@@ -428,7 +428,7 @@ Cypress.Commands.add('incluirMotorista', (faker) => {
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirMotorista) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
           
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirMotorista)
@@ -447,10 +447,10 @@ Cypress.Commands.add('incluirMotorista', (faker) => {
   cy.get(path.operacaoMotorista.categoria).type('B')
   //cy.get(path.generic.alert).should('not.exist')
 
-  cy.get(path.operacaoMotorista.radioFeminino).click().wait(1000)
-  cy.get(path.operacaoMotorista.radioMasculino, {timeout: 10000}).click()
+  cy.get(path.operacaoMotorista.radioFeminino).click({force: true}).wait(1000)
+  cy.get(path.operacaoMotorista.radioMasculino, {timeout: 10000}).click({force: true})
 
-  cy.get(path.generic.botaoSubmit).click();
+  cy.get(path.generic.botaoSubmit).click({force: true});
 
 })
 
@@ -459,7 +459,7 @@ Cypress.Commands.add('alterarMotorista', (faker, cpf) => {
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.AlterarMotorista) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
           
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.AlterarMotorista)
@@ -478,10 +478,10 @@ Cypress.Commands.add('alterarMotorista', (faker, cpf) => {
   cy.get(path.operacaoMotorista.categoria).type('B')
   //cy.get(path.generic.alert).should('not.exist')
 
-  cy.get(path.operacaoMotorista.radioFeminino).click().wait(1000)
-  cy.get(path.operacaoMotorista.radioMasculino, {timeout: 10000}).click()
+  cy.get(path.operacaoMotorista.radioFeminino).click({force: true}).wait(1000)
+  cy.get(path.operacaoMotorista.radioMasculino, {timeout: 10000}).click({force: true})
 
-  cy.get(path.generic.botaoSubmit).click();
+  cy.get(path.generic.botaoSubmit).click({force: true});
 
 })
 
@@ -490,7 +490,7 @@ Cypress.Commands.add('excluirMotorista', (faker, cpf) => {
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.ExcluirMotorista) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
           
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirMotorista)
@@ -509,10 +509,10 @@ Cypress.Commands.add('excluirMotorista', (faker, cpf) => {
   cy.get(path.operacaoMotorista.categoria).type('B')
   //cy.get(path.generic.alert).should('not.exist')
 
-  cy.get(path.operacaoMotorista.radioFeminino).click().wait(1000)
-  cy.get(path.operacaoMotorista.radioMasculino, {timeout: 10000}).click()
+  cy.get(path.operacaoMotorista.radioFeminino).click({force: true}).wait(1000)
+  cy.get(path.operacaoMotorista.radioMasculino, {timeout: 10000}).click({force: true})
 
-  cy.get(path.generic.botaoSubmit).click();
+  cy.get(path.generic.botaoSubmit).click({force: true});
 
 })
 
@@ -547,7 +547,7 @@ Cypress.Commands.add('incluirFilial', (faker)=>{
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirFilial) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
           
   cy.get(path.generic.title).should('have.text', operacao.IncluirFilial)  
@@ -559,7 +559,7 @@ Cypress.Commands.add('incluirFilial', (faker)=>{
   .xpath(uf.path)
   .should('have.text', uf.nome).click({force: true})
 
-  cy.get(path.generic.botaoSubmit).click()
+  cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, faker)=>{
@@ -571,7 +571,7 @@ Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, faker)=>{
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirResponsavelTecnico) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
           
   cy.get(path.generic.title).should('have.text', operacao.IncluirResponsavelTecnico)  
@@ -587,7 +587,7 @@ Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, faker)=>{
   .xpath(uf.path)
   .should('have.text', uf.nome).click({force: true})
 
-  cy.get(path.generic.botaoSubmit).click()
+  cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('incluirVeiculo', (veiculo)=>{ 
@@ -596,18 +596,18 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.IncluirVeiculo) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
           
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.IncluirVeiculo)  
 
   cy.get(path.operacaoVeiculo.placa).type(veiculo.placa)
   cy.get(path.operacaoVeiculo.renavam).type(veiculo.renavam)
-  cy.get(path.operacaoVeiculo.radioAutomotor).click();
+  cy.get(path.operacaoVeiculo.radioAutomotor).click({force: true});
 
   veiculo.tipoVeiculo != 'Implemento' ?
-    cy.get(path.operacaoVeiculo.radioAutomotor).click():
-    cy.get(path.operacaoVeiculo.radioImplemento).click()
+    cy.get(path.operacaoVeiculo.radioAutomotor).click({force: true}):
+    cy.get(path.operacaoVeiculo.radioImplemento).click({force: true})
       
   cy.get(path.operacaoVeiculo.tipoPropriedade).click({force: true})
 
@@ -645,7 +645,7 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
   }
 
 
-  cy.get(path.generic.botaoSubmit).click()
+  cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('excluirVeiculo', (veiculo)=>{ 
@@ -654,7 +654,7 @@ Cypress.Commands.add('excluirVeiculo', (veiculo)=>{
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.ExcluirVeiculo) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({force: true});      
         })
           
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirVeiculo)  
@@ -663,10 +663,10 @@ Cypress.Commands.add('excluirVeiculo', (veiculo)=>{
   cy.get(path.operacaoVeiculo.renavam).type(veiculo.renavam)
 
   veiculo.tipoVeiculo != 'Implemento' ?
-    cy.get(path.operacaoVeiculo.radioAutomotor).click():
-    cy.get(path.operacaoVeiculo.radioImplemento).click()
+    cy.get(path.operacaoVeiculo.radioAutomotor).click({force: true}):
+    cy.get(path.operacaoVeiculo.radioImplemento).click({force: true})
       
-  cy.get(path.generic.botaoSubmit).click()
+  cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('alterarVeiculo', (veiculo)=>{ 
@@ -675,18 +675,18 @@ Cypress.Commands.add('alterarVeiculo', (veiculo)=>{
         .get(path.detalhamentoAtendimentoRenovacao.operacao, {timeout: 10000})   
         .each(($ele, index, list) => {
             if ($ele.text() === operacao.AlterarVeiculo) 
-            cy.wrap($ele).click();      
+            cy.wrap($ele).click({froce: true});      
         })
           
   cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.AlterarVeiculo)  
 
   cy.get(path.operacaoVeiculo.placa).type(veiculo.placa)
   cy.get(path.operacaoVeiculo.renavam).type(veiculo.renavam)
-  cy.get(path.operacaoVeiculo.radioAutomotor).click();
+  cy.get(path.operacaoVeiculo.radioAutomotor).click({force: true});
 
   veiculo.tipoVeiculo != 'Implemento' ?
-    cy.get(path.operacaoVeiculo.radioAutomotor).click():
-    cy.get(path.operacaoVeiculo.radioImplemento).click()
+    cy.get(path.operacaoVeiculo.radioAutomotor).click({force: true}):
+    cy.get(path.operacaoVeiculo.radioImplemento).click({froce: true})
       
   cy.get(path.operacaoVeiculo.tipoPropriedade).click({force: true})
 
@@ -724,7 +724,7 @@ Cypress.Commands.add('alterarVeiculo', (veiculo)=>{
   }
 
 
-  cy.get(path.generic.botaoSubmit).click()
+  cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 

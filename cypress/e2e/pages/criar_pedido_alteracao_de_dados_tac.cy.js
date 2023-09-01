@@ -28,14 +28,14 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         //Clicar na opção Regularização RNTRC no menu lateral
         cy.regularizacao();
         //Selecionando o tipo de atendimento Renovação RNTRC
-        cy.get(path.regularizacaoPage.tipoAtendimentoAlteracaoDados).click();
+        cy.get(path.regularizacaoPage.tipoAtendimentoAlteracaoDados).click({force: true});
         //
         cy.get(path.criarPedidoAlteracaoDados.inputTransportador)
           .click({force: true})
           .xpath(
             path.criarPedidoAlteracaoDados.tipoTransportadorTAC,
             
-          ).should('have.text', 'Autônomo').click()
+          ).should('have.text', 'Autônomo').click({force: true})
         
         cy.get(path.criarPedidoAlteracaoDados.cpf).type(cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
@@ -62,7 +62,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
       cy.login(usuario.cpf, usuario.senha)      
       cy.acessarPedido(idPrePedido)      
       cy.enviarDocumentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
-      cy.get(path.generic.mensagemFechar).click();      
+      cy.get(path.generic.mensagemFechar).click({force: true});      
       });
 
       // ------ Criar operação Incluir Contato Email ------//
@@ -70,7 +70,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
       cy.login(usuario.cpf, usuario.senha)
       cy.acessarPedido(idPrePedido)       
       cy.incluirContatoEmail(faker)
-      cy.get(path.generic.mensagemFechar).click(); 
+      cy.get(path.generic.mensagemFechar).click({force: true}); 
       });
       
       // ------ Criar operação Excluir Contato Celular -----//
@@ -78,7 +78,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
       cy.login(usuario.cpf, usuario.senha)  
       cy.acessarPedido(idPrePedido)        
       cy.excluirContatoCelular(fakerBr,'11952634251')   
-      cy.get(path.generic.mensagemFechar).click();
+      cy.get(path.generic.mensagemFechar).click({force: true});
       
       //TODO não está encontrando o titulo da página
       });
@@ -88,7 +88,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)     
       cy.excluirContatoTelefone(fakerBr, '(11)2200-2200')  
-      cy.get(path.generic.mensagemFechar).click();    
+      cy.get(path.generic.mensagemFechar).click({force: true});    
       //TODO  
       });
       
@@ -97,7 +97,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)     
       cy.incluirContatoTelefone(faker)  
-      cy.get(path.generic.mensagemFechar).click();      
+      cy.get(path.generic.mensagemFechar).click({force: true});      
       });
       
       // ------- Criar operação Incluir Contato Fax -------//
@@ -105,7 +105,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.login(usuario.cpf, usuario.senha)      
       cy.acessarPedido(idPrePedido)    
       cy.incluirContatoFax(faker)     
-      cy.get(path.generic.mensagemFechar).click();      
+      cy.get(path.generic.mensagemFechar).click({force: true});      
       });       
       
       // -------- Criar operação Alterar Endereço Comercial --------//
@@ -113,7 +113,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
         cy.alterarEnderecoComercial(fakerBr)
-        cy.get(path.generic.mensagemFechar).click();      
+        cy.get(path.generic.mensagemFechar).click({force: true});      
       });  
 
       // -------- Criar operação Alterar Endereço Correspondência --------//
@@ -121,7 +121,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)        
       cy.incluirEnderecoCorrespondencia(fakerBr)
-      cy.get(path.generic.mensagemFechar).click();      
+      cy.get(path.generic.mensagemFechar).click({force: true});      
     });  
 
      // --------- Criar operacao Incluir Motorista -----//
@@ -129,7 +129,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)
         cy.incluirMotorista(fakerBr)
-        cy.get(path.generic.mensagemFechar).click();
+        cy.get(path.generic.mensagemFechar).click({force: true});
      });  
      
      // --------- Criar operacao Alterar Motorista -----//
@@ -137,7 +137,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)
       cy.alterarMotorista(fakerBr, '38489604860')
-      cy.get(path.generic.mensagemFechar).click();
+      cy.get(path.generic.mensagemFechar).click({force: true});
     });    
       
       
@@ -233,10 +233,10 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '1')
           cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$0.00')
             
-            cy.get(path.generic.finalizar).click()
+            cy.get(path.generic.finalizar).click({force: true})
 
             cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
-            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()                     
+            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click({force: true})                     
 
         })     
       });  

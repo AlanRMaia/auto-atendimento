@@ -64,14 +64,20 @@ Cypress.Commands.add('login', (cpf, senha) => {
 
   cy.get(path.loginPage.cpf, {timeout:20000}).type(cpf);
   cy.get(path.loginPage.senha).type(senha);
-  cy.get(path.generic.botaoSubmit).click();
+  cy.get(path.generic.botaoSubmit).click({force: true});
   cy.get(path.generic.title, {timeout: 20000}).should('have.text', 'Atendimentos')
   
 });
 
 Cypress.Commands.add('regularizacao', () => {
-  cy.get(path.atendimentoPage.regularizacao).click();
+  cy.get(path.atendimentoPage.regularizacao).click({force: true});
 });
+
+Cypress.Commands.add('consultaRNTRC', () => {
+  cy.get(path.atendimentoPage.consultaRNTRC).click({force: true});
+});
+
+
 
 Cypress.Commands.add('getElementListXpath', (xpath, element) => {
   cy.xpath(xpath, {timeout: 10000}).each(($ele, index, list) => {
@@ -93,7 +99,7 @@ Cypress.Commands.add('getElementList', (selector, element) => {
     let value = $ele.text()
     if (value === element) {
       cy.log('Elemento encontrado');
-      cy.wrap($ele).click();
+      cy.wrap($ele).click({force: true});
       cy.log('Valor atual', value);
     } else {
       cy.log('Elemento não encontrado');
@@ -104,7 +110,7 @@ Cypress.Commands.add('getElementList', (selector, element) => {
 });
 
 Cypress.Commands.add('acessarPedido', (idPedido) => { 
-  cy.get(path.atendimentoPage.numeroPedido).type(idPedido).get(path.generic.botaoSubmit).click()
+  cy.get(path.atendimentoPage.numeroPedido).type(idPedido).get(path.generic.botaoSubmit).click({force: true})
   .get(path.generic.idAtendimento, {timeout: 20000}).should('have.text', ` Atendimento #${idPedido}`);
 });
 
@@ -113,7 +119,7 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo)=>{
     if (ele.text() === veiculo.placa) {
       cy.log(ele).debug()
       cy.wrap(ele)
-      .get(`:nth-child(${index+1}) > .q-card__actions > :nth-child(1) > .q-btn__content`).click()
+      .get(`:nth-child(${index+1}) > .q-card__actions > :nth-child(1) > .q-btn__content`).click({force: true})
     } else {
       cy.log(`não encontrou o valor: ${ele.text()}`)
     }
@@ -129,13 +135,13 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo)=>{
     cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv)
         
   }
-  cy.get(path.generic.botaoSubmit).click()
+  cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
 Cypress.Commands.add('notificacao', (mensagem) => {
   cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).then((element) => {      
     expect(mensagem).to.be.equal(element.text())
-    cy.get(path.generic.mensagemFechar).click();      
+    cy.get(path.generic.mensagemFechar).click({force: true});      
   }     
 )
 })

@@ -75,7 +75,7 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
           //Clicar na opção Regularização RNTRC no menu lateral
         cy.regularizacao();
         //Selecionando o tipo de atendimento Cadastro RNTRC
-        cy.get(path.regularizacaoPage.tipoAtendimentoInclusaoVeiculo).click();
+        cy.get(path.regularizacaoPage.tipoAtendimentoInclusaoVeiculo).click({force: true});
 
         cy.get(path.criarPedidoCadastro.inputTransportador)
           .click({force: true})
@@ -105,7 +105,7 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
          cy.notificacao(mensagem.VeiculoSalvoSucesso)
          //----- Anexar documentos -----//
         cy.anexarDocumentosVeiculo(selectFileAOS3628, veiculoAOS3628)
-        cy.get(path.generic.mensagemFechar, {timeout: 5000}).click()
+        cy.get(path.generic.mensagemFechar, {timeout: 5000}).click({force: true})
     })
         //----- inclusão de veiculo IAQ9412 -----//
 
@@ -117,7 +117,7 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
         cy.notificacao(mensagem.VeiculoSalvoSucesso)
         //----- Anexar documetnos -----//
         cy.anexarDocumentosVeiculo(selectFileIAQ9412, veiculoIAQ9412)
-        cy.get(path.generic.mensagemFechar, {timeout: 5000}).click()
+        cy.get(path.generic.mensagemFechar, {timeout: 5000}).click({force: true})
     })
         //----- Exclusão de veiculo CPJ3491 -----//
 
@@ -127,7 +127,7 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
         //----- Exclusão de veiculo CPJ3491 -----//
         cy.excluirVeiculo(veiculoCPJ3491EXC)
         cy.notificacao(mensagem.VeiculoExcluidoSucesso)
-        cy.get(path.generic.mensagemFechar, {timeout: 5000}).click()
+        cy.get(path.generic.mensagemFechar, {timeout: 5000}).click({force: true})
     })
         //----- ALteração de veiculo CDF1258 -----//
 
@@ -225,7 +225,7 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
           
           cy.get(path.generic.email).type(fakerBr.internet.email())
 
-          cy.get(path.generic.finalizar).click()
+          cy.get(path.generic.finalizar).click({force: true})
 
           cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
           /*cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()

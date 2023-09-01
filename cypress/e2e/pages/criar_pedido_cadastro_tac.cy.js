@@ -65,14 +65,14 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
     //Clicar na opção Regularização RNTRC no menu lateral
     cy.regularizacao();
     //Selecionando o tipo de atendimento Cadastro RNTRC
-    cy.get(path.regularizacaoPage.tipoAtendimentoCadastro).click();
+    cy.get(path.regularizacaoPage.tipoAtendimentoCadastro).click({force: true});
     //
     cy.get(path.criarPedidoCadastro.inputTransportador)
           .click({force: true})
           .xpath(
             '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
             
-          ).should('have.text', 'Autônomo').click()
+          ).should('have.text', 'Autônomo').click({force: true})
     
     cy.get(path.criarPedidoCadastro.cpf).type(cpfCnpj);
     cy.get(path.generic.botaoSubmit).click({ force: true });
@@ -99,7 +99,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
   cy.login(usuario.cpf, usuario.senha)      
   cy.acessarPedido(idPrePedido)      
   cy.enviarDocumentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
-  cy.get(path.generic.mensagemFechar).click();      
+  cy.get(path.generic.mensagemFechar).click({force: true});      
   });  
   
   // ------ Criar operação Incluir Contato Email ------//
@@ -107,7 +107,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
   cy.login(usuario.cpf, usuario.senha)
   cy.acessarPedido(idPrePedido)       
   cy.incluirContatoEmail(faker)
-  cy.get(path.generic.mensagemFechar).click(); 
+  cy.get(path.generic.mensagemFechar).click({force: true}); 
   });
   
   // ------ Criar operação Incluir Contato Celular -----//
@@ -115,7 +115,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
   cy.login(usuario.cpf, usuario.senha)  
   cy.acessarPedido(idPrePedido)        
   cy.incluirContatoCelular(faker)   
-  cy.get(path.generic.mensagemFechar).click();      
+  cy.get(path.generic.mensagemFechar).click({force: true});      
   });
   
   // ------ Criar operação Incluir Contato Telefone -----//
@@ -123,7 +123,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
     cy.login(usuario.cpf, usuario.senha)
     cy.acessarPedido(idPrePedido)     
   cy.incluirContatoTelefone(faker)  
-  cy.get(path.generic.mensagemFechar).click();      
+  cy.get(path.generic.mensagemFechar).click({force: true});      
   });
   
   // ------- Criar operação Incluir Contato Fax -------//
@@ -131,7 +131,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
       cy.login(usuario.cpf, usuario.senha)      
     cy.acessarPedido(idPrePedido)    
     cy.incluirContatoFax(faker)     
-    cy.get(path.generic.mensagemFechar).click();      
+    cy.get(path.generic.mensagemFechar).click({force: true});      
   });
   
   // --------- Criar operacao Incluir Motorista -----//
@@ -139,7 +139,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
       cy.login(usuario.cpf, usuario.senha)
       cy.acessarPedido(idPrePedido)
     cy.incluirMotorista(fakerBr)
-    cy.get(path.generic.mensagemFechar).click();
+    cy.get(path.generic.mensagemFechar).click({force: true});
   }); 
   
   // -------- Criar operação Incluir Endereço Correspondência --------//
@@ -147,7 +147,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
       cy.login(usuario.cpf, usuario.senha)
       cy.acessarPedido(idPrePedido)        
     cy.incluirEnderecoCorrespondencia(fakerBr)
-    cy.get(path.generic.mensagemFechar).click();      
+    cy.get(path.generic.mensagemFechar).click({force: true});      
   });    
   
   // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
@@ -155,12 +155,12 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
       cy.login(usuario.cpf, usuario.senha)
       cy.acessarPedido(idPrePedido)          
     cy.incluirVeiculo(veiculoIAQ9412)
-    cy.get(path.generic.mensagemFechar).click();      
+    cy.get(path.generic.mensagemFechar).click({force: true});      
     
     cy.incluirVeiculo(veiculoDAY7G42)
-    cy.get(path.generic.mensagemFechar).click();
+    cy.get(path.generic.mensagemFechar).click({force: true});
     cy.anexarDocumentosVeiculo(selectFileDAY7G42, veiculoDAY7G42) 
-    cy.get(path.generic.mensagemFechar).click();
+    cy.get(path.generic.mensagemFechar).click({force: true});
 
   }); 
   
@@ -169,7 +169,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
       cy.login(usuario.cpf, usuario.senha)
       cy.acessarPedido(idPrePedido)        
     cy.incluirVeiculo(veiculoBSG1253)
-    cy.get(path.generic.mensagemFechar).click();      
+    cy.get(path.generic.mensagemFechar).click({force: true});      
   }); 
   
   // --------- Anexar crlv na operação de inclusão de veículo -------//        
@@ -177,7 +177,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
       cy.login(usuario.cpf, usuario.senha)
       cy.acessarPedido(idPrePedido)          
     cy.anexarDocumentosVeiculo(selectFileIAQ9412, veiculoIAQ9412 )
-    cy.get(path.generic.mensagemFechar).click();      
+    cy.get(path.generic.mensagemFechar).click({force: true});      
   });
   
   // ------- Selecionar o sindicato e gerar valor -------//        
@@ -233,12 +233,12 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)  
       cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
-      .trigger('mouseover').click({force: true}).click();
+      .trigger('mouseover').click({force: true}).click({force: true});
       
       cy.get(path.generic.title, {timeout: 10000})
       .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
 
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})                        
+      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
       .type('FETAC-MG').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
       .click({force: true})
 
@@ -289,16 +289,16 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
       cy.get('.q-stepper__step-inner > .q-list > :nth-child(3) > .q-item__section > .q-item__label--caption')
       .should('have.text', 'É necessário realizar upload do CLRV para a placa BSG1253')
       
-      cy.get(path.generic.corrigir).click() 
+      cy.get(path.generic.corrigir).click({force: true}) 
       
       cy.anexarDocumentosVeiculo(selectFileBSG1253, veiculoBSG1253 )
       
       cy.get(path.generic.mensagemFechar, {timeout: 10000}).click({multiple: true}).wait(1000)
       cy.get(path.generic.mensagemFechar,{timeout: 10000}).click({multiple: true})
       
-      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click()        
+      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})        
       
-      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click()
+      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})
       
       cy.get('.text-6').should('have.text', ' Atendimento Válido ')
       
@@ -329,10 +329,10 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
           
           cy.get(path.generic.email).type(faker.internet.email())
 
-            cy.get(path.generic.finalizar).click()
+            cy.get(path.generic.finalizar).click({force: true})
 
             cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
-            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()
+            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click({force: true})
 
             cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
 

@@ -6,7 +6,7 @@ module.exports = {
    Bahia: 'Bahia',
    Ceara: 'Ceará',
    DistritoFederal:'Distrito Federal',
-   EspiritoSanto:'Espirito Santo',
+   EspiritoSanto:'Espírito Santo',
    Goias: 'Goiás',
    Maranhao: 'Maranhão',
    MinasGerais: 'Minas Gerais',
