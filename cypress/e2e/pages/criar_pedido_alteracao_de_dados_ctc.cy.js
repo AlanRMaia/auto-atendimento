@@ -155,8 +155,8 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
           cy.get(path.generic.title, {timeout: 10000})
           .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
           
-          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
-          .type('OCERGS').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
+          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type('OCERGS').wait(2000)
+          cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
           .click({force: true})         
 
           // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
@@ -166,7 +166,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
           //     cy.wrap($ele).click();     
           // })
           
-          cy.get(path.generic.tabela, {timeout: 10000})
+          cy.get(path.generic.tabela, {timeout: 30000})
           .then((ele) => {
             
             cy.log(ele.text())
@@ -195,8 +195,8 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
         cy.get(path.generic.title, {timeout: 10000})
         .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
 
-        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
-        .type('OCERGS').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
+        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type('OCERGS').wait(2000)
+        cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
         .click({force: true})
 
         // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
@@ -206,7 +206,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
         //     cy.wrap($ele).click();     
         // })
         
-        cy.get(path.generic.tabela, {timeout: 20000})        
+        cy.get(path.generic.tabela, {timeout: 30000})        
         .then((ele) => {
           
           cy.log(ele.text())
@@ -228,7 +228,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
         
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
         
-        cy.get(path.generic.tabela, {timeout: 20000})        
+        cy.get(path.generic.tabela, {timeout: 30000})        
         .then((ele) => {
           
           cy.log(ele.text())

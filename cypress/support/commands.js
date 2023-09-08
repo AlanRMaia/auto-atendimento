@@ -131,7 +131,7 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo)=>{
     cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv)
   } else {
     cy.get(path.anexarDocumentoVeiculo.contratoArrendamento, {timeout: 10000})
-    .selectFile(selectFile.contratoArrendamento)
+    .selectFile(selectFile.contrato)
     cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv)
         
   }

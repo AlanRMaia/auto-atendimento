@@ -16,6 +16,7 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 import './operacoes'
-
+import 'cypress-map'
+require('cypress-get-table')
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

@@ -40,15 +40,13 @@ describe('Grupo de teste para o processo de Esqueceu a senha', () => {
         cy.get(path.esqueceuSenhaPage.cpf).type(usuario.cpf);
         cy.get(path.generic.botaoSubmit).should('have.text', 'Enviar').click({force: true});
 
-        cy.intercept('POST', 'https://sitcargaapidevelop/gestao/usuario/esqueciminhasenha?usuario=66248686009').as('envioEmailStatus').wait(2000)    
+        cy.intercept('POST', 'https://sitcargaapidevelop/gestao/usuario/esqueciminhasenha?usuario=66248686009').as('envioEmailStatus')    
 
         cy.wait('@envioEmailStatus').its('response.statusCode').then(response => {
             expect(response).to.be.equal(200)
         })
 
-        cy.notificacao('Siga as instruções enviadas para o seu e-mail cadastrado.')
-
-        
+        cy.notificacao('Siga as instruções enviadas para o seu e-mail cadastrado.')        
 
     });    
 

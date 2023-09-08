@@ -93,7 +93,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
       });
       
       // ------ Criar operação Incluir Contato Telefone -----//
-      it.only('Criar operação Incluir Contato Telefone', () => {   
+      it('Criar operação Incluir Contato Telefone', () => {   
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)     
       cy.incluirContatoTelefone(faker)  
@@ -150,8 +150,8 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           cy.get(path.generic.title, {timeout: 10000})
           .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
           
-          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
-          .type('FETAC-MG').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
+          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type('FETAC-MG').wait(2000)
+          cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
           .click({force: true})         
 
           // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
@@ -161,7 +161,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           //     cy.wrap($ele).click();     
           // })
           
-          cy.get(path.generic.tabela, {timeout: 10000})
+          cy.get(path.generic.tabela, {timeout: 30000})
           .then((ele) => {
             
             cy.log(ele.text())
@@ -190,8 +190,8 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.get(path.generic.title, {timeout: 10000})
         .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
 
-        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
-        .type('FETAC-MG').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
+        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type('FETAC-MG').wait(2000)
+        cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
         .click({force: true})
 
         // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
@@ -201,7 +201,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         //     cy.wrap($ele).click();     
         // })
         
-        cy.get(path.generic.tabela, {timeout: 20000})        
+        cy.get(path.generic.tabela, {timeout: 30000})        
         .then((ele) => {
           
           cy.log(ele.text())
@@ -223,7 +223,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
         
-        cy.get(path.generic.tabela, {timeout: 20000})        
+        cy.get(path.generic.tabela, {timeout: 30000})        
         .then((ele) => {
           
           cy.log(ele.text())

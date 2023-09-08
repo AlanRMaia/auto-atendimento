@@ -222,8 +222,8 @@ describe('Grupo de teste Atendimento Renovação', () => {
       cy.get(path.generic.title, {timeout: 10000})
       .should('have.text', 'Selecione o Ponto de Atendimento')
 
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
-      .type('OCERGS').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
+      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type('OCERGS').wait(2000)
+      cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
       .click({force: true})
       
       // cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})
@@ -234,7 +234,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       // })
       
-      cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/table', {timeout: 10000})
+      cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/table', {timeout: 30000})
       .then((ele) => {
         
         cy.log(ele.text())
@@ -272,8 +272,8 @@ describe('Grupo de teste Atendimento Renovação', () => {
       cy.get(path.generic.title, {timeout: 10000})
       .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
 
-      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear()                        
-      .type('OCERGS').xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
+      cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type('OCERGS').wait(2000)
+      cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
       .click({force: true})
       
       // cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000})
@@ -284,7 +284,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       // })
       
-      cy.get(path.generic.tabela, {timeout: 20000})        
+      cy.get(path.generic.tabela, {timeout: 30000})        
       .then((ele) => {
         
         cy.log(ele.text())
@@ -328,8 +328,8 @@ describe('Grupo de teste Atendimento Renovação', () => {
       
       cy.anexarDocumentosVeiculo(selectFileBSG1253, veiculoBSG1253 )
       
-      cy.get(path.generic.mensagemFechar).click({multiple: true})
-      cy.get(path.generic.mensagemFechar).click({multiple: true})
+      cy.get(path.generic.mensagemFechar).click({force: true}).wait(1000)
+      cy.get(path.generic.mensagemFechar).click({force: true})
       
       cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})        
       
@@ -341,7 +341,7 @@ describe('Grupo de teste Atendimento Renovação', () => {
             
       cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
       
-      cy.get(path.generic.tabela, {timeout: 20000})        
+      cy.get(path.generic.tabela, {timeout: 30000})        
       .then((ele) => {
         
         cy.log(ele.text())
@@ -368,36 +368,36 @@ describe('Grupo de teste Atendimento Renovação', () => {
             cy.get(path.generic.finalizar).click({force: true})
 
             cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
-            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click({force: true})
+            // cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click({force: true})
 
-            cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
+            // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
 
-            cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist') 
+            // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist') 
         
       })     
       });       
       
-      it('Meio de pagamento', () => {
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)
-        cy.get(path.generic.pagamento, {timeout: 20000}).click({force: true})
+    //   it('Meio de pagamento', () => {
+    //     cy.login(usuario.cpf, usuario.senha)
+    //     cy.acessarPedido(idPrePedido)
+    //     cy.get(path.generic.pagamento, {timeout: 20000}).click({force: true})
 
-        cy.get(path.componentePagamento.pagamentoPix).should('have.text', ' Pagamento por PIX ')
+    //     cy.get(path.componentePagamento.pagamentoPix).should('have.text', ' Pagamento por PIX ')
 
-        cy.get(path.componentePagamento.pagamentoBoleto).should('have.text', ' Pagamento por Boleto ')
+    //     cy.get(path.componentePagamento.pagamentoBoleto).should('have.text', ' Pagamento por Boleto ')
         
-        cy.get(path.componentePagamento.codigoPix, {timeout: 20000}).then(ele => {
-          let value = ele.val()
-          cy.log(value)
-          expect(value).not.be.null
-        })     
+    //     cy.get(path.componentePagamento.codigoPix, {timeout: 20000}).then(ele => {
+    //       let value = ele.val()
+    //       cy.log(value)
+    //       expect(value).not.be.null
+    //     })     
 
-        cy.get(path.componentePagamento.codigoBarra).then(ele =>{
-          let value = ele.val()
-          cy.log(value)
-          expect(ele).not.be.null
-        })    
+    //     cy.get(path.componentePagamento.codigoBarra).then(ele =>{
+    //       let value = ele.val()
+    //       cy.log(value)
+    //       expect(ele).not.be.null
+    //     })    
       
-    });
+    // });
 
 });

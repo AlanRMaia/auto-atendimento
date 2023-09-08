@@ -17,8 +17,13 @@ module.exports = {
     isLoading: '[data-cy=isLoading]',
     alert: '[data-cy=alert]',
     pagamento: '[data-cy=pagamento]',
-    email: '[data-cy=email]',
+    email: '[data-cy=email]',    
+    perfilSitcarga: {
+      SETCALOperador : ':nth-child(20) > a',
+      FETACMGMaster: '#niveis-usuario > :nth-child(10) > a'
+    },
 
+    
     uf : [
       {path: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', nome: 'Acre'},
       {path: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span', nome: 'Alagoas'},
@@ -27,7 +32,7 @@ module.exports = {
       {path: '/html/body/div[8]/div/div[2]/div[5]/div[2]/div/span', nome: 'Bahia'},
       {path: '/html/body/div[8]/div/div[2]/div[6]/div[2]/div/span', nome: 'Ceará'},
       {path: '/html/body/div[8]/div/div[2]/div[7]/div[2]/div/span', nome: 'Distrito Federal'},
-      {path:'/html/body/div[8]/div/div[2]/div[8]/div[2]/div/span', nome: 'Espirito Santo' },
+      {path:'/html/body/div[8]/div/div[2]/div[8]/div[2]/div/span', nome: 'Espírito santo' },
       {path: '/html/body/div[8]/div/div[2]/div[9]/div[2]/div/span', nome: 'Goiás'},
       {path: '/html/body/div[8]/div/div[2]/div[10]/div[2]/div/span', nome: 'Maranhão'},
       {path: '/html/body/div[8]/div/div[2]/div[11]/div[2]/div/span', nome: 'Minas Gerais'},
@@ -117,7 +122,8 @@ module.exports = {
     inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
     tipoTransportador: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
     cnpj: '[data-cy=cnpj]',
-    cpf: '[data-cy=cpf]'
+    cpf: '[data-cy=cpf]',
+    tipoAtendimentoDescricao: '[data-cy=tipoAtendimentoDescricao]'
   },
   criarPedidoInclusaoVeiculo: {
     inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
@@ -287,7 +293,36 @@ module.exports = {
 
   institucionalPage: {
     login:   '.q-tabs__content > .q-btn > .q-btn__content > .block',   //[data-cy=login]',
-    cadastro: 'a.q-tab > .q-tab__content > .q-tab__label'  //'[data-cy=cadastro]'
+    cadastro: 'a.q-tab > .q-tab__content > .q-tab__label',  //'[data-cy=cadastro]'
+    tipoAtendimento : '[data-cy=tipoAtendimento]', 
+    emitirRNTRC: '[data-cy=emitirRNTRC]',
+    tipoTransportador: '[data-cy=tipoTransportador]',
+    uf: '[data-cy=uf]',
+    faleConoscoEmail: '[data-cy=faleConoscoEmail]',
+    chat: '[data-cy=chat]'    
+  },
+
+  pontosAtendimentoPage : {
+    tipoTransportador: '[data-cy=tipoTransportador]',
+    uf: '[data-cy=uf]',
+    pontosAtendimentoList: '[data-cy=pontosAtendimentoList]',
+    sigla: '[data-cy=sigla]',
+    
+  },
+
+  sitcargaInitialPage: {
+    imgLogon: '/content/img/sitcarga_logo.png',
+    logon: '/html/body/div[2]/nav/div/div[1]/a/span/img',
+    facaLogin: '/html/body/section[2]/div/div/div/div/div/div/h2',
+
+
+  },
+
+  sitcargaHomePage: {
+    home: 'https://homologacao.sitcarga.com.br/home',
+    imgLogon: '/Content/img/logo-sitcarga.png',
+    
+
   }
 
 };
