@@ -147,9 +147,13 @@ module.exports = {
     codigoBarra: '[data-cy=codigoBarra]'
   },
   //src/pages/DetalheAtendimentoPage.vue
-  detalhamentoAtendimentoRenovacao: {
-    operacao: '[data-cy=operacao]',
-    operacaoSalvarTransportador: '/html/body/div[8]/div/div/a[1]/div[3]/div',
+  detalhamentoAtendimento: {
+    transportador: ':nth-child(1) > strong',
+    operacaoMotorista: '',
+    operacaoIncluirMotorista: '',
+    operacaoAlterarMotorista: '',
+    operacaoExcluirMotorista: '',
+    operacaoSalvarTransportador: ':nth-child(1) > strong',
     operacaoEnviarDocumentos: '/html/body/div[8]/div/div/a[2]',
     operacaoIncluirContato: '/html/body/div[8]/div/div/a[3]',
     operacaoExcluirContato: '/html/body/div[8]/div/div/a[4]',
@@ -182,30 +186,32 @@ module.exports = {
     checkBoxRegistroOCB: '[data-cy=registroOCB]',
     checkBoxPossuiAnexo: '[data-cy=possuiAnexo]',
     checkBoxCapacidadeFinanceira: '[data-cy=capacidadeFinanceira]',
+    criarOperacao: '[data-cy=btnTrpDoc]'
   },
 
   operacaoEnviarDocumentos: {
     //selecionarDocumento: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
     registroRT: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
-    documentoIdentidade: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
+    documentoIdentidade: '/html/body/div[3]/div/div[2]/div[1]/div[2]/div/span',
     anexarDocumento: '[data-cy=documento]',
     tipoDocumento :  '[data-cy=tipoDocumento]',
+    criarOperacao: '[data-cy=btnTrpDoc]'
   },
 
   operacaoContato:{
     tipoContato: '[data-cy=tipoContato]',
     tipoContatoValor: '[data-cy=tipoContatoValor]',
     tipoDescricao: '[data-cy=contatoDescricao]',
-    email: '/html/body/div[8]/div/div[2]/div[4]/div[2]/div/span',
-    fax: '/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span',
-    celular: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
-    telefone: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span'
+    email: 'div[class="q-virtual-scroll__content"]',
+    fax: 'div[class="q-virtual-scroll__content"]',
+    celular: 'div[class="q-virtual-scroll__content"]',
+    telefone: 'div[class="q-virtual-scroll__content"]'
   },
 
   operacaoEndereco: {
     tipoEndereco: '[data-cy=tipoEndereco]',
-    comercial: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
-    correspondencia: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
+    comercial: 'div[class="q-virtual-scroll__content"]',
+    correspondencia: 'div[class="q-virtual-scroll__content"]',
     cep: '[data-cy=cepInput]',
     logradouro: '[data-cy=logradouroInput]',
     numero: '[data-cy=numeroInput]',
@@ -224,7 +230,8 @@ module.exports = {
     email: '[data-cy=email]',
     telefone: '[data-cy=telefone]',
     cargo: '[data-cy=cargo]',
-    dataNascimento: '[data-cy=dataNascimento]'
+    dataNascimento: '[data-cy=dataNascimento]',
+    listTipoVinculo: 'div[class="q-virtual-scroll__content"]'
   },
 
   operacaoFilial: {
@@ -253,9 +260,9 @@ module.exports = {
     instituicoesFinanceiras: '[data-cy=instituicoesFinanceiras]',
     radioAutomotor: '[data-cy=radioAutomotor]',
     radioImplemento: '[data-cy=radioImplemento]',
-    tipoPropriedadeProprio: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
-    tipoPropriedadeArrendado: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
-    tipoPropriedadeLeasing: '/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span'
+    tipoPropriedadeProprio: 'div[class="q-virtual-scroll__content"]',
+    tipoPropriedadeArrendado: 'div[class="q-virtual-scroll__content"]',
+    tipoPropriedadeLeasing: 'div[class="q-virtual-scroll__content"]'
   },
 
   anexarDocumentoVeiculo: {
@@ -323,6 +330,11 @@ module.exports = {
     imgLogon: '/Content/img/logo-sitcarga.png',
     
 
+  },
+
+  sitcargaConsultaPagamentosPage: {
+    pesquisaNossoNumero: ':nth-child(1) > .iradio_square-green > .iCheck-helper',
+    pesquisaTransportador: ':nth-child(2) > .iradio_square-green > .iCheck-helper'
   }
 
 };

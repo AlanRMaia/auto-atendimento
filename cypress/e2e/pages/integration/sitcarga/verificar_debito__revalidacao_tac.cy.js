@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import path from '../../../../selectors/path.sel.cy';
 import mensagem from "../../../../support/mensagemAlertEnum";
 import urls from '../../../../support/urls';
+var fakerBr = require('faker-br');
 
   let usuario;
   let veiculo01;
@@ -10,10 +11,19 @@ import urls from '../../../../support/urls';
   let veiculo03;
   let doc; 
   let cpfCnpj = '346.575.509-00';
-  let idPrePedido = '2071350';
+  let idPrePedido = '2071477';
   let codigoBarra = '03399841145810000015580180001010794340000046200';
   let nossoNumero = ''
-  var fakerBr = require('faker-br');
+  let boleto = {
+    codigoBarra : '',
+    nossoNumero : '',
+    valorPago: '',
+    meioPagamento: '',
+    dataEmissao: '',
+    utilizacao: '',
+    valorBoleto: '',
+    situacao: ''    
+  };
   const transportador = {
     cpfCnpj: "346.575.509-00",
     nome: "TAC - ODACIR NUNES PIRES",
@@ -28,13 +38,6 @@ import urls from '../../../../support/urls';
     sigla: "FETAC-MG",
     path: path.generic.perfilSitcarga.FETACMGMaster
   }
-
-  
-
-  
-     
-  
-
 
 describe('Grupo de teste Atendimento Renovação TAC', () => {  
 
@@ -96,8 +99,8 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         cy.notificacao(mensagem.AtendimentoCriadoSucesso)    
         //Validando se foi aberto o pre-pedido, acessando ele e, verificando se no titulo o ID confere com o que foi gerado na abertura   
         cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
-          idPrePedido = element.text().substring(14,21);
-          expect(element.text()).to.be.equal(` Atendimento #${idPrePedido}`)
+          idPrePedido = element.text().substring(1);
+          expect(element.text()).to.be.equal(`#${idPrePedido}`)
         })
       
     });
@@ -105,12 +108,13 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
       // ------ Criar operação Salvar transportador -----//
       it('Criar operação Salvar transportador', () => { 
         cy.login(usuario.cpf, usuario.senha) 
-        cy.acessarPedido(idPrePedido)       
-        cy.salvarTransportador(fakerBr, transportador.sigla)
+        cy.acessarPedido(idPrePedido)   
+        
+        cy.salvarTransportador(fakerBr, transportador.sigla, idPrePedido)
         cy.notificacao(mensagem.SalvarTransportador)      
       });
       
-      //-------- Criar operação Enviar documentos do tipo Identidade ------//              
+      // ------ Criar operação Enviar documentos do tipo Identidade -----//              
       it('Criar operação Enviar documentos do tipo Identidade', () => {  
       cy.login(usuario.cpf, usuario.senha)      
       cy.acessarPedido(idPrePedido)      
@@ -177,15 +181,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         cy.get(path.generic.mensagemFechar).click({force: true});  
         cy.anexarDocumentosVeiculo(doc, veiculo02 )
         cy.get(path.generic.mensagemFechar).click({force: true});  
-      });
-      
-      // --------- Criar operação Incluir Veiculo Automotor/Arrendado ---------//       
-      // it('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
-      //     cy.login(usuario.cpf, usuario.senha)
-      //     cy.acessarPedido(idPrePedido)          
-      //   cy.incluirVeiculo(veiculoDAY7G42)
-      //   cy.get(path.generic.mensagemFechar).click();
-      // });
+      });     
       
       // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
       it('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
@@ -215,13 +211,6 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
           cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
           cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', sindicato.sigla)
           .click({force: true})         
-
-          // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
-          // .each((ele, index, list) => {
-          //     let value = ele.text()
-          //     if (value === 'FETAC-MG') 
-          //     cy.wrap($ele).click();     
-          // })
           
           cy.get(path.generic.tabela, {timeout: 30000})
           .then((ele) => {
@@ -262,14 +251,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
 
         cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
         cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', sindicato.sigla)
-        .click({force: true})
-
-        // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
-        // .each((ele, index, list) => {
-        //     let value = ele.text()
-        //     if (value === 'FETAC-MG') 
-        //     cy.wrap($ele).click();     
-        // })
+        .click({force: true})       
         
         cy.get(path.generic.tabela, {timeout: 30000})        
         .then((ele) => {
@@ -380,7 +362,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
 
         cy.get(path.componentePagamento.codigoBarra).then(ele =>{
           let value = ele.val()
-          codigoBarra = value
+          boleto.codigoBarra = value
           cy.log(value)
           expect(ele).not.be.null
         })    
@@ -409,7 +391,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
             cy.xpath('/html/body/div[2]/nav/div/ul/li[9]/a/span[1]', {timeout: 10000}).contains('Financeiro').click({force: true})
             cy.get('.active > .nav > :nth-child(2) > a').contains('Consultar Pagamentos').click({force: true})
             cy.get(':nth-child(1) > .col-lg-12 > .ibox > .ibox-title > h5').contains('Consulta de Pagamentos Os campos com (*) são obrigatórios')
-            cy.get(':nth-child(2) > .iradio_square-green > .iCheck-helper').click({force: true})
+            cy.get(path.sitcargaConsultaPagamentosPage.pesquisaTransportador).click({force: true})
             cy.get('#CPFCNPJ', {timeout: 30000} ).type(transportador.cpfCnpj)
             cy.get('#btn-consultar').click()
 
@@ -419,11 +401,12 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
             cy.get('#NomeTransportador').should('have.text',transportador.nome)
             cy.get('#Rntrc').should('have.text', transportador.rntrc)
             cy.get('#DescricaoSituacaoRNTRC').should('have.text', transportador.situacao)
-            cy.get('#ValorSaldoCartaoPrePago').should('have.text', 'R$ 924,00')
+            cy.get('#ValorSaldoCartaoPrePago').should('have.text', transportador.saldo)
             
-            let valor01 =   codigoBarra.substring(18, 20)
-            let valor02 = codigoBarra.substring(21, 27)
-            cy.get('#grid > table').contains('td', `${valor01}${valor02}`)        
+            let valor01 = boleto.codigoBarra.substring(18, 20)
+            let valor02 = boleto.codigoBarra.substring(21, 27)
+            boleto.nossoNumero = `${valor01}${valor02}`
+            cy.get('#grid > table').contains('td', boleto.nossoNumero)        
             
           });
       });

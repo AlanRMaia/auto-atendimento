@@ -111,20 +111,26 @@ Cypress.Commands.add('getElementList', (selector, element) => {
 
 Cypress.Commands.add('acessarPedido', (idPedido) => { 
   cy.get(path.atendimentoPage.numeroPedido).type(idPedido).get(path.generic.botaoSubmit).click({force: true})
-  .get(path.generic.idAtendimento, {timeout: 20000}).should('have.text', ` Atendimento #${idPedido}`);
+  .get(path.generic.idAtendimento, {timeout: 20000}).should('have.text', `#${idPedido}`);
 });
 
-Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo)=>{
-  cy.get('.q-py-lg', {timeout: 20000}).find('.q-card__section > .text-brand-primary').each((ele, index, list)=> {
-    if (ele.text() === veiculo.placa) {
-      cy.log(ele).debug()
-      cy.wrap(ele)
-      .get(`:nth-child(${index+1}) > .q-card__actions > :nth-child(1) > .q-btn__content`).click({force: true})
-    } else {
-      cy.log(`não encontrou o valor: ${ele.text()}`)
-    }
-  })  
-
+Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
+  cy.document().wait(5000).then((doc) => {
+      const element = doc.querySelector('[data-cy="gridOperacoes"]').children
+      cy.wrap(element).each((ele, index, list)=> {
+        cy.wrap(list.length)
+        cy.wrap(ele).find(`:nth-child(1) > .q-card__section > [style="height: 72px;"] > .col-10 > .text-caption`).then((text) => {
+          let placa = text.text().substring(0, 7)          
+          if (placa == veiculo.placa) {
+            cy.wrap(ele)
+            .find(`[data-cy="btnAnexarVeiculo"]`).click({force: true})
+          } else {
+            cy.log(`não encontrou o valor: ${placa}`)
+          }
+        })
+      }) 
+  })
+  
   cy.get(path.generic.title).should('have.text', ` Arquivos Veículo ${veiculo.placa}`)
 
   if (veiculo.propriedade != 'Arrendado') {
@@ -137,6 +143,7 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo)=>{
   }
   cy.get(path.generic.botaoSubmit).click({force: true})
 })
+
 
 Cypress.Commands.add('notificacao', (mensagem) => {
   cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).then((element) => {      
