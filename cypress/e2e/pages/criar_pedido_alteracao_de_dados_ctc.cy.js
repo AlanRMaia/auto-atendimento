@@ -48,18 +48,18 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
     });
       
       // ------ Criar operação Salvar transportador -----//
-      it('Criar operação Salvar transportador', () => { 
+      it('Criar operação Transportador', () => { 
         cy.login(usuario.cpf, usuario.senha) 
         cy.acessarPedido(idPrePedido)       
-        cy.salvarTransportador(faker, 'CTC')
-        cy.notificacao(mensagem.SalvarTransportador)      
+        cy.operacaoTransportador(faker, 'CTC')
+        cy.notificacao(mensagem.TransportadorSucesso)      
       });
       
       //-------- Criar operação Enviar documentos do tipo Identidade ------//              
       it('Criar operação Enviar documentos do tipo Identidade', () => {  
         cy.login(usuario.cpf, usuario.senha)      
         cy.acessarPedido(idPrePedido)      
-        cy.enviarDocumentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
+        cy.documentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
         cy.get(path.generic.mensagemFechar).click({force: true});      
       });
 

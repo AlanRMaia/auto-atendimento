@@ -116,20 +116,24 @@ Cypress.Commands.add('acessarPedido', (idPedido) => {
 
 Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
   cy.document().wait(5000).then((doc) => {
-      const element = doc.querySelector('[data-cy="gridOperacoes"]').children
+      const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
       cy.wrap(element).each((ele, index, list)=> {
-        cy.wrap(list.length)
-        cy.wrap(ele).find(`:nth-child(1) > .q-card__section > [style="height: 72px;"] > .col-10 > .text-caption`).then((text) => {
-          let placa = text.text().substring(0, 7)          
+        cy.wrap(list.length)       
+        cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao).then((text) => {
+          let placa = text.text().substring(0, 7)
+          cy.log('valor da placa:',placa)          
           if (placa == veiculo.placa) {
             cy.wrap(ele)
-            .find(`[data-cy="btnAnexarVeiculo"]`).click({force: true})
+            .find(path.detalhamentoAtendimentoPage.anexarDocumentoVeiculo).click({force: true})
           } else {
             cy.log(`não encontrou o valor: ${placa}`)
           }
         })
       }) 
-  })
+      
+    })
+  
+  
   
   cy.get(path.generic.title).should('have.text', ` Arquivos Veículo ${veiculo.placa}`)
 
@@ -142,7 +146,7 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
         
   }
   cy.get(path.generic.botaoSubmit).click({force: true})
-})
+  })
 
 
 Cypress.Commands.add('notificacao', (mensagem) => {

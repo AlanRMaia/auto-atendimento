@@ -110,15 +110,15 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         cy.login(usuario.cpf, usuario.senha) 
         cy.acessarPedido(idPrePedido)   
         
-        cy.salvarTransportador(fakerBr, transportador.sigla, idPrePedido)
-        cy.notificacao(mensagem.SalvarTransportador)      
+        cy.operacaoTransportador(fakerBr, transportador.sigla, idPrePedido)
+        cy.notificacao(mensagem.TransportadorSucesso)      
       });
       
       // ------ Criar operação Enviar documentos do tipo Identidade -----//              
       it('Criar operação Enviar documentos do tipo Identidade', () => {  
       cy.login(usuario.cpf, usuario.senha)      
       cy.acessarPedido(idPrePedido)      
-      cy.enviarDocumentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
+      cy.documentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
       cy.get(path.generic.mensagemFechar).click({force: true});      
       });
 

@@ -22,36 +22,35 @@ module.exports = {
       SETCALOperador : ':nth-child(20) > a',
       FETACMGMaster: '#niveis-usuario > :nth-child(10) > a'
     },
-
-    
+        
     uf : [
-      {path: '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', nome: 'Acre'},
-      {path: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span', nome: 'Alagoas'},
-      {path: '/html/body/div[8]/div/div[2]/div[3]/div[2]/div/span', nome: 'Amazonas'},
-      {path: '/html/body/div[8]/div/div[2]/div[4]/div[2]/div/span', nome: 'Amapá'},
-      {path: '/html/body/div[8]/div/div[2]/div[5]/div[2]/div/span', nome: 'Bahia'},
-      {path: '/html/body/div[8]/div/div[2]/div[6]/div[2]/div/span', nome: 'Ceará'},
-      {path: '/html/body/div[8]/div/div[2]/div[7]/div[2]/div/span', nome: 'Distrito Federal'},
-      {path:'/html/body/div[8]/div/div[2]/div[8]/div[2]/div/span', nome: 'Espírito santo' },
-      {path: '/html/body/div[8]/div/div[2]/div[9]/div[2]/div/span', nome: 'Goiás'},
-      {path: '/html/body/div[8]/div/div[2]/div[10]/div[2]/div/span', nome: 'Maranhão'},
-      {path: '/html/body/div[8]/div/div[2]/div[11]/div[2]/div/span', nome: 'Minas Gerais'},
-      {path: '/html/body/div[8]/div/div[2]/div[12]/div[2]/div/span', nome: 'Mato Grosso do Sul'},
-      {path: '/html/body/div[8]/div/div[2]/div[13]/div[2]/div/span', nome: 'Mato Grosso'},
-      {path: '/html/body/div[8]/div/div[2]/div[14]/div[2]/div/span', nome: 'Pará'},
-      {path: '/html/body/div[8]/div/div[2]/div[15]/div[2]/div/span', nome: 'Paraíba'},
-      {path: '/html/body/div[8]/div/div[2]/div[16]/div[2]/div/span', nome: 'Pernambuco'},
-      {path: '/html/body/div[8]/div/div[2]/div[17]/div[2]/div/span', nome: 'Piauí'},
-      {path: '/html/body/div[8]/div/div[2]/div[18]/div[2]/div/span', nome: 'Paraná'},
-      {path: '/html/body/div[8]/div/div[2]/div[19]/div[2]/div/span', nome: 'Rio de Janeiro'},
-      {path: '/html/body/div[8]/div/div[2]/div[20]/div[2]/div/span', nome: 'Rio Grande do Norte'},
-      {path: '/html/body/div[8]/div/div[2]/div[21]/div[2]/div/span', nome: 'Rondônia'},
-      {path: '/html/body/div[8]/div/div[2]/div[22]/div[2]/div/span', nome: 'Roraima'},
-      {path: '/html/body/div[8]/div/div[2]/div[23]/div[2]/div/span', nome: 'Rio Grande do Sul'},
-      {path: '/html/body/div[8]/div/div[2]/div[24]/div[2]/div/span', nome: 'Santa Catarina'},
-      {path: '/html/body/div[8]/div/div[2]/div[25]/div[2]/div/span', nome: 'Sergipe'},
-      {path: '/html/body/div[8]/div/div[2]/div[26]/div[2]/div/span', nome: 'São Paulo'},
-      {path: '/html/body/div[8]/div/div[2]/div[27]/div[2]/div/span', nome: 'Tocantins'}
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Acre'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Alagoas'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Amazonas'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Amapá'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Bahia'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Ceará'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Distrito Federal'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Espírito santo' },
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Goiás'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Maranhão'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Minas Gerais'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Mato Grosso do Sul'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Mato Grosso'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Pará'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Paraíba'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Pernambuco'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Piauí'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Paraná'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Rio de Janeiro'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Rio Grande do Norte'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Rondônia'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Roraima'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Rio Grande do Sul'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Santa Catarina'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Sergipe'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'São Paulo'},
+      {path: 'div[class="q-virtual-scroll__content"]', nome: 'Tocantins'}
     ],
   },
 
@@ -147,13 +146,18 @@ module.exports = {
     codigoBarra: '[data-cy=codigoBarra]'
   },
   //src/pages/DetalheAtendimentoPage.vue
-  detalhamentoAtendimento: {
-    transportador: ':nth-child(1) > strong',
+  detalhamentoAtendimentoPage: {
+    operacaoTransportador: '[data-cy=btnTrpDoc]',
+    operacaoDocumentos: '[data-cy=btnTrpDoc]',
+    operacao: '[data-cy=btnOperacoes]',
+    abrirOperacao: '[data-cy=listIncluirAlterarExcluir]',
+    anexarDocumentoVeiculo: '[data-cy=btnAnexarVeiculo]',
+    gridOperacoes: '[data-cy=gridOperacoes]',
+    descricaoOperacao: '[data-cy=descricao]',
     operacaoMotorista: '',
     operacaoIncluirMotorista: '',
     operacaoAlterarMotorista: '',
-    operacaoExcluirMotorista: '',
-    operacaoSalvarTransportador: ':nth-child(1) > strong',
+    operacaoExcluirMotorista: '',    
     operacaoEnviarDocumentos: '/html/body/div[8]/div/div/a[2]',
     operacaoIncluirContato: '/html/body/div[8]/div/div/a[3]',
     operacaoExcluirContato: '/html/body/div[8]/div/div/a[4]',
@@ -174,7 +178,7 @@ module.exports = {
     operacaoExcluirVeiculo: '/html/body/div[8]/div/div/a[19]',
   },
 
-  operacaoSalvarTransportador: {
+  operacaoTransportador: {
     razaoSocial: '[data-cy=razaoSocialInput]',
     identidade: '[data-cy=identidadeInput]',
     nomeFantasia: '[data-cy=nomeFantasiaInput]',
@@ -186,16 +190,14 @@ module.exports = {
     checkBoxRegistroOCB: '[data-cy=registroOCB]',
     checkBoxPossuiAnexo: '[data-cy=possuiAnexo]',
     checkBoxCapacidadeFinanceira: '[data-cy=capacidadeFinanceira]',
-    criarOperacao: '[data-cy=btnTrpDoc]'
   },
 
-  operacaoEnviarDocumentos: {
+  operacaoDocumentos: {
     //selecionarDocumento: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
-    registroRT: '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
-    documentoIdentidade: '/html/body/div[3]/div/div[2]/div[1]/div[2]/div/span',
+    registroRT: 'div[class="q-virtual-scroll__content"]',
+    documentoIdentidade: 'div[class="q-virtual-scroll__content"]',
     anexarDocumento: '[data-cy=documento]',
     tipoDocumento :  '[data-cy=tipoDocumento]',
-    criarOperacao: '[data-cy=btnTrpDoc]'
   },
 
   operacaoContato:{
@@ -220,7 +222,7 @@ module.exports = {
     cidade: '[data-cy=cidadeInput]',
     pontoDeReferencia: '[data-cy=pontoReferenciaInput]',
     uf: '[data-cy="ufInput"]',
-    rj: '/html/body/div[8]/div/div[2]/div[19]/div[2]/div/span'
+    rj: 'div[class="q-virtual-scroll__content"]'
   },
 
   operacaoGestor: {
@@ -262,7 +264,8 @@ module.exports = {
     radioImplemento: '[data-cy=radioImplemento]',
     tipoPropriedadeProprio: 'div[class="q-virtual-scroll__content"]',
     tipoPropriedadeArrendado: 'div[class="q-virtual-scroll__content"]',
-    tipoPropriedadeLeasing: 'div[class="q-virtual-scroll__content"]'
+    tipoPropriedadeLeasing: 'div[class="q-virtual-scroll__content"]',
+    instituicaoFinanceiraSelecionada: 'div[class="q-virtual-scroll__content"]',    
   },
 
   anexarDocumentoVeiculo: {

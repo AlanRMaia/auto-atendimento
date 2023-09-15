@@ -11,7 +11,7 @@ var fakerBr = require('faker-br');
   let veiculo03;
   let doc; 
   let cpfCnpj = '02.672.529/0001-87';
-  let idPrePedido = '2071487';
+  let idPrePedido = '2071488';
   let codigoBarra = '03399841145810000015580180001010794340000046200';
   let nossoNumero = ''
   let boleto = {
@@ -54,8 +54,8 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
 
     })
 
-    cy.fixture("data/veiculos/DAY7G42").then((day7g42) => {
-      veiculo02 = day7g42
+    cy.fixture("data/veiculos/DDD4654").then((dda4654) => {
+      veiculo02 = dda4654
       veiculo02.crlv = doc.crlv
       veiculo02.contrato = doc.contrato
     })
@@ -110,15 +110,15 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           cy.login(usuario.cpf, usuario.senha) 
           cy.acessarPedido(idPrePedido)   
           
-          cy.salvarTransportador(faker, transportador.sigla, idPrePedido)
-          cy.notificacao(mensagem.SalvarTransportador)      
+          cy.operacaoTransportador(faker, transportador.sigla, idPrePedido)
+          cy.notificacao(mensagem.TransportadorSucesso)      
         });
         
         // ------ Criar operação Enviar documentos do tipo Identidade -----//              
         it('Criar operação Enviar documentos do tipo Identidade', () => {  
         cy.login(usuario.cpf, usuario.senha)      
         cy.acessarPedido(idPrePedido)      
-        cy.enviarDocumentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
+        cy.documentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
         cy.get(path.generic.mensagemFechar).click({force: true});      
         });
 
@@ -212,11 +212,11 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
     
         
         // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-        it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
+        it.only('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
             cy.login(usuario.cpf, usuario.senha)
             cy.acessarPedido(idPrePedido)          
-          cy.incluirVeiculo(veiculo01)
-          cy.get(path.generic.mensagemFechar).click({force: true});      
+          // cy.incluirVeiculo(veiculo01)
+          // cy.get(path.generic.mensagemFechar).click({force: true});      
           
           cy.incluirVeiculo(veiculo02)
           cy.get(path.generic.mensagemFechar).click({force: true});  
