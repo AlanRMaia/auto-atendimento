@@ -86,14 +86,13 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         //Selecionando o tipo de atendimento Renovação RNTRC
         cy.get(path.regularizacaoPage.tipoAtendimentoRenovacao).click({force: true});
         //selecionar o tipo de transportador Autônomo para a abertura do pre-pedido
-        cy.get(path.criarPedidoRenovacao.inputTransportador)
+        cy.get(path.criarPedidoPage.inputTipoTransportador)
           .click({force: true})
-          .xpath(
-            '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
-            
-          ).should('have.text', transportador.tipo).click({force: true})
+          .get(
+            path.criarPedidoPage.tipoTransportador,            
+          ).contains(transportador.tipo).click({force: true})
         //inclusão de do cpf no input e submeter a requisição
-        cy.get(path.criarPedidoRenovacao.cpf).type(transportador.cpfCnpj);
+        cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
         //validando a mensagem da notificação "Atendimento Criado com Sucesso!"
         cy.notificacao(mensagem.AtendimentoCriadoSucesso)    
@@ -118,7 +117,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
       it('Criar operação Enviar documentos do tipo Identidade', () => {  
       cy.login(usuario.cpf, usuario.senha)      
       cy.acessarPedido(idPrePedido)      
-      cy.documentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
+      cy.documentosIdentidade(doc.rg)
       cy.get(path.generic.mensagemFechar).click({force: true});      
       });
 

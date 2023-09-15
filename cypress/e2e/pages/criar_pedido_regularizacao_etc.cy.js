@@ -70,14 +70,14 @@ describe('Grupo de teste Atendimento Renovação', () => {
         //Selecionando o tipo de atendimento Renovação RNTRC
         cy.get(path.regularizacaoPage.tipoAtendimentoRenovacao).click({force: true});
         //
-        cy.get(path.criarPedidoRenovacao.inputTransportador)
+        cy.get(path.criarPedidoPage.inputTransportador)
           .click({force: true})
           .getElementListXpath(
             '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
             'Empresa'
           );
         
-        cy.get(path.criarPedidoRenovacao.cnpj).type(cpfCnpj);
+        cy.get(path.criarPedidoPage.cnpj).type(cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
         
             cy.notificacao(mensagem.AtendimentoCriadoSucesso)

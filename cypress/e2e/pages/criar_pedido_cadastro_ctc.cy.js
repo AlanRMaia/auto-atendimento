@@ -66,11 +66,11 @@ describe('Grupo de teste Atendimento Cadastro CTC', () => {
     //Selecionando o tipo de atendimento Cadastro RNTRC
     cy.get(path.regularizacaoPage.tipoAtendimentoCadastro).click({force: true});
     //
-    cy.get(path.criarPedidoCadastro.inputTransportador).click({force: true})
-        .xpath(path.criarPedidoAlteracaoDados.tipoTransportadorCTC)
-        .should('have.text', 'Cooperativa').click({force: true})
+    cy.get(path.criarPedidoPage.inputTipoTransportador).click({force: true})
+        get(path.criarPedidoPage.tipoTransportador)
+        .constains('Cooperativa').click({force: true})
     
-    cy.get(path.criarPedidoCadastro.cnpj).type(cpfCnpj);
+    cy.get(path.criarPedidoPage.cpfCnpj).type(cpfCnpj);
     cy.get(path.generic.botaoSubmit).click({ force: true });
     
         cy.notificacao(mensagem.AtendimentoCriadoSucesso)

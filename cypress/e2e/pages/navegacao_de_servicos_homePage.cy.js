@@ -24,7 +24,7 @@ describe('Grupo de testes navegação de serviços', () => {
         cy.get(path.loginPage.senha).type(usuario.senha);
         cy.get(path.generic.botaoSubmit).click({force: true});
         cy.get(path.generic.title, {timeout: 20000}).should('have.text', ' Regularização RNTRC ')
-        cy.get(path.criarPedidoCadastro.tipoAtendimentoDescricao).should('have.text', 'Tipo de Atendimento: Novo RNTRC')
+        cy.get(path.criarPedidoPage).should('have.text', 'Tipo de Atendimento: Novo RNTRC')
 
       });
 
@@ -38,7 +38,7 @@ describe('Grupo de testes navegação de serviços', () => {
         cy.get(path.loginPage.senha).type(usuario.senha);
         cy.get(path.generic.botaoSubmit).click({force: true});
         cy.get(path.generic.title, {timeout: 20000}).should('have.text', ' Regularização RNTRC ')
-        cy.get(path.criarPedidoCadastro.tipoAtendimentoDescricao).should('have.text', 'Tipo de Atendimento: Renovação RNTRC')
+        cy.get(path.criarPedidoPage).should('have.text', 'Tipo de Atendimento: Renovação RNTRC')
 
       });
 
@@ -52,7 +52,7 @@ describe('Grupo de testes navegação de serviços', () => {
         cy.get(path.loginPage.senha).type(usuario.senha);
         cy.get(path.generic.botaoSubmit).click({force: true});
         cy.get(path.generic.title, {timeout: 20000}).should('have.text', ' Regularização RNTRC ')
-        //cy.get(path.criarPedidoCadastro.tipoAtendimentoDescricao).should('have.text', 'Tipo de Atendimento: Gerenciamento de Frota')
+        //cy.get(path.criarPedidoPage).should('have.text', 'Tipo de Atendimento: Gerenciamento de Frota')
         //TODO no aguardo para o novo layout para o serviço de gerenciamento de frota    
       });
 
@@ -66,7 +66,7 @@ describe('Grupo de testes navegação de serviços', () => {
         cy.get(path.loginPage.senha).type(usuario.senha);
         cy.get(path.generic.botaoSubmit).click({force: true});
         cy.get(path.generic.title, {timeout: 20000}).should('have.text', 'Consulta RNTRC')
-        //cy.get(path.criarPedidoCadastro.tipoAtendimentoDescricao).should('have.text', 'Tipo de Atendimento: Renovação RNTRC')
+        //cy.get(path.criarPedidoPage).should('have.text', 'Tipo de Atendimento: Renovação RNTRC')
 
       });
       //Emissão deDocumentos

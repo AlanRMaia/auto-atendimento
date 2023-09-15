@@ -67,14 +67,14 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         //Selecionando o tipo de atendimento Renovação RNTRC
         cy.get(path.regularizacaoPage.tipoAtendimentoRenovacao).click({force: true});
         //
-        cy.get(path.criarPedidoRenovacao.inputTransportador)
+        cy.get(path.criarPedidoPage.inputTransportador)
           .click({force: true})
           .xpath(
             '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
             
           ).should('have.text', 'Autônomo').click({force: true})
         
-        cy.get(path.criarPedidoRenovacao.cpf).type(cpfCnpj);
+        cy.get(path.criarPedidoPage.cpf).type(cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
         
         cy.notificacao(mensagem.AtendimentoCriadoSucesso)    

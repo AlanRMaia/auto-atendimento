@@ -110,12 +110,11 @@ module.exports = {
     municipios: '[data-cy=municipios]',    
   },
 
-  criarPedidoRenovacao: {
-    //tipoTransportador: '[data-cy=tipoTransportador]',
-    inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',
-    tipoTransportador: '',    
-    cnpj: '[data-cy=cnpj]',
-    cpf: '[data-cy=cpf]',
+  criarPedidoPage: {
+    tipoTransportador: 'div[class="q-virtual-scroll__content"]',
+    inputTipoTransportador: '[data-cy=tipoTransportador]',        
+    cpfCnpj: '[data-cy=cpfCnpj]',
+    tipoAtendimentoDescricao: '[data-cy=tipoAtendimentoDescricao]'
   },
   criarPedidoCadastro: {
     inputTransportador: '.q-select > .q-field__inner > .q-field__control > .q-field__control-container',

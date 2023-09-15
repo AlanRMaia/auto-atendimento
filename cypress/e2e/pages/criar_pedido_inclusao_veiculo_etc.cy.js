@@ -77,14 +77,14 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
         //Selecionando o tipo de atendimento Cadastro RNTRC
         cy.get(path.regularizacaoPage.tipoAtendimentoInclusaoVeiculo).click({force: true});
 
-        cy.get(path.criarPedidoCadastro.inputTransportador)
+        cy.get(path.criarPedidoPage.inputTipoTransportador)
           .click({force: true})
-          .getElementListXpath(
-            '/html/body/div[8]/div/div[2]/div[2]/div[2]/div/span',
+          .getElementList(
+            path.criarPedidoPage.tipoTransportador,
             'Empresa'
           ); 
         
-          cy.get(path.criarPedidoInclusaoVeiculo.cnpj).type(cpfCnpjATI)
+          cy.get(path.criarPedidoPage).type(cpfCnpj)
           cy.get(path.generic.botaoSubmit).click({ force: true });
         
             cy.notificacao(mensagem.AtendimentoCriadoSucesso)

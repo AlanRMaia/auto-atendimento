@@ -67,14 +67,14 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
     //Selecionando o tipo de atendimento Cadastro RNTRC
     cy.get(path.regularizacaoPage.tipoAtendimentoCadastro).click({force: true});
     //
-    cy.get(path.criarPedidoCadastro.inputTransportador)
+    cy.get(path.criarPedidoPage.inputTipoTransportador)
           .click({force: true})
           .xpath(
-            '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
+            path.criarPedidoPage.tipoTransportador,
             
-          ).should('have.text', 'Autônomo').click({force: true})
+          ).contains('Autônomo').click({force: true})
     
-    cy.get(path.criarPedidoCadastro.cpf).type(cpfCnpj);
+    cy.get(path.criarPedidoPage.cpfCnpj).type(cpfCnpj);
     cy.get(path.generic.botaoSubmit).click({ force: true });
     
         cy.notificacao(mensagem.AtendimentoCriadoSucesso)

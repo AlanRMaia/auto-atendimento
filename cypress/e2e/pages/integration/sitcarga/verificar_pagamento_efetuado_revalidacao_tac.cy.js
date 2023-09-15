@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import path from '../../../../selectors/path.sel.cy';
 import mensagem from "../../../../support/mensagemAlertEnum";
 import urls from '../../../../support/urls';
+var fakerBr = require('faker-br');
 
   let usuario;
   let veiculo01;
@@ -11,9 +12,23 @@ import urls from '../../../../support/urls';
   let doc; 
   let cpfCnpj = '76699668668';
   let idPrePedido = '2071350';
-  var fakerBr = require('faker-br');
-
+  let imagem;
   
+  const transportador = {
+    cpfCnpj: "766.996.686-68",
+    nome: "TAC - MARIA ALEIXO BARBOSA MARTINS",
+    rntrc: "000012397 ",
+    situacao: "VENCIDO",
+    saldo: "R$ 0,00",
+    sigla: "TAC",
+    tipo: "Autônomo"
+  };
+
+  const sindicato = {
+    perfil: "FETAC-MG - Master",
+    sigla: "FETAC-MG",
+    path: path.generic.perfilSitcarga.FETACMGMaster
+  }
      
   
 
@@ -21,6 +36,10 @@ import urls from '../../../../support/urls';
 describe('Grupo de teste Atendimento Renovação TAC', () => {  
 
   beforeEach(() => { 
+
+    cy.fixture("data/images/imagem").then((imagem) => {
+      this.imagem = imagem
+    })
     
     cy.fixture("data/doc/documentos").then((data) => {
       doc = data
@@ -63,30 +82,30 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         //Selecionando o tipo de atendimento Renovação RNTRC
         cy.get(path.regularizacaoPage.tipoAtendimentoRenovacao).click({force: true});
         //selecionar o tipo de transportador Autônomo para a abertura do pre-pedido
-        cy.get(path.criarPedidoRenovacao.inputTransportador)
+        cy.get(path.criarPedidoPage.inputTipoTransportador)
           .click({force: true})
-          .xpath(
-            '/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span',
+          .get(
+            path.criarPedidoPage.tipoTransportador,
             
-          ).should('have.text', 'Autônomo').click({force: true})
+          ).contains('Autônomo').click({force: true})
         //inclusão de do cpf no input e submeter a requisição
-        cy.get(path.criarPedidoRenovacao.cpf).type(cpfCnpj);
+        cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
         //validando a mensagem da notificação "Atendimento Criado com Sucesso!"
         cy.notificacao(mensagem.AtendimentoCriadoSucesso)    
         //Validando se foi aberto o pre-pedido, acessando ele e, verificando se no titulo o ID confere com o que foi gerado na abertura   
         cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
-          idPrePedido = element.text().substring(14,21);
-          expect(element.text()).to.be.equal(` Atendimento #${idPrePedido}`)
-        })
-      
+          idPrePedido = element.text().substring(1);
+          expect(element.text()).to.be.equal(`#${idPrePedido}`)      
+        });
+
     });
       
       // ------ Criar operação Salvar transportador -----//
       it('Criar operação Salvar transportador', () => { 
         cy.login(usuario.cpf, usuario.senha) 
         cy.acessarPedido(idPrePedido)       
-        cy.operacaoTransportador(fakerBr, 'TAC')
+        cy.operacaoTransportador(fakerBr, transportador.sigla)
         cy.notificacao(mensagem.TransportadorSucesso)      
       });
       
@@ -94,7 +113,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
       it('Criar operação Enviar documentos do tipo Identidade', () => {  
       cy.login(usuario.cpf, usuario.senha)      
       cy.acessarPedido(idPrePedido)      
-      cy.documentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
+      cy.documentosIdentidade(doc.rg)
       cy.get(path.generic.mensagemFechar).click({force: true});      
       });
 
@@ -192,8 +211,9 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
           cy.get(path.generic.title, {timeout: 10000})
           .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
           
-          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type('FETAC-MG').wait(2000)
-          cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
+          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+          cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', sindicato.sigla)
+          //TODO lista virtual
           .click({force: true})         
 
           // cy.xpath('/html/body/div[8]/div', {timeout: 10000})

@@ -78,22 +78,19 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
         
     
     // ------ Abrir Atendimento de Renovação ------//
-      it('Acessando a página e criando pedido', () => {
+      it.only('Acessando a página e criando pedido', () => {
           //Logar na página com o usuario       
           cy.login(usuario.cpf, usuario.senha)       
           //Clicar na opção Regularização RNTRC no menu lateral
           cy.regularizacao();
           //Selecionando o tipo de atendimento Renovação RNTRC
           cy.get(path.regularizacaoPage.tipoAtendimentoRenovacao).click({force: true});
-          //selecionar o tipo de transportador Autônomo para a abertura do pre-pedido
-          cy.get(path.criarPedidoRenovacao.inputTransportador)
+          //selecionar o tipo de transportador Empresa para a abertura do pre-pedido
+          cy.get(path.criarPedidoPage.inputTipoTransportador)
             .click({force: true})
-            .xpath(
-              '/html/body/div[3]/div/div[2]/div[2]/div[2]/div/span',
-              
-            ).should('have.text', transportador.tipo).click({force: true})
+            .get(path.criarPedidoPage.tipoTransportador).contains(transportador.tipo).click({force: true})
           //inclusão de do cpf no input e submeter a requisição
-          cy.get(path.criarPedidoRenovacao.cnpj).type(transportador.cpfCnpj);
+          cy.get(path.criarPedidoPage.cnpj).type(transportador.cpfCnpj);
           cy.get(path.generic.botaoSubmit).click({ force: true });
           //validando a mensagem da notificação "Atendimento Criado com Sucesso!"
           cy.notificacao(mensagem.AtendimentoCriadoSucesso)    
@@ -118,7 +115,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
         it('Criar operação Enviar documentos do tipo Identidade', () => {  
         cy.login(usuario.cpf, usuario.senha)      
         cy.acessarPedido(idPrePedido)      
-        cy.documentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
+        cy.documentosIdentidade(doc.rg)
         cy.get(path.generic.mensagemFechar).click({force: true});      
         });
 
@@ -212,11 +209,11 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
     
         
         // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-        it.only('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
+        it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
             cy.login(usuario.cpf, usuario.senha)
             cy.acessarPedido(idPrePedido)          
-          // cy.incluirVeiculo(veiculo01)
-          // cy.get(path.generic.mensagemFechar).click({force: true});      
+          cy.incluirVeiculo(veiculo01)
+          cy.get(path.generic.mensagemFechar).click({force: true});      
           
           cy.incluirVeiculo(veiculo02)
           cy.get(path.generic.mensagemFechar).click({force: true});  
