@@ -5,7 +5,8 @@
     "cypress-xpath": "^2.0.1"
   },
   "scripts": {
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "test": "cypress run"
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.2",
