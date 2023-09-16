@@ -79,6 +79,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
     
     // ------ Abrir Atendimento de Renovação ------//
       it.only('Acessando a página e criando pedido', () => {
+        cy.log(`${Cypress.env('ENVIRONMENT')}`)
           //Logar na página com o usuario       
           cy.login(usuario.cpf, usuario.senha)       
           //Clicar na opção Regularização RNTRC no menu lateral
@@ -90,7 +91,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
             .click({force: true})
             .get(path.criarPedidoPage.tipoTransportador).contains(transportador.tipo).click({force: true})
           //inclusão de do cpf no input e submeter a requisição
-          cy.get(path.criarPedidoPage.cnpj).type(transportador.cpfCnpj);
+          cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
           cy.get(path.generic.botaoSubmit).click({ force: true });
           //validando a mensagem da notificação "Atendimento Criado com Sucesso!"
           cy.notificacao(mensagem.AtendimentoCriadoSucesso)    

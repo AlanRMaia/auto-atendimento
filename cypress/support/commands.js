@@ -60,6 +60,7 @@ Cypress.Commands.add('getByData', (selector) => {
 });
 
 Cypress.Commands.add('login', (cpf, senha) => {
+  
   cy.visit(urls.login, {timeout: 20000});
 
   cy.get(path.loginPage.cpf, {timeout:20000}).type(cpf);

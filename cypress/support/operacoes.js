@@ -804,6 +804,7 @@ Cypress.Commands.add('alterarVeiculo', (veiculo)=>{
     cy.get(path.operacaoVeiculo.radioImplemento).click({froce: true})
       
   cy.get(path.operacaoVeiculo.tipoPropriedade).click({force: true})
+  
 
   switch (veiculo.propriedade) {
     case 'Próprio':

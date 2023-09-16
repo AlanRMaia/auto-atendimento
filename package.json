@@ -1,12 +1,15 @@
 {
   "devDependencies": {
-    "cypress": "^13.0.0",
+    "cypress": "^13.2.0",
     "cypress-map": "^1.21.1",
     "cypress-xpath": "^2.0.1"
   },
   "scripts": {
-    "cypress": "cypress open",
-    "test": "cypress run"
+    "test": "npm run test:homolog && npm run test:dev",
+    "homolog": "cypress open --config baseUrl=https://sitcarga-spa-homologacao.azurewebsites.net/#/ --env ENVIRONMENT=homolog",
+    "dev": "cypress open --config baseUrl=http://localhost:9000/#/ --env ENVIRONMENT=dev",
+    "test:homolog": "cypress run --config baseUrl=https://sitcarga-spa-homologacao.azurewebsites.net/#/ --env ENVIRONMENT=homolog",
+    "test:dev": "cypress run --config baseUrl=http://localhost:9000/#/ --env ENVIRONMENT=dev"
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.2",

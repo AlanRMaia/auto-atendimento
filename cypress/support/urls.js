@@ -9,7 +9,7 @@ var dev = {
 }
 //Ambiente de homologação
 var homolog = {
-  login: 'https://sitcarga-spa-homologacao.azurewebsites.net/#/login',
+  login: 'login',
   atendimentos: 'https://sitcarga-spa-homologacao.azurewebsites.net/#/login',
   regularizacao: 'https://sitcarga-spa-homologacao.azurewebsites.net/#/regularizacao',
   home: 'https://sitcarga-spa-homologacao.azurewebsites.net/#/',
@@ -18,7 +18,8 @@ var homolog = {
 }
 
 //serve para trocar o ambiente para teste, se for no ambiente de desenvolvimento coloque a variável dev, se for homologação coloque homolog
-var ambiente = dev;
+
+var ambiente = Cypress.env('ENVIRONMENT') === 'homolog'? homolog : dev;
 
 module.exports = {  
   login : ambiente.login,
@@ -28,3 +29,9 @@ module.exports = {
   sitcargaInitial: ambiente.sitcargaInitial,
   sitcargaHome: ambiente.sitcargaHome
 };
+
+// "test": "npm run test:homolog && npm run test:dev",
+//     "homolog": "cypress open --env configFile=homolog",
+//     "dev": "cypress open",
+//     "test:homolog": "cypress run --env configFile=homolog",
+//     "test:dev": "cypress run"

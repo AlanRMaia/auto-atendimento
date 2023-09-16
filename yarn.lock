@@ -312,10 +312,10 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-14.18.54.tgz"
   integrity sha512-uq7O52wvo2Lggsx1x21tKZgqkJpvwCseBBPtX/nKQfpVlEsLOb11zZ1CRsWUKvJF0+lzuA9jwvA7Pr2Wt7i3xw==
 
-"@types/node@^16.18.39":
-  version "16.18.39"
-  resolved "https://registry.npmjs.org/@types/node/-/node-16.18.39.tgz"
-  integrity sha512-8q9ZexmdYYyc5/cfujaXb4YOucpQxAV4RMG0himLyDUOEr8Mr79VrqsFI+cQ2M2h89YIuy95lbxuYjxT4Hk4kQ==
+"@types/node@^18.17.5":
+  version "18.17.17"
+  resolved "https://registry.npmjs.org/@types/node/-/node-18.17.17.tgz"
+  integrity sha512-cOxcXsQ2sxiwkykdJqvyFS+MLQPLvIdwh5l6gNg8qF6s+C7XSkEWOZjK+XhUZd+mYvHV/180g2cnCcIl4l06Pw==
 
 "@types/qs@*":
   version "6.9.7"
@@ -1381,14 +1381,14 @@ cypress-xpath@^2.0.1:
   resolved "https://registry.npmjs.org/cypress-xpath/-/cypress-xpath-2.0.1.tgz"
   integrity sha512-qMagjvinBppNJdMAkucWESP9aP4rDTs7c96m0vwMuZTVx3NqP2E3z/hkoRf8Ea9soL8yTvUuuyF1cg/Sb1Yhbg==
 
-cypress@^13.0.0, cypress@>=12, cypress@>=7.0.0:
-  version "13.0.0"
-  resolved "https://registry.npmjs.org/cypress/-/cypress-13.0.0.tgz"
-  integrity sha512-nWHU5dUxP2Wm/zrMd8SWTTl706aJex/l+H4vi/tbu2SWUr17BUcd/sIYeqyxeoSPW1JFV2pT1pf4JEImH/POMg==
+cypress@^13.2.0, cypress@>=12, cypress@>=7.0.0:
+  version "13.2.0"
+  resolved "https://registry.npmjs.org/cypress/-/cypress-13.2.0.tgz"
+  integrity sha512-AvDQxBydE771GTq0TR4ZUBvv9m9ffXuB/ueEtpDF/6gOcvFR96amgwSJP16Yhqw6VhmwqspT5nAGzoxxB+D89g==
   dependencies:
     "@cypress/request" "^3.0.0"
     "@cypress/xvfb" "^1.2.4"
-    "@types/node" "^16.18.39"
+    "@types/node" "^18.17.5"
     "@types/sinonjs__fake-timers" "8.1.1"
     "@types/sizzle" "^2.3.2"
     arch "^2.2.0"
