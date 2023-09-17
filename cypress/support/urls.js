@@ -1,18 +1,18 @@
 //Ambiente de desenvolvimento
 var dev = {
-   login: 'http://localhost:9000/#/login',
-  atendimentos: 'http://localhost:9000/#/login',
-  regularizacao: 'http://localhost:9000/#/regularizacao',
-  home: 'http://localhost:9000/#/',
+   login: 'login',
+  atendimentos: 'login',
+  regularizacao: 'regularizacao',
+  home: '/',
   sitcargaInitial: 'https://homologacao.sitcarga.com.br/',
   sitcargaHome: 'https://homologacao.sitcarga.com.br/home'
 }
 //Ambiente de homologação
 var homolog = {
   login: 'login',
-  atendimentos: 'https://sitcarga-spa-homologacao.azurewebsites.net/#/login',
-  regularizacao: 'https://sitcarga-spa-homologacao.azurewebsites.net/#/regularizacao',
-  home: 'https://sitcarga-spa-homologacao.azurewebsites.net/#/',
+  atendimentos: 'login',
+  regularizacao: 'regularizacao',
+  home: '/',
   sitcargaInitial: 'https://homologacao.sitcarga.com.br/',
   sitcargaHome: 'https://homologacao.sitcarga.com.br/home'
 }

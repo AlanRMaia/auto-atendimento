@@ -88,9 +88,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         //selecionar o tipo de transportador Autônomo para a abertura do pre-pedido
         cy.get(path.criarPedidoPage.inputTipoTransportador)
           .click({force: true})
-          .get(
-            path.criarPedidoPage.tipoTransportador,            
-          ).contains(transportador.tipo).click({force: true})
+          .get(path.criarPedidoPage.tipoTransportador).contains(transportador.tipo).click({force: true})
         //inclusão de do cpf no input e submeter a requisição
         cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
@@ -207,8 +205,8 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
           cy.get(path.generic.title, {timeout: 10000})
           .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
           
-          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-          cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', sindicato.sigla)
+          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+          cy.xpath(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
           .click({force: true})         
           
           cy.get(path.generic.tabela, {timeout: 30000})
@@ -248,8 +246,8 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         cy.get(path.generic.title, {timeout: 10000})
         .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
 
-        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-        cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', sindicato.sigla)
+        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+        cy.xpath(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
         .click({force: true})       
         
         cy.get(path.generic.tabela, {timeout: 30000})        

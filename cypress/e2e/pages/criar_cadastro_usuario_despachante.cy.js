@@ -37,7 +37,7 @@ describe('', () => {
         cy.get(path.loginCadatsro.cnpj).type(fakerBr.br.cnpj())
 
         cy.get(path.generic.botaoSubmit).click({force: true});
-        cy.notificacao('Cadastro efetuado com sucesso.')
+        cy.notificacao(mensagem.CadastroSucesso)
     });
 
     it.only('Clicando no link Faça login', () => {

@@ -2,56 +2,95 @@ import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
+var fakerBr = require('faker-br');  
 
-  let usuario;
-  let cpfCnpj = '05194419000145'
-  let idPrePedido = '2071407'
-  var fakerBr = require('faker-br');  
+let usuario;
+  let veiculo01;
+  let veiculo02;
+  let veiculo03;
+  let doc; 
+  let idPrePedido = '2071477'; 
+  
+  const transportador = {
+    cpfCnpj: "91.360.420/0001-34",
+    nome: "CTC - COOPERATIVA DOS SUINOCULTORES DO CAÍ SUPERIOR LTDA",
+    rntrc: "008884854",
+    situacao: "VENCIDO",
+    saldo: "R$ 0,00",
+    sigla: "CTC",
+    tipo: "Cooperativa"
+  };
+  const sindicato = {
+    perfil: "OCERGS - Master",
+    sigla: "OCERGS",
+    path: path.generic.perfilSitcarga.OCERGSMAster
+  }  
   
 describe('Grupo de teste Atendimento Alteração de dados CTC', () => { 
     
     beforeEach(() => {
+        cy.fixture("data/doc/documentos").then((data) => {
+          doc = data
+        })
+    
+        cy.fixture("data/veiculos/IAQ9412").then((iaq9412) => {
+          veiculo01 = iaq9412
+          veiculo01.crlv = doc.crlv
+          veiculo01.contrato = doc.contrato
+    
+        })
+    
+        cy.fixture("data/veiculos/DAY7G42").then((day7g42) => {
+          veiculo02 = day7g42
+          veiculo02.crlv = doc.crlv
+          veiculo02.contrato = doc.contrato
+        })
+    
+        cy.fixture("data/veiculos/BSG1253").then((bsg1253) => {
+          veiculo03 = bsg1253
+          veiculo03.crlv = doc.crlv
+          veiculo03.contrato = doc.contrato
+        })
+        
+    
         cy.fixture('usuario').then((data) => {
           usuario = data;
         });
         cy.reload();  
-        cy.viewport(1280, 720);
+        cy.viewport(1920, 1080);
         cy.wait(2000)  
       });
-
+describe('Iniciando testes Autoatendimento', () => {
+    
   // ------ Abrir Atendimento de Alteração de dados ------//
-    it('Iniciando os testes', () => {
+    it('Criar pedido Alteração de dados CTC', () => {
       
         //Logar na página com o usuario       
-        cy.login(usuario.cpf, usuario.senha) 
-        
+        cy.login(usuario.cpf, usuario.senha)        
         //Clicar na opção Regularização RNTRC no menu lateral
         cy.regularizacao();
         //Selecionando o tipo de atendimento Renovação RNTRC
         cy.get(path.regularizacaoPage.tipoAtendimentoAlteracaoDados).click({force: true});
         //
-        cy.get(path.criarPedidoAlteracaoDados.inputTransportador)
+        cy.get(path.criarPedidoPage.inputTipoTransportador)
           .click({force: true})
-          .xpath(
-            path.criarPedidoAlteracaoDados.tipoTransportadorCTC,            
-          ).should('have.text', 'Cooperativa').click({force: true})
-        
-        cy.get(path.criarPedidoAlteracaoDados.cnpj).type(cpfCnpj);
+          .get(path.criarPedidoPage.tipoTransportador).contains('Cooperativa').click({force: true})        
+        cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
         
         cy.notificacao(mensagem.AtendimentoCriadoSucesso)    
       
         cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
-          idPrePedido = element.text().substring(14,21);
-          expect(element.text()).to.be.equal(` Atendimento #${idPrePedido}`)
+          idPrePedido = element.text().substring(1);
+          expect(element.text()).to.be.equal(`#${idPrePedido}`)
         })      
     });
       
       // ------ Criar operação Salvar transportador -----//
-      it('Criar operação Transportador', () => { 
+      it('Criar operação Salvar transportador', () => { 
         cy.login(usuario.cpf, usuario.senha) 
         cy.acessarPedido(idPrePedido)       
-        cy.operacaoTransportador(faker, 'CTC')
+        cy.operacaoTransportador(faker, transportador.sigla)
         cy.notificacao(mensagem.TransportadorSucesso)      
       });
       
@@ -59,7 +98,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
       it('Criar operação Enviar documentos do tipo Identidade', () => {  
         cy.login(usuario.cpf, usuario.senha)      
         cy.acessarPedido(idPrePedido)      
-        cy.documentosIdentidade('D:/Imagens para teste/Apresentação .pdf')
+        cy.documentosIdentidade(doc.rg)
         cy.get(path.generic.mensagemFechar).click({force: true});      
       });
 
@@ -67,7 +106,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
       it('Criar operação Enviar documento do tipo Registro RT', () => { 
         cy.login(usuario.cpf, usuario.senha)      
         cy.acessarPedido(idPrePedido)       
-        cy.enviarDocumentosRT('D:/Imagens para teste/Apresentação .pdf')
+        cy.enviarDocumentosRT(doc.rg)
         cy.get(path.generic.mensagemFechar).click({force: true});      
       });
 
@@ -79,24 +118,25 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
         cy.get(path.generic.mensagemFechar).click({force: true}); 
       });
       
-      // // ------ Criar operação Excluir Contato Celular -----//
-      // it('Criar operação Excluir Contato Celular', () => {
-      // cy.login(usuario.cpf, usuario.senha)  
-      // cy.acessarPedido(idPrePedido)        
-      // cy.excluirContatoCelular(fakerBr,'11952634251')   
-      // cy.get(path.generic.mensagemFechar).click();
+      // ------ Criar operação Excluir Contato Celular -----//
+      it('Criar operação Excluir Contato Celular', () => {
+        const celular = '11952634251'
+      cy.login(usuario.cpf, usuario.senha)  
+      cy.acessarPedido(idPrePedido)        
+      cy.excluirContatoCelular(fakerBr, celular)   
+      cy.get(path.generic.mensagemFechar).click();
       
-      // //TODO não está encontrando o titulo da página
-      // });
+      });
 
-      // // ------ Criar operação Excluir Contato Telefone -----//
-      // it('Criar operação Excluir Contato Telefone', () => {   
-      //   cy.login(usuario.cpf, usuario.senha)
-      //   cy.acessarPedido(idPrePedido)     
-      // cy.excluirContatoTelefone(fakerBr, '(11)2200-2200')  
-      // cy.get(path.generic.mensagemFechar).click();    
-      // //TODO  
-      // });
+      // ------ Criar operação Excluir Contato Telefone -----//
+      it('Criar operação Excluir Contato Telefone', () => {
+        const telefone = '(11)2200-2200';   
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)     
+      cy.excluirContatoTelefone(fakerBr, telefone)  
+      cy.get(path.generic.mensagemFechar).click();    
+      
+      });
       
       // ------ Criar operação Incluir Contato Telefone -----//
       it('Criar operação Incluir Contato Telefone', () => {   
@@ -128,76 +168,94 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
           cy.acessarPedido(idPrePedido)        
         cy.incluirEnderecoCorrespondencia(fakerBr)
         cy.get(path.generic.mensagemFechar).click({force: true});      
-      });       
+      });  
+
+     // ------- Criar operação Incluir Gestor Sócio ------// 
+      it('Criar operação Incluir Gestor Sócio', () => {
+        const gestor = {
+          cpfCnpj: '09562140709',
+          nome: 'Alan Maia',
+          cargo: 'Sócio',
+          telefone: '2188888888',
+          email: 'texte#@teste.com',
+          nascimento: '20/02/20000'
+        }
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)               
+        cy.incluirGestor(gestor, transportador.sigla)      
+      });
 
       // ------- Criar operação Incluir Gestor Responsável legal ------// 
       it('Criar operação Incluir Gestor Responsável legal', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)               
-        cy.incluirGestor(fakerBr,'Responsável legal', 'CTC')
+        const gestor = {
+          cpfCnpj: '86992187023',
+          nome: 'Alan Maia',
+          cargo: 'Responsável Legal',
+          telefone: '2188888888',
+          email: 'texte#@teste.com',
+          nascimento: '20/02/20000'
+        }
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)               
+      cy.incluirGestor(gestor, transportador.sigla)
         cy.get(path.generic.mensagemFechar).click({force: true});      
       }); 
-      
-          // ---------- Criar operação Incluir Responsável Técnico --------//
-      it('Criar operação Incluir Responsável Técnico', () => { 
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)        
-        cy.incluirResponsavelTecnico(fakerBr, faker)
-        cy.get(path.generic.mensagemFechar, {timeout:8000}).click({force: true});      
-      }); 
-      
-      // ------- Selecionar o sindicato responsável -------//        
-      it('Selecionar o sindicato responsável', () => {
-            cy.login(usuario.cpf, usuario.senha)
-            cy.acessarPedido(idPrePedido)          
-          cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
-          
-          cy.get(path.generic.title, {timeout: 10000})
-          .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
-          
-          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type('OCERGS').wait(2000)
-          cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
-          .click({force: true})         
 
-          // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
-          // .each((ele, index, list) => {
-          //     let value = ele.text()
-          //     if (value === 'FETAC-MG') 
-          //     cy.wrap($ele).click();     
-          // })
-          
-          cy.get(path.generic.tabela, {timeout: 30000})
-          .then((ele) => {
-            
-            cy.log(ele.text())
-            
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Alteração de Dados do Transportador (Gratuito)')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$0.00')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '1')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$0.00')
-          
-              
-              cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$0.00')          
-            
-          });
-          
-          cy.get(path.generic.botaoConfirmar).click({multiple: true});
+      // -------- Criar operação Incluir Filial ------//
+      it('Criar operação Incluir Filial', () => { 
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)        
+      cy.incluirFilial(fakerBr)
+      cy.get(path.generic.mensagemFechar).click({force: true});      
       });
       
+      // ---------- Criar operação Incluir Responsável Técnico --------//
+      it('Criar operação Incluir Responsável Técnico', () => { 
+    
+        const rt = {
+          cpf: '09562140709',
+          nome: 'Alan Maia',
+          identidade: '2334667895',
+          dataNascimento: '20/05/2005'
+
+        }
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)        
+      cy.incluirResponsavelTecnico(fakerBr, rt)
+      cy.get(path.generic.mensagemFechar, {timeout:8000}).click({force: true});      
+      }); 
       
-      // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
-      it('Validação e finalização do pre-pedido', () => {
+      // ---------- Criar operação Excluir Responsável Técnico --------//
+      it('Criar operação Excluir Responsável Técnico', () => { 
+    
+        const rt = {
+          cpf: '18024629534',
+          nome: 'DIVALDO JOSÉ MATOS DE LIMA',
+          identidade: '1674903',
+          dataNascimento: '20/05/2005'
+
+        }
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)        
+      cy.excluirResponsavelTecnico(fakerBr, rt)
+      cy.get(path.generic.mensagemFechar, {timeout:8000}).click({force: true});      
+      }); 
+});
+
+describe('Selecionar o sindicato e gerar valor e anexar documento no veiculo inválido', () => {
+    
+    // ------- Selecionar o sindicato responsável -------//        
+    it('Selecionar o sindicato responsável', () => {
           cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)  
-        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
-        .click({force: true});
+          cy.acessarPedido(idPrePedido)          
+        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
         
         cy.get(path.generic.title, {timeout: 10000})
-        .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
-
-        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type('OCERGS').wait(2000)
-        cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'OCERGS')
-        .click({force: true})
+        .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
+        
+        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+        cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
+        .click({force: true})         
 
         // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
         // .each((ele, index, list) => {
@@ -206,46 +264,87 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
         //     cy.wrap($ele).click();     
         // })
         
-        cy.get(path.generic.tabela, {timeout: 30000})        
+        cy.get(path.generic.tabela, {timeout: 30000})
         .then((ele) => {
           
           cy.log(ele.text())
           
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Alteração de Dados do Transportador (Gratuito)')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$0.00')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '1')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$0.00')          
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Alteração de Dados do Transportador (Gratuito)')
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$0.00')
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '1')
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$0.00')
+        
+            
+            cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$0.00')          
           
-        })
+        });
         
         cy.get(path.generic.botaoConfirmar).click({multiple: true});
-        cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
-        .should('have.text', 'Validação do Pedido');
-        
-        cy.get('.text-6').should('have.text', ' Atendimento Válido ');       
-        
-        cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
-        
-        cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
-        
-        cy.get(path.generic.tabela, {timeout: 30000})        
-        .then((ele) => {
-          
-          cy.log(ele.text())
-          
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Alteração de Dados do Transportador (Gratuito)')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$0.00')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '1')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$0.00')
-            
-            cy.get(path.generic.finalizar).click({force: true})
-
-            cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
-            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click({force: true})                     
-
-        })     
-      });  
+    });
+    
+    
+    // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
+    it('Validação e finalização do pre-pedido', () => {
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)  
+      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
+      .click({force: true});
       
+      cy.get(path.generic.title, {timeout: 10000})
+      .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
+
+      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+      cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
+      .click({force: true})
+
+      // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
+      // .each((ele, index, list) => {
+      //     let value = ele.text()
+      //     if (value === 'FETAC-MG') 
+      //     cy.wrap($ele).click();     
+      // })
+      
+      cy.get(path.generic.tabela, {timeout: 30000})        
+      .then((ele) => {
+        
+        cy.log(ele.text())
+        
+        cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Alteração de Dados do Transportador (Gratuito)')
+        cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$0.00')
+        cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '1')
+        cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$0.00')          
+        
+      })
+      
+      cy.get(path.generic.botaoConfirmar).click({multiple: true});
+      cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
+      .should('have.text', 'Validação do Pedido');
+      
+      cy.get('.text-6').should('have.text', ' Atendimento Válido ');       
+      
+      cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
+      
+      cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
+      
+      cy.get(path.generic.tabela, {timeout: 30000})        
+      .then((ele) => {
+        
+        cy.log(ele.text())
+        
+        cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Alteração de Dados do Transportador (Gratuito)')
+        cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$0.00')
+        cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '1')
+        cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$0.00')
+          
+          cy.get(path.generic.finalizar).click({force: true})
+
+          cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
+          cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click({force: true})                     
+
+      })     
+    });  
+    
+});
     
 
 });

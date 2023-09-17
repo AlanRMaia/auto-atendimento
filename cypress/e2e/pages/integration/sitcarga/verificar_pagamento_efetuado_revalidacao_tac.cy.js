@@ -35,11 +35,7 @@ var fakerBr = require('faker-br');
 
 describe('Grupo de teste Atendimento Renovação TAC', () => {  
 
-  beforeEach(() => { 
-
-    cy.fixture("data/images/imagem").then((imagem) => {
-      this.imagem = imagem
-    })
+  beforeEach(() => {     
     
     cy.fixture("data/doc/documentos").then((data) => {
       doc = data
@@ -84,10 +80,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         //selecionar o tipo de transportador Autônomo para a abertura do pre-pedido
         cy.get(path.criarPedidoPage.inputTipoTransportador)
           .click({force: true})
-          .get(
-            path.criarPedidoPage.tipoTransportador,
-            
-          ).contains('Autônomo').click({force: true})
+          .get(path.criarPedidoPage.tipoTransportador).contains('Autônomo').click({force: true})
         //inclusão de do cpf no input e submeter a requisição
         cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
@@ -209,11 +202,9 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
           cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
           
           cy.get(path.generic.title, {timeout: 10000})
-          .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
-          
-          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-          cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', sindicato.sigla)
-          //TODO lista virtual
+          .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)          
+          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+          cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)          
           .click({force: true})         
 
           // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
@@ -260,8 +251,8 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         cy.get(path.generic.title, {timeout: 10000})
         .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
 
-        cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type('FETAC-MG').wait(2000)
-        cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', 'FETAC-MG')
+        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+        cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
         .click({force: true})
 
         // cy.xpath('/html/body/div[8]/div', {timeout: 10000})
@@ -401,12 +392,12 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
             cy.get(':nth-child(1) > .m-r-sm').contains('ALAN RODRIGUES MAIA') 
             cy.get('.dropdown-toggle').click({force: true})           
             .get('#niveis-usuario > :nth-child(10) > a').click({force: true})
-            cy.get('.dropdown-toggle').should('have.text', 'FETAC-MG - Master ')
+            cy.get('.dropdown-toggle').should('have.text', `${sindicato.perfil} `)
 
             cy.get('#side-menu > :nth-child(9) > [href="#"]').contains('Financeiro').click({force: true})
             cy.get('.active > .nav > :nth-child(2) > a').contains('Consultar Pagamentos').click({force: true})
             cy.get(':nth-child(2) > .iradio_square-green > .iCheck-helper').click({force: true})
-            cy.get('#CPFCNPJ').type(cpfCnpj)
+            cy.get('#CPFCNPJ').type(transportador.cpfCnpj)
             cy.get('#btn-consultar').click()
             
           });

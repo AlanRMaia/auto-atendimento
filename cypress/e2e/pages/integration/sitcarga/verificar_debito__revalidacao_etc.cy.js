@@ -293,8 +293,8 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
             cy.get(path.generic.title, {timeout: 10000})
             .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
             
-            cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-            cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', sindicato.sigla)
+            cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+            cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
             .click({force: true})         
             
             cy.get(path.generic.tabela, {timeout: 30000})
@@ -334,8 +334,8 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           cy.get(path.generic.title, {timeout: 10000})
           .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
   
-          cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-          cy.xpath('/html/body/div[8]/div/div[2]/div[1]/div[2]/div/span', {timeout: 10000}).should('have.text', sindicato.sigla)
+          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+          cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
           .click({force: true})       
           
           cy.get(path.generic.tabela, {timeout: 30000})        

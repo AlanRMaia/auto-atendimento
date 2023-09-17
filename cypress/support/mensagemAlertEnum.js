@@ -6,5 +6,6 @@
     VeiculoAlteracaoSucesso: 'Alteração de veículo salva com sucesso!',
     VeiculoExcluidoSucesso: 'Exclusão de veículo salva com sucesso!',
     CRLVSucesso: 'CRLV incluído com sucesso!',
-    OperacaoCanceladaSucesso: 'Operação cancelada com sucesso!'
+    OperacaoCanceladaSucesso: 'Operação cancelada com sucesso!',
+    CadastroSucesso: 'Cadastro efetuado com sucesso.'
  };

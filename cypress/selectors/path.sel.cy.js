@@ -20,7 +20,8 @@ module.exports = {
     email: '[data-cy=email]',    
     perfilSitcarga: {
       SETCALOperador : ':nth-child(20) > a',
-      FETACMGMaster: '#niveis-usuario > :nth-child(10) > a'
+      FETACMGMaster: '#niveis-usuario > :nth-child(10) > a',
+      OCERGSMAster: '#niveis-usuario > li > a'
     },
         
     uf : [
@@ -273,7 +274,7 @@ module.exports = {
   },
 
   confirmarAtendimento: {
-    pontosAtendimento: '[data-cy=pontosAtendimento]',
+    
   },
 
   validacaoPedido: {
@@ -315,28 +316,28 @@ module.exports = {
     tipoTransportador: '[data-cy=tipoTransportador]',
     uf: '[data-cy=uf]',
     pontosAtendimentoList: '[data-cy=pontosAtendimentoList]',
-    sigla: '[data-cy=sigla]',
-    
+    sigla: '[data-cy=sigla]',    
   },
 
   sitcargaInitialPage: {
     imgLogon: '/content/img/sitcarga_logo.png',
     logon: '/html/body/div[2]/nav/div/div[1]/a/span/img',
     facaLogin: '/html/body/section[2]/div/div/div/div/div/div/h2',
-
-
   },
 
   sitcargaHomePage: {
     home: 'https://homologacao.sitcarga.com.br/home',
     imgLogon: '/Content/img/logo-sitcarga.png',
-    
-
   },
 
   sitcargaConsultaPagamentosPage: {
     pesquisaNossoNumero: ':nth-child(1) > .iradio_square-green > .iCheck-helper',
     pesquisaTransportador: ':nth-child(2) > .iradio_square-green > .iCheck-helper'
+  },
+
+  checkoutAtendimentoPage : {
+    listaSindicatos: 'div[class="q-virtual-scroll__content"]',
+    pontosAtendimento: '[data-cy=pontosAtendimento]',
   }
 
 };
