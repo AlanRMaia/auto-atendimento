@@ -21,6 +21,22 @@ let usuario;
     valorBoleto: '',
     situacao: ''    
   };
+
+  const gestor = {
+    cpfCnpj: '86992187023',
+    nome: 'Alan Maia',
+    cargo: 'Responsável Legal',
+    telefone: '2188888888',
+    email: 'texte#@teste.com',
+    nascimento: '20/02/20000'
+  }
+
+  const rt = {
+    cpf: '09562140709',
+    nome: 'Alan Maia',
+    identidade: '2334667895',
+    dataNascimento: '20/05/2005'
+  }
   
   const transportador = {
     cpfCnpj: "91.360.420/0001-34",
@@ -84,7 +100,7 @@ describe('Grupo de teste Atendimento Cadastro CTC', () => {
           //Clicar na opção Regularização RNTRC no menu lateral
           cy.regularizacao();
           //Selecionando o tipo de atendimento Cadastro
-          cy.get(path.regularizacaoPage.tipoAtendimentoCadastro).click({force: true});
+          cy.atendimentosRegularizacao('Novo RNTRC')
           //selecionar o tipo de transportador Empresa para a abertura do pre-pedido
           cy.get(path.criarPedidoPage.inputTipoTransportador).click({force: true})
             .get(path.criarPedidoPage.tipoTransportador).contains(transportador.tipo).click({force: true})
@@ -155,19 +171,11 @@ describe('Grupo de teste Atendimento Cadastro CTC', () => {
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
         cy.incluirEnderecoCorrespondencia(fakerBr)
-        //cy.get(path.generic.mensagemFechar).click({froce: true});      
+        cy.get(path.generic.mensagemFechar).click({froce: true});      
       });  
       
         // ------- Criar operação Incluir Gestor Responsável legal ------// 
-      it('Criar operação Incluir Gestor Responsável legal', () => {
-        const gestor = {
-          cpfCnpj: '86992187023',
-          nome: 'Alan Maia',
-          cargo: 'Responsável Legal',
-          telefone: '2188888888',
-          email: 'texte#@teste.com',
-          nascimento: '20/02/20000'
-        }
+      it('Criar operação Incluir Gestor Responsável legal', () => {       
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)               
       cy.incluirGestor(gestor, transportador.sigla)
@@ -213,12 +221,6 @@ describe('Grupo de teste Atendimento Cadastro CTC', () => {
       
       // ---------- Criar operação Incluir Responsável Técnico --------//
       it('Criar operação Incluir Responsável Técnico', () => {       
-        const rt = {
-          cpf: '09562140709',
-          nome: 'Alan Maia',
-          identidade: '2334667895',
-          dataNascimento: '20/05/2005'
-        }
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)        
       cy.incluirResponsavelTecnico(fakerBr, rt)

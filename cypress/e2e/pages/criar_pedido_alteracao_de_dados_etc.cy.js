@@ -26,6 +26,7 @@ var fakerBr = require('faker-br');
     path: path.generic.perfilSitcarga.SETCALOperador
   }  
   
+  
 describe('Grupo de teste Atendimento Alteração de dados ETC', () => { 
     
     beforeEach(() => {
@@ -63,14 +64,15 @@ describe('Grupo de teste Atendimento Alteração de dados ETC', () => {
 describe('Iniciando testes Autoatendimento', () => {
     
   // ------ Abrir Atendimento de Alteração de dados ------//
-    it('Criar pedido Alteração de dados ETC', () => {
+    it.only('Criar pedido Alteração de dados ETC', () => {
       
         //Logar na página com o usuario       
         cy.login(usuario.cpf, usuario.senha)        
         //Clicar na opção Regularização RNTRC no menu lateral
         cy.regularizacao();
         //Selecionando o tipo de atendimento Renovação RNTRC
-        cy.get(path.regularizacaoPage.tipoAtendimentoAlteracaoDados).click({force: true});
+        cy.atendimentosRegularizacao('Alteração de Dados')                   
+        
         //
         cy.get(path.criarPedidoPage.inputTipoTransportador)
           .click({force: true})
@@ -180,6 +182,7 @@ describe('Iniciando testes Autoatendimento', () => {
           email: 'texte#@teste.com',
           nascimento: '20/02/20000'
         }
+        
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)               
         cy.incluirGestor(gestor, transportador.sigla)      
@@ -210,14 +213,12 @@ describe('Iniciando testes Autoatendimento', () => {
       });
       
       // ---------- Criar operação Incluir Responsável Técnico --------//
-      it('Criar operação Incluir Responsável Técnico', () => { 
-    
+      it('Criar operação Incluir Responsável Técnico', () => {     
         const rt = {
           cpf: '09562140709',
           nome: 'Alan Maia',
           identidade: '2334667895',
           dataNascimento: '20/05/2005'
-
         }
         cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)        

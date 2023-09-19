@@ -195,151 +195,155 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         cy.anexarDocumentosVeiculo(doc, veiculo01 )
         cy.get(path.generic.mensagemFechar).click({force: true});      
       });
-      
-      // ------- Selecionar o sindicato e gerar valor -------//        
-      it('Selecionar o sindicato e gerar valor', () => {
-            cy.login(usuario.cpf, usuario.senha)
-            cy.acessarPedido(idPrePedido)          
-          cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
+
+      describe('', () => {
           
-          cy.get(path.generic.title, {timeout: 10000})
-          .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
-          
-          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-          cy.xpath(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
-          .click({force: true})         
-          
-          cy.get(path.generic.tabela, {timeout: 30000})
-          .then((ele) => {
-            
-            cy.log(ele.text())
-            
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
-          
-              cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
-              cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
-              cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
-              cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
-          
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
-              cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')          
-            
+          // ------- Selecionar o sindicato e gerar valor -------//        
+          it('Selecionar o sindicato e gerar valor', () => {
+                cy.login(usuario.cpf, usuario.senha)
+                cy.acessarPedido(idPrePedido)          
+              cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
+              
+              cy.get(path.generic.title, {timeout: 10000})
+              .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
+              
+              cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+              cy.xpath(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
+              .click({force: true})         
+              
+              cy.get(path.generic.tabela, {timeout: 30000})
+              .then((ele) => {
+                
+                cy.log(ele.text())
+                
+                  cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
+                  cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
+                  cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
+                  cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
+              
+                  cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
+                  cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
+                  cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
+                  cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
+              
+                  cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
+                  cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
+                  cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
+                  cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
+                  cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')          
+                
+              });
+              
+              cy.get(path.generic.botaoConfirmar).click({multiple: true});
           });
           
-          cy.get(path.generic.botaoConfirmar).click({multiple: true});
+          
+          // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
+          it('Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253', () => {
+              cy.login(usuario.cpf, usuario.senha)
+              cy.acessarPedido(idPrePedido)  
+            cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
+            .click({force: true});
+            
+            cy.get(path.generic.title, {timeout: 10000})
+            .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
+    
+            cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
+            cy.xpath(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
+            .click({force: true})       
+            
+            cy.get(path.generic.tabela, {timeout: 30000})        
+            .then((ele) => {
+              
+              cy.log(ele.text())
+              
+                cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
+                cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
+                cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
+                cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
+            
+                cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
+                cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
+                cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
+                cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
+            
+                cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
+                cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
+                cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
+                cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
+                cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')           
+              
+            })
+            
+            cy.get(path.generic.botaoConfirmar).click({multiple: true});
+            cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
+            .should('have.text', 'Validação do Pedido');
+            
+            cy.get('.text-6').should('have.text', ' Atendimento Inválido ');
+            
+            cy.get('.q-stepper__step-inner > .q-list > :nth-child(1) > .q-item__section > :nth-child(1)')
+            .should('have.text', 'Imagem de Contrato de Arrendamento Obrigatória.')
+            cy.get('.q-stepper__step-inner > .q-list > :nth-child(1) > .q-item__section > .q-item__label--caption')
+            .should('have.text', 'É necessário realizar upload do contrato de arrendamento para a placa BSG1253')
+            
+            cy.get('.q-stepper__step-inner > .q-list > :nth-child(3) > .q-item__section > :nth-child(1)')
+            .should('have.text', 'Imagem do CLRV Obrigatória.')
+            cy.get('.q-stepper__step-inner > .q-list > :nth-child(3) > .q-item__section > .q-item__label--caption')
+            .should('have.text', 'É necessário realizar upload do CLRV para a placa BSG1253')
+            
+            cy.get(path.generic.corrigir).click({force: true}) 
+            
+            cy.anexarDocumentosVeiculo(doc, veiculo03 )
+            
+            cy.get(path.generic.mensagemFechar, {timeout: 10000}).click({force: true}).wait(1000)
+            cy.get(path.generic.mensagemFechar,{timeout: 10000}).click({force: true})
+            
+            cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({multiple: true})        
+            
+            cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({multiple: true})
+            
+            cy.get('.text-6').should('have.text', ' Atendimento Válido ')
+            
+            cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
+            
+            cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
+            
+            cy.get(path.generic.tabela, {timeout: 30000})        
+            .then((ele) => {
+              
+              cy.log(ele.text())
+              
+                cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
+                cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
+                cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
+                cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
+            
+                cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
+                cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
+                cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
+                cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
+            
+                cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
+                cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
+                cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
+                cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
+                cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')           
+    
+                cy.get(path.generic.email).type(faker.internet.email())
+    
+                cy.get(path.generic.finalizar).click({force: true})
+    
+                cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
+                cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click({force: true})
+    
+                cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
+    
+                cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')          
+    
+            })     
+          });  
       });
       
-      
-      // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
-      it('Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)  
-        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
-        .click({force: true});
-        
-        cy.get(path.generic.title, {timeout: 10000})
-        .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
-
-        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-        cy.xpath(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
-        .click({force: true})       
-        
-        cy.get(path.generic.tabela, {timeout: 30000})        
-        .then((ele) => {
-          
-          cy.log(ele.text())
-          
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
-        
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
-        
-            cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-            cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-            cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
-            cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')           
-          
-        })
-        
-        cy.get(path.generic.botaoConfirmar).click({multiple: true});
-        cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
-        .should('have.text', 'Validação do Pedido');
-        
-        cy.get('.text-6').should('have.text', ' Atendimento Inválido ');
-        
-        cy.get('.q-stepper__step-inner > .q-list > :nth-child(1) > .q-item__section > :nth-child(1)')
-        .should('have.text', 'Imagem de Contrato de Arrendamento Obrigatória.')
-        cy.get('.q-stepper__step-inner > .q-list > :nth-child(1) > .q-item__section > .q-item__label--caption')
-        .should('have.text', 'É necessário realizar upload do contrato de arrendamento para a placa BSG1253')
-        
-        cy.get('.q-stepper__step-inner > .q-list > :nth-child(3) > .q-item__section > :nth-child(1)')
-        .should('have.text', 'Imagem do CLRV Obrigatória.')
-        cy.get('.q-stepper__step-inner > .q-list > :nth-child(3) > .q-item__section > .q-item__label--caption')
-        .should('have.text', 'É necessário realizar upload do CLRV para a placa BSG1253')
-        
-        cy.get(path.generic.corrigir).click({force: true}) 
-        
-        cy.anexarDocumentosVeiculo(doc, veiculo03 )
-        
-        cy.get(path.generic.mensagemFechar, {timeout: 10000}).click({force: true}).wait(1000)
-        cy.get(path.generic.mensagemFechar,{timeout: 10000}).click({force: true})
-        
-        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({multiple: true})        
-        
-        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({multiple: true})
-        
-        cy.get('.text-6').should('have.text', ' Atendimento Válido ')
-        
-        cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
-        
-        cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
-        
-        cy.get(path.generic.tabela, {timeout: 30000})        
-        .then((ele) => {
-          
-          cy.log(ele.text())
-          
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
-        
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Revalidação de Transportador (Gratuito)')
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
-        
-            cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-            cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-            cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
-            cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')           
-
-            cy.get(path.generic.email).type(faker.internet.email())
-
-            cy.get(path.generic.finalizar).click({force: true})
-
-            cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
-            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click({force: true})
-
-            cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
-
-            cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')          
-
-        })     
-      });  
       
        // ----- Finalizar o pedido ----//
     it('Meio de pagamento', () => {

@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
-import mensagem from "../../../../support/mensagemAlertEnum";
-import urls from '../../../../support/urls';
+import mensagem from "../../support/mensagemAlertEnum";
+import urls from '../../support/urls';
 var fakerBr = require('faker-br');
 
   let usuario;
@@ -24,11 +24,18 @@ var fakerBr = require('faker-br');
     valorBoleto: '',
     situacao: ''    
   };
+  
+  const rt = {
+    cpf: '09562140709',
+    nome: 'Alan Maia',
+    identidade: '2334667895',
+    dataNascimento: '20/05/2005'
+  }
   const transportador = {
-    cpfCnpj: "02.672.529/0001-87",
-    nome: "ETC - PARQUE DE VAQUEJADA MARIA DO CARMO LTDA",
-    rntrc: "007675513 ",
-    situacao: "VENCIDO",
+    cpfCnpj: "47.290.243/0001-75",
+    nome: "PREMIUM INDUSTRIA DE SEMI-REBOQUES LTDA",
+    rntrc: "056266044",
+    situacao: "",
     saldo: "R$ 0,00",
     sigla: "ETC",
     tipo: "Empresa"
@@ -76,16 +83,14 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
     });
     
   describe('iniciando os testes no Ambiente do Autoatendimento', () => {
-      
       // ------ Abrir Atendimento de Renovação ------//
-      it.only('Acessando a página e criando pedido Cadastro ETC', () => {
-        cy.log(`${Cypress.env('ENVIRONMENT')}`)
+      it('Acessando a página e criando pedido Cadastro ETC', () => {
           //Logar na página com o usuario       
           cy.login(usuario.cpf, usuario.senha)       
           //Clicar na opção Regularização RNTRC no menu lateral
           cy.regularizacao();
           //Selecionando o tipo de atendimento Cadastro
-          cy.get(path.regularizacaoPage.tipoAtendimentoCadastro).click({force: true});
+          cy.atendimentosRegularizacao('Novo RNTRC')                   
           //selecionar o tipo de transportador Empresa para a abertura do pre-pedido
           cy.get(path.criarPedidoPage.inputTipoTransportador)
             .click({force: true})
@@ -160,8 +165,15 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
           //cy.get(path.generic.mensagemFechar).click({froce: true});      
         });  
 
+        //-------- Criar operação Incluir Endereço Comercial --------//
+        it('Criar operação Incluir Endereço Comercial', () => { 
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)        
+        cy.incluirEnderecoComercial(fakerBr)
+        //cy.get(path.generic.mensagemFechar).click({froce: true});      
+      });  
         // ------- Criar operação Incluir Gestor Sócio------// 
-        it('Criar operação Incluir Gestor Sócio', () => {
+        it('Criar operação Incluir Gestor Sócio', () => {  
           const gestor = {
             cpfCnpj: '09562140709',
             nome: 'Alan Maia',
@@ -169,7 +181,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
             telefone: '2188888888',
             email: 'texte#@teste.com',
             nascimento: '20/02/20000'
-          }
+          }        
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)               
         cy.incluirGestor(gestor, transportador.sigla)
@@ -177,7 +189,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
       }); 
       
           // ------- Criar operação Incluir Gestor Responsável legal ------// 
-        it('Criar operação Incluir Gestor Responsável legal', () => {
+        it('Criar operação Incluir Gestor Responsável legal', () => {  
           const gestor = {
             cpfCnpj: '86992187023',
             nome: 'Alan Maia',
@@ -185,7 +197,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
             telefone: '2188888888',
             email: 'texte#@teste.com',
             nascimento: '20/02/20000'
-          }
+          }        
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)               
         cy.incluirGestor(gestor, transportador.sigla)
@@ -230,18 +242,20 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
         });
         
         // ---------- Criar operação Incluir Responsável Técnico --------//
-        it('Criar operação Incluir Responsável Técnico', () => {       
-          const rt = {
-            cpf: '09562140709',
-            nome: 'Alan Maia',
-            identidade: '2334667895',
-            dataNascimento: '20/05/2005'
-          }
+        it('Criar operação Incluir Responsável Técnico', () => {   
+          
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
         cy.incluirResponsavelTecnico(fakerBr, rt)
         cy.get(path.generic.mensagemFechar, {timeout:8000}).click({force: true});      
-        });      
+        }); 
+        
+        it('Criar operação Enviar documentos do tipo Identidade RT', () => {  
+          cy.login(usuario.cpf, usuario.senha)      
+          cy.acessarPedido(idPrePedido)      
+          cy.enviarDocumentosRT(doc.rg)
+          cy.get(path.generic.mensagemFechar).click({force: true});      
+          });
 
   });
   describe('Selecionar o sindicato e gerar valor e anexar documento no veiculo inválido', () => {
@@ -255,8 +269,8 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
         cy.get(path.generic.title, {timeout: 10000})
         .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
     
-        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-        cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
+        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().click({force: true})
+        cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
         .click({force: true})
         
         // cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).wait(2000)
@@ -304,8 +318,8 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
           cy.get(path.generic.title, {timeout: 10000})
           .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
     
-          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-          cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
+          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().click({force: true})
+          cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
           .click({force: true})
     
           // cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).wait(2000)
@@ -357,10 +371,9 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
           
           cy.get(path.generic.corrigir).click({force: true}) 
           
-          cy.anexarDocumentosVeiculo(selectFileBSG1253, veiculoBSG1253 )
+          cy.anexarDocumentosVeiculo(doc, veiculo03 )
           
-          cy.get(path.generic.mensagemFechar, {timeout: 10000}).click({force: true}).wait(1000)
-          cy.get(path.generic.mensagemFechar,{timeout: 10000}).click({force: true})
+          cy.get(path.generic.mensagemFechar,{timeout: 10000}).click({multiple: true}, {timeout: 10000})
           
           cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})        
           

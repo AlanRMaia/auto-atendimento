@@ -17,7 +17,8 @@ module.exports = {
     isLoading: '[data-cy=isLoading]',
     alert: '[data-cy=alert]',
     pagamento: '[data-cy=pagamento]',
-    email: '[data-cy=email]',    
+    email: '[data-cy=email]',
+    listaVirtual: 'div[class="q-virtual-scroll__content"]',    
     perfilSitcarga: {
       SETCALOperador : ':nth-child(20) > a',
       FETACMGMaster: '#niveis-usuario > :nth-child(10) > a',
@@ -96,10 +97,8 @@ module.exports = {
   },
   regularizacaoPage: {
     //tipoAtendimento: '[data-cy=tipoAtendimento]',
-    tipoAtendimentoCadastro: '.text-size-16 > :nth-child(1)',
-    tipoAtendimentoRenovacao: '.text-size-16 > :nth-child(2)',
-    tipoAtendimentoInclusaoVeiculo: '.text-size-16 > :nth-child(4)',
-    tipoAtendimentoAlteracaoDados: '.text-size-16 > :nth-child(3)'
+    listaAtendimento: '[data-cy=atendimentosRegularizacao]',
+    atendimento: '[data-cy=atendimento]'    
   },
   consultaRNTRCPage: {
     radioPorTransportador: '[data-cy=radioPorTransportador]',
@@ -198,6 +197,7 @@ module.exports = {
     documentoIdentidade: 'div[class="q-virtual-scroll__content"]',
     anexarDocumento: '[data-cy=documento]',
     tipoDocumento :  '[data-cy=tipoDocumento]',
+
   },
 
   operacaoContato:{
@@ -227,7 +227,7 @@ module.exports = {
 
   operacaoGestor: {
     tipoVinculo: '[data-cy=tipoVinculo]',
-    cpfCnpj: '[data-cy=cpfCnpj]',
+    cpfCnpj: '[data-cy=jujuba2]',
     nome: '[data-cy=nome]',
     email: '[data-cy=email]',
     telefone: '[data-cy=telefone]',

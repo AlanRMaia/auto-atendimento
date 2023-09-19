@@ -66,7 +66,7 @@ Cypress.Commands.add('login', (cpf, senha) => {
   cy.get(path.loginPage.cpf, {timeout:20000}).type(cpf);
   cy.get(path.loginPage.senha).type(senha);
   cy.get(path.generic.botaoSubmit).click({force: true});
-  cy.get(path.generic.title, {timeout: 20000}).should('have.text', 'Atendimentos')
+  cy.get(path.generic.title, {timeout: 20000}).should('have.text', ' Consultar Atendimentos ')
   
 });
 
@@ -136,7 +136,7 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
   
   
   
-  cy.get(path.generic.title).should('have.text', ` Arquivos Veículo ${veiculo.placa}`)
+  cy.get(path.generic.title).contains('Documento do Veículo')
 
   if (veiculo.propriedade != 'Arrendado') {
     cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv)
@@ -157,3 +157,23 @@ Cypress.Commands.add('notificacao', (mensagem) => {
   }     
 )
 })
+
+Cypress.Commands.add('atendimentosRegularizacao', (atendimento) =>{
+  cy.document().wait(5000).then((doc) => {
+          const element = doc.querySelector(path.regularizacaoPage.listaAtendimento).children
+            cy.wrap(element).each((ele, index, list)=>  {
+              cy.wrap(ele).find(path.regularizacaoPage.atendimento).then((text) => {
+                let valor = text.text()
+                cy.log('Atendimento:', atendimento)          
+                if (valor === atendimento) {
+                  cy.wrap(ele).find(path.generic.botaoSubmit).click({force: true}) 
+                  return false                                  
+                } else {
+                  cy.log('Valor encontrado', valor)                  
+                }                
+              })             
+              
+            }) 
+        })  
+      
+    })

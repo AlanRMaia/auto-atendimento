@@ -1,5 +1,13 @@
 //Ambiente de desenvolvimento
 var dev = {
+  login: 'login',
+ atendimentos: 'login',
+ regularizacao: 'regularizacao',
+ home: '/',
+ sitcargaInitial: 'https://homologacao.sitcarga.com.br/',
+ sitcargaHome: 'https://homologacao.sitcarga.com.br/home'
+}
+var test = {
    login: 'login',
   atendimentos: 'login',
   regularizacao: 'regularizacao',
@@ -19,7 +27,7 @@ var homolog = {
 
 //serve para trocar o ambiente para teste, se for no ambiente de desenvolvimento coloque a variável dev, se for homologação coloque homolog
 
-var ambiente = Cypress.env('ENVIRONMENT') === 'homolog'? homolog : dev;
+var ambiente = Cypress.env('ENVIRONMENT') === 'dev'? dev : test;
 
 module.exports = {  
   login : ambiente.login,

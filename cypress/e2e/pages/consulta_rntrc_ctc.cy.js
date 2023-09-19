@@ -17,7 +17,7 @@ describe('', () => {
     it('Consultando Empresa pela localidade ', () => {
 
         cy.login(usuario.cpf, usuario.senha)        
-        //Clicar na opção COnsulta RNTRC no menu lateral
+        //Clicar na opção Consulta RNTRC no menu lateral
         cy.consultaRNTRC()
         cy.get(path.consultaRNTRCPage.radioPorLocalidade).click({force:true});
 

@@ -81,7 +81,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
         //Clicar na opção Regularização RNTRC no menu lateral
         cy.regularizacao();
         //Selecionando o tipo de atendimento Cadastro
-        cy.get(path.regularizacaoPage.tipoAtendimentoCadastro).click({force: true});
+        cy.atendimentosRegularizacao('Novo RNTRC')
         //selecionar o tipo de transportador Autônomo para a abertura do pre-pedido
         cy.get(path.criarPedidoPage.inputTipoTransportador)
           .click({force: true})

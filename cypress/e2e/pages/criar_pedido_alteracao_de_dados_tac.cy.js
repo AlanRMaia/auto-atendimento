@@ -72,7 +72,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           //Clicar na opção Regularização RNTRC no menu lateral
           cy.regularizacao();
           //Selecionando o tipo de atendimento Renovação RNTRC
-          cy.get(path.regularizacaoPage.tipoAtendimentoAlteracaoDados).click({force: true});
+          cy.atendimentosRegularizacao('Alteração de Dados')         
           //
           cy.get(path.criarPedidoPage.inputTipoTransportadorTransportador)
             .click({force: true})

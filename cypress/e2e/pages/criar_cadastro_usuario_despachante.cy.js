@@ -4,15 +4,15 @@ import { faker } from '@faker-js/faker';
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 import urls from '../../support/urls';
+var fakerBr = require('faker-br');
 
 let usuario;
-var fakerBr = require('faker-br');
 
 
 describe('', () => {
     beforeEach(() => {
         cy.viewport(1920, 1080)
-        cy.fixture('usuarioDespachante01').then((data) => {
+        cy.fixture('usuario').then((data) => {
             usuario = data;
           });
     });
@@ -20,13 +20,13 @@ describe('', () => {
     
     it('Acesso a página home e clicar em Cadastre-se', () => {
         cy.visit(urls.home)
-        cy.get(path.institucionalPage.cadastro).should('have.text', 'Cadastre-se').click({force: true})  
+        cy.get(path.institucionalPage.cadastro).contains('Cadastre-se').click({force: true})  
         cy.get(path.loginCadatsro.sejaBemVindo, {timeout: 20000}).should('have.text', ' Seja bem-vindo(a)! ')  
     });
 
     it('Preencher o formulário e clicar em Cadastrar', () => {
         cy.visit(urls.home)
-        cy.get(path.institucionalPage.cadastro).should('have.text', 'Cadastre-se').click({force: true})  
+        cy.get(path.institucionalPage.cadastro).contains('Cadastre-se').click({force: true})  
         cy.get(path.loginCadatsro.sejaBemVindo, {timeout: 20000}).should('have.text', ' Seja bem-vindo(a)! ')
         cy.get(path.loginCadatsro.nome).type(usuario.nome)
         cy.get(path.loginCadatsro.cpf).type(fakerBr.br.cpf())
@@ -40,10 +40,13 @@ describe('', () => {
         cy.notificacao(mensagem.CadastroSucesso)
     });
 
-    it.only('Clicando no link Faça login', () => {
+    it('Clicando no link Faça login', () => {
         cy.visit(urls.home)
-        cy.get(path.institucionalPage.cadastro).should('have.text', 'Cadastre-se').click({force: true})  
-        cy.get(path.loginCadatsro.sejaBemVindo, {timeout: 20000}).should('have.text', ' Seja bem-vindo(a)! ')
+        cy.get(path.institucionalPage.login).contains('Entrar').click({force: true})  
+        cy.get(path.loginPage.sejaBemVindo, {timeout: 20000}).should('have.text', ' Seja bem-vindo(a)! ')
+        cy.get(path.loginPage.cpf).type(usuario.cpf)
+        cy.get(path.loginPage.senha).type(usuario.senha)
+        cy.get(path.generic.botaoSubmit).click({force: true});
 
         cy.get(path.loginCadatsro.facaLogin).should('have.text', 'Faça o login').click({force: true})
     });
