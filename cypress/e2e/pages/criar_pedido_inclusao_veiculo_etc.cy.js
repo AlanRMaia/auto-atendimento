@@ -9,7 +9,7 @@ let usuario;
   let veiculo04;
   let veiculo05;
   let doc; 
-  let idPrePedido = '2071488';
+  let idPrePedido = '2071073';
   let boleto = {
     codigoBarra : '',
     nossoNumero : '',
@@ -48,8 +48,8 @@ beforeEach(() => {
 
   })
 
-  cy.fixture("data/veiculos/DDD4654").then((dda4654) => {
-    veiculo02 = dda4654
+  cy.fixture("data/veiculos/DAY7G42").then((day7g42) => {
+    veiculo02 = day7g42
     veiculo02.crlv = doc.crlv
     veiculo02.contrato = doc.contrato
   })
@@ -82,9 +82,9 @@ beforeEach(() => {
   
 });
 describe('Grupo de testes para inclusão de veículo ETC', () => {
-  describe('Iniciando os testes para a criação do pedido e inclusão das operações', () => {
+  describe.only('Iniciando os testes para a criação do pedido e inclusão das operações', () => {
       
-    it.only('Inclusão de veiculo Cadastro ativo placa próprio', () => {
+    it('Inclusão de veiculo Cadastro ativo placa próprio', () => {
       cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)
        //Logar na página com o usuario       
        cy.login(usuario.cpf, usuario.senha)       
@@ -108,52 +108,42 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
        })  
 
     });
-         //----- inclusão de veiculo AOS3628 ------//
-
-    it('inclusão de veiculo IAQ9412', () =>  {
-        cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)
-         //----- inclusão de veiculo AOS3628 ------//
-         cy.incluirVeiculo(veiculo01)
-         cy.notificacao(mensagem.VeiculoSalvoSucesso)
-         //----- Anexar documentos -----//
-        cy.anexarDocumentosVeiculo(doc, veiculo01)
-        cy.get(path.generic.mensagemFechar, {timeout: 5000}).click({force: true})
-    })
-        //----- inclusão de veiculo IAQ9412 -----//
-
-    it('inclusão de veiculo DDD4654', () => {
-        cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)
-        //----- inclusão de veiculo IAQ9412 -----//
+         // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
+        it.only('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)          
+        cy.incluirVeiculo(veiculo01)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)     
+        
         cy.incluirVeiculo(veiculo02)
-        cy.notificacao(mensagem.VeiculoSalvoSucesso)
-        //----- Anexar documetnos -----//
-        cy.anexarDocumentosVeiculo(doc, veiculo02)
-        cy.get(path.generic.mensagemFechar, {timeout: 5000}).click({force: true})
-    })
-        //----- Exclusão de veiculo CPJ3491 -----//
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)             
+        cy.anexarDocumentosVeiculo(doc, veiculo02 )
+        cy.notificacao(mensagem.CRLVSucesso)  
+      });     
+      
+      // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
+      it.only('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)        
+        cy.incluirVeiculo(veiculo03)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)      
+      }); 
+      
+      // --------- Anexar crlv na operação de inclusão de veículo -------//        
+      it.only('Anexar crlv na operação de inclusão de veículo', () => {
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)          
+        cy.anexarDocumentosVeiculo(doc, veiculo01 )
+        cy.notificacao(mensagem.CRLVSucesso)      
+      });
 
-    it('Exclusão de veiculo MCK8858', () => {
+      // --------- Anexar crlv na operação de inclusão de veículo -------//        
+      it.only('Anexar crlv na operação de inclusão de veículo', () => {
         cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)
-        //----- Exclusão de veiculo CPJ3491 -----//
-        cy.excluirVeiculo(veiculo04)
-        cy.notificacao(mensagem.VeiculoExcluidoSucesso)
-        cy.get(path.generic.mensagemFechar, {timeout: 5000}).click({force: true})
-    })
-        //----- ALteração de veiculo CDF1258 -----//
-
-    it('Alteração de veiculo GFV9E78', () => {
-        cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)
-        //----- ALteração de veiculo CDF1258 -----//
-        cy.alterarVeiculo(veiculo05)
-        cy.notificacao(mensagem.VeiculoAlteracaoSucesso)
-        //----- Anexar documetnos -----//
-        cy.anexarDocumentosVeiculo(doc, veiculo05)
-        cy.notificacao(mensagem.CRLVSucesso)
-    })
+        cy.acessarPedido(idPrePedido)          
+      cy.anexarDocumentosVeiculo(doc, veiculo03 )
+      cy.notificacao(mensagem.CRLVSucesso)      
+    });
   });
 
   describe('Validação do pedido e inclusão do sindicato', () => {

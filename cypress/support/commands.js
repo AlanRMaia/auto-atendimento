@@ -139,7 +139,7 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
   cy.get(path.generic.title).contains('Documento do Veículo')
 
   if (veiculo.propriedade != 'Arrendado') {
-    cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv)
+    cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv, {force: true})
   } else {
     cy.get(path.anexarDocumentoVeiculo.contratoArrendamento, {timeout: 10000})
     .selectFile(selectFile.contrato)
@@ -150,16 +150,26 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
   })
 
 
-Cypress.Commands.add('notificacao', (mensagem) => {
-  cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).then((element) => {      
-    expect(mensagem).to.be.equal(element.text())
-    cy.get(path.generic.mensagemFechar).click({force: true});      
-  }     
-)
+Cypress.Commands.add('notificacao', (mensagem, arquivo) => {
+  if (typeof arquivo === "undefined") {
+    cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).then((element) => {      
+      expect(mensagem).to.be.equal(element.text())
+      cy.get(path.generic.mensagemFechar).click({force: true});      
+    }     
+  )
+  } else {
+    const caminho = require('path')
+    cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).then((element) => {      
+      expect(`Arquivo ${caminho.basename(arquivo)} ${mensagem}`).to.be.contains(element.text())
+      cy.get(path.generic.mensagemFechar).click({force: true});      
+    }     
+  )
+  }
+  
 })
 
 Cypress.Commands.add('atendimentosRegularizacao', (atendimento) =>{
-  cy.document().wait(5000).then((doc) => {
+  cy.document().wait(10000).then((doc) => {
           const element = doc.querySelector(path.regularizacaoPage.listaAtendimento).children
             cy.wrap(element).each((ele, index, list)=>  {
               cy.wrap(ele).find(path.regularizacaoPage.atendimento).then((text) => {

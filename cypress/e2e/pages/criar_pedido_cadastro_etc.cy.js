@@ -11,7 +11,7 @@ var fakerBr = require('faker-br');
   let veiculo03;
   let doc; 
   let cpfCnpj = '02.672.529/0001-87';
-  let idPrePedido = '2071488';
+  let idPrePedido = '2071071';
   let codigoBarra = '03399841145810000015580180001010794340000046200';
   let nossoNumero = ''
   let boleto = {
@@ -82,7 +82,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
       cy.wait(2000)  
     });
     
-  describe('iniciando os testes no Ambiente do Autoatendimento', () => {
+  describe.only('iniciando os testes no Ambiente do Autoatendimento', () => {
       // ------ Abrir Atendimento de Renovação ------//
       it('Acessando a página e criando pedido Cadastro ETC', () => {
           //Logar na página com o usuario       
@@ -108,11 +108,10 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
         
       });
         
-        // ------ Criar operação Salvar transportador -----//
-        it('Criar operação Salvar transportador', () => { 
+         // ------ Criar operação Salvar transportador -----//
+         it('Criar operação Salvar transportador', () => { 
           cy.login(usuario.cpf, usuario.senha) 
-          cy.acessarPedido(idPrePedido)   
-          
+          cy.acessarPedido(idPrePedido)            
           cy.operacaoTransportador(faker, transportador.sigla, idPrePedido)
           cy.notificacao(mensagem.TransportadorSucesso)      
         });
@@ -122,7 +121,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
         cy.login(usuario.cpf, usuario.senha)      
         cy.acessarPedido(idPrePedido)      
         cy.documentosIdentidade(doc.rg)
-        cy.get(path.generic.mensagemFechar).click({force: true});      
+        cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)
         });
 
         // ------ Criar operação Incluir Contato Email ------//
@@ -133,6 +132,13 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
         cy.get(path.generic.mensagemFechar).click({force: true}); 
         });
         
+        // ------ Criar operação Incluir Contato Email ------//
+        it('Criar operação Incluir Contato Email', () => { 
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)       
+          cy.incluirContatoEmail(faker)
+          cy.get(path.generic.mensagemFechar).click({force: true}); 
+          });
         // ------ Criar operação Incluir Contato Celular -----//
         it('Criar operação Incluir Contato Celular', () => {
         cy.login(usuario.cpf, usuario.senha)  
@@ -167,13 +173,14 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
 
         //-------- Criar operação Incluir Endereço Comercial --------//
         it('Criar operação Incluir Endereço Comercial', () => { 
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)        
-        cy.incluirEnderecoComercial(fakerBr)
-        //cy.get(path.generic.mensagemFechar).click({froce: true});      
-      });  
+            cy.login(usuario.cpf, usuario.senha)
+            cy.acessarPedido(idPrePedido)        
+          cy.incluirEnderecoComercial(fakerBr)
+          //cy.get(path.generic.mensagemFechar).click({froce: true});      
+        });
+
         // ------- Criar operação Incluir Gestor Sócio------// 
-        it('Criar operação Incluir Gestor Sócio', () => {  
+        it('Criar operação Incluir Gestor Sócio', () => {
           const gestor = {
             cpfCnpj: '09562140709',
             nome: 'Alan Maia',
@@ -181,15 +188,16 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
             telefone: '2188888888',
             email: 'texte#@teste.com',
             nascimento: '20/02/20000'
-          }        
+          }
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)               
         cy.incluirGestor(gestor, transportador.sigla)
-        //cy.get(path.generic.mensagemFechar).click({force: true});      
-      }); 
-      
+        cy.notificacao(mensagem.DadosSalvoSucesso)     
+              
+      });       
+     
           // ------- Criar operação Incluir Gestor Responsável legal ------// 
-        it('Criar operação Incluir Gestor Responsável legal', () => {  
+        it('Criar operação Incluir Gestor Responsável legal', () => {
           const gestor = {
             cpfCnpj: '86992187023',
             nome: 'Alan Maia',
@@ -197,24 +205,26 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
             telefone: '2188888888',
             email: 'texte#@teste.com',
             nascimento: '20/02/20000'
-          }        
+          }
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)               
         cy.incluirGestor(gestor, transportador.sigla)
-        cy.get(path.generic.mensagemFechar).click({force: true});      
-      });   
+        cy.notificacao(mensagem.DadosSalvoSucesso)     
+              
+      });  
+    
         
         // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
         it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
             cy.login(usuario.cpf, usuario.senha)
             cy.acessarPedido(idPrePedido)          
           cy.incluirVeiculo(veiculo01)
-          cy.get(path.generic.mensagemFechar).click({force: true});      
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)     
           
           cy.incluirVeiculo(veiculo02)
-          cy.get(path.generic.mensagemFechar).click({force: true});  
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)             
           cy.anexarDocumentosVeiculo(doc, veiculo02 )
-          cy.get(path.generic.mensagemFechar).click({force: true});  
+          cy.notificacao(mensagem.CRLVSucesso)  
         });     
         
         // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
@@ -222,7 +232,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
             cy.login(usuario.cpf, usuario.senha)
             cy.acessarPedido(idPrePedido)        
           cy.incluirVeiculo(veiculo03)
-          cy.get(path.generic.mensagemFechar).click({force: true});      
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)      
         }); 
         
         // --------- Anexar crlv na operação de inclusão de veículo -------//        
@@ -230,8 +240,16 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
             cy.login(usuario.cpf, usuario.senha)
             cy.acessarPedido(idPrePedido)          
           cy.anexarDocumentosVeiculo(doc, veiculo01 )
-          cy.get(path.generic.mensagemFechar).click({force: true});      
+          cy.notificacao(mensagem.CRLVSucesso)      
         });
+
+        // --------- Anexar crlv na operação de inclusão de veículo -------//        
+        it.only('Anexar crlv na operação de inclusão de veículo', () => {
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)          
+        cy.anexarDocumentosVeiculo(doc, veiculo03 )
+        cy.notificacao(mensagem.CRLVSucesso)      
+      });
 
         // -------- Criar operação Incluir Filial ------//
         it('Criar operação Incluir Filial', () => { 
@@ -242,19 +260,26 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
         });
         
         // ---------- Criar operação Incluir Responsável Técnico --------//
-        it('Criar operação Incluir Responsável Técnico', () => {   
-          
+        it('Criar operação Incluir Responsável Técnico', () => { 
+      
+          const rt = {
+            cpf: '09562140709',
+            nome: 'Alan Maia',
+            identidade: '2334667895',
+            dataNascimento: '20/05/2005'  
+          }
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
         cy.incluirResponsavelTecnico(fakerBr, rt)
         cy.get(path.generic.mensagemFechar, {timeout:8000}).click({force: true});      
-        }); 
-        
-        it('Criar operação Enviar documentos do tipo Identidade RT', () => {  
+        });        
+
+         // ------ Criar operação Documentos Responsável Técnico -----//              
+         it('Criar operação Documentos Responsável Técnico', () => {  
           cy.login(usuario.cpf, usuario.senha)      
           cy.acessarPedido(idPrePedido)      
           cy.enviarDocumentosRT(doc.rg)
-          cy.get(path.generic.mensagemFechar).click({force: true});      
+          cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)
           });
 
   });

@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
+var fakerBr = require('faker-br');  
 
 let usuario;
 let veiculo01;
@@ -9,7 +10,7 @@ let veiculo02;
 let veiculo03;
 let doc; 
 let cpfCnpj = '346.575.509-00';
-let idPrePedido = '2071477';
+let idPrePedido = '2071074';
 let codigoBarra = '03399841145810000015580180001010794340000046200';
 let nossoNumero = ''
 let boleto = {
@@ -23,9 +24,9 @@ let boleto = {
   situacao: ''    
 };
 const transportador = {
-  cpfCnpj: "346.575.509-00",
-  nome: "TAC - ODACIR NUNES PIRES",
-  rntrc: "000010024",
+  cpfCnpj: "253.635.438-50",
+  nome: "TAC - MARIA APARECIDA PEDROSO",
+  rntrc: "002331850",
   situacao: "VENCIDO",
   saldo: "R$ 0,00",
   sigla: "TAC",
@@ -70,124 +71,202 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
     cy.viewport(1920, 1080);
     cy.wait(2000) 
   }); 
-      // ------ Abrir Atendimento de Renovação ------//
-      it('Acessando a página e criando pedido', () => {
-        //Logar na página com o usuario       
-      cy.login(usuario.cpf, usuario.senha)       
-      //Clicar na opção Regularização RNTRC no menu lateral
-      cy.regularizacao();
-      //Selecionando o tipo de atendimento Renovação RNTRC
-      cy.atendimentosRegularizacao('Renovação RNTRC')
-      //selecionar o tipo de transportador Autônomo para a abertura do pre-pedido
-      cy.get(path.criarPedidoPage.inputTipoTransportador)
-        .click({force: true})
-        .get(path.criarPedidoPage.tipoTransportador).contains(transportador.tipo).click({force: true})
-      //inclusão de do cpf no input e submeter a requisição
-      cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
-      cy.get(path.generic.botaoSubmit).click({ force: true });
-      //validando a mensagem da notificação "Atendimento Criado com Sucesso!"
-      cy.notificacao(mensagem.AtendimentoCriadoSucesso)    
-      //Validando se foi aberto o pre-pedido, acessando ele e, verificando se no titulo o ID confere com o que foi gerado na abertura   
-      cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
-        idPrePedido = element.text().substring(1);
-        expect(element.text()).to.be.equal(`#${idPrePedido}`)
-      })
-    
-    });
-      
-      // ------ Criar operação Salvar transportador -----//
-      it('Criar operação Salvar transportador', () => { 
-        cy.login(usuario.cpf, usuario.senha) 
-        cy.acessarPedido(idPrePedido)   
+    describe.only('Iniciando os testes da abertura do pedido e inclusão de operações', () => {
         
-        cy.operacaoTransportador(fakerBr, transportador.sigla, idPrePedido)
-        cy.notificacao(mensagem.TransportadorSucesso)      
-      });
+        // ------ Abrir Atendimento de Renovação ------//
+        it('Acessando a página e criando pedido', () => {
+          //Logar na página com o usuario       
+        cy.login(usuario.cpf, usuario.senha)       
+        //Clicar na opção Regularização RNTRC no menu lateral
+        cy.regularizacao();
+        //Selecionando o tipo de atendimento Renovação RNTRC
+        cy.atendimentosRegularizacao('Renovação RNTRC')
+        //selecionar o tipo de transportador Autônomo para a abertura do pre-pedido
+        cy.get(path.criarPedidoPage.inputTipoTransportador)
+          .click({force: true})
+          .get(path.criarPedidoPage.tipoTransportador).contains(transportador.tipo).click({force: true})
+        //inclusão de do cpf no input e submeter a requisição
+        cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
+        cy.get(path.generic.botaoSubmit).click({ force: true });
+        //validando a mensagem da notificação "Atendimento Criado com Sucesso!"
+        cy.notificacao(mensagem.AtendimentoCriadoSucesso)    
+        //Validando se foi aberto o pre-pedido, acessando ele e, verificando se no titulo o ID confere com o que foi gerado na abertura   
+        cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
+          idPrePedido = element.text().substring(1);
+          expect(element.text()).to.be.equal(`#${idPrePedido}`)
+        })
       
-      // ------ Criar operação Enviar documentos do tipo Identidade -----//              
-      it('Criar operação Enviar documentos do tipo Identidade', () => {  
-      cy.login(usuario.cpf, usuario.senha)      
-      cy.acessarPedido(idPrePedido)      
-      cy.documentosIdentidade(doc.rg)
-      cy.get(path.generic.mensagemFechar).click({force: true});      
       });
-
-      // ------ Criar operação Incluir Contato Email ------//
-      it('Criar operação Incluir Contato Email', () => { 
-      cy.login(usuario.cpf, usuario.senha)
-      cy.acessarPedido(idPrePedido)       
-      cy.incluirContatoEmail(faker)
-      cy.get(path.generic.mensagemFechar).click({force: true}); 
-      });
-      
-      // ------ Criar operação Incluir Contato Celular -----//
-      it('Criar operação Incluir Contato Celular', () => {
-      cy.login(usuario.cpf, usuario.senha)  
-      cy.acessarPedido(idPrePedido)        
-      cy.incluirContatoCelular(faker)   
-      cy.get(path.generic.mensagemFechar).click({force: true});      
-      });
-      
-      // ------ Criar operação Incluir Contato Telefone -----//
-      it('Criar operação Incluir Contato Telefone', () => {   
-        cy.login(usuario.cpf, usuario.senha)
-        cy.acessarPedido(idPrePedido)     
-      cy.incluirContatoTelefone(faker)  
-      cy.get(path.generic.mensagemFechar).click({force: true});      
-      });
-      
-      // ------- Criar operação Incluir Contato Fax -------//
-      it('Criar operação Incluir Contato Fax', () => {
+        
+        // ------ Criar operação Salvar transportador -----//
+        it('Criar operação Salvar transportador', () => { 
+          cy.login(usuario.cpf, usuario.senha) 
+          cy.acessarPedido(idPrePedido)   
+          
+          cy.operacaoTransportador(fakerBr, transportador.sigla, idPrePedido)
+          cy.notificacao(mensagem.TransportadorSucesso)      
+        });
+        
+        // ------ Criar operação Enviar documentos do tipo Identidade -----//              
+        it('Criar operação Enviar documentos do tipo Identidade', () => {  
         cy.login(usuario.cpf, usuario.senha)      
-      cy.acessarPedido(idPrePedido)    
-      cy.incluirContatoFax(faker)     
-      cy.get(path.generic.mensagemFechar).click({force: true});      
-      });       
-      
-      // -------- Criar operação Incluir Endereço Correspondência --------//
-      it('Criar operação Incluir Endereço Correspondência', () => { 
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)        
-        cy.incluirEnderecoCorrespondencia(fakerBr)
-        cy.get(path.generic.mensagemFechar).click({froce: true});      
-      });  
+        cy.acessarPedido(idPrePedido)      
+        cy.documentosIdentidade(doc.rg)
+        cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
+        });
 
-     // --------- Criar operacao Incluir Motorista -----//
-     it('Criar operacao Incluir Motorista', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)
-        cy.incluirMotorista(fakerBr)
-        cy.get(path.generic.mensagemFechar).click({force: true});
-     });     
-      
-      // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-      it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)          
-        cy.incluirVeiculo(veiculo01)
-        cy.get(path.generic.mensagemFechar).click({force: true});      
+        // ------ Criar operação Incluir Contato Email ------//
+        it('Criar operação Incluir Contato Email', () => { 
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)       
+        cy.incluirContatoEmail(faker)
+        cy.notificacao(mensagem.DadosSalvoSucesso)
+        });
         
-        cy.incluirVeiculo(veiculo02)
-        cy.get(path.generic.mensagemFechar).click({force: true});  
-        cy.anexarDocumentosVeiculo(doc, veiculo02 )
-        cy.get(path.generic.mensagemFechar).click({force: true});  
-      });     
-      
-      // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
-      it('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
+        // ------ Criar operação Alterar Contato Email ------//
+        it('Criar operação Alterar Contato Email', () => { 
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)       
+          cy.alterarContatoEmail(faker, 'contal@hbinfo.com.br')
+          cy.notificacao(mensagem.DadosSalvoSucesso) 
+          });
+
+          // ------ Criar operação Excluir Contato Email ------//
+        it('Criar operação Excluir Contato Email', () => { 
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)       
+          cy.excluirContatoEmail(faker)
+          cy.notificacao(mensagem.DadosSalvoSucesso) 
+          });
+
+        
+        // ------ Criar operação Incluir Contato Celular -----//
+        it('Criar operação Incluir Contato Celular', () => {
+        cy.login(usuario.cpf, usuario.senha)  
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirContatoCelular(faker)   
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
+        });
+
+        it('Criar operação Alterar Contato Celular', () => {
+          cy.login(usuario.cpf, usuario.senha)  
+          cy.acessarPedido(idPrePedido)        
+          cy.alterarContatoCelular(faker, '(49) 246-2783')   
+          cy.notificacao(mensagem.DadosSalvoSucesso)      
+          });
+
+          it('Criar operação Excluir Contato Celular', () => {
+            cy.login(usuario.cpf, usuario.senha)  
+            cy.acessarPedido(idPrePedido)        
+            cy.excluirContatoCelular(faker)   
+            cy.notificacao(mensagem.DadosSalvoSucesso)      
+            });
+        
+        // ------ Criar operação Incluir Contato Telefone -----//
+        it('Criar operação Incluir Contato Telefone', () => {   
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)     
+        cy.incluirContatoTelefone(faker)  
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
+        });
+
+        it('Criar operação Alterar Contato Telefone', () => {   
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)     
+        cy.alterarContatoTelefone(faker, '(49) 246-2783')  
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
+        });
+
+        it('Criar operação Excluir Contato Telefone', () => {   
+          cy.login(usuario.cpf, usuario.senha)
+          cy.acessarPedido(idPrePedido)     
+        cy.excluirContatoTelefone(faker)  
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
+        });
+        
+        // ------- Criar operação Incluir Contato Fax -------//
+        it('Criar operação Incluir Contato Fax', () => {
+          cy.login(usuario.cpf, usuario.senha)      
+        cy.acessarPedido(idPrePedido)    
+        cy.incluirContatoFax(faker)     
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
+        });
+        
+        // it.only('Criar operação Alterar Contato Fax', () => {
+        //   cy.login(usuario.cpf, usuario.senha)      
+        // cy.acessarPedido(idPrePedido)    
+        // cy.alterarContatoFax(faker)     
+        // cy.notificacao(mensagem.DadosSalvoSucesso)      
+        // });
+
+        it('Criar operação Excluir Contato Fax', () => {
+          cy.login(usuario.cpf, usuario.senha)      
+        cy.acessarPedido(idPrePedido)    
+        cy.excluirContatoFax(faker)     
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
+        });
+        
+        // -------- Criar operação Incluir Endereço Correspondência --------//
+        it('Criar operação Incluir Endereço Correspondência', () => { 
+            cy.login(usuario.cpf, usuario.senha)
+            cy.acessarPedido(idPrePedido)        
+          cy.incluirEnderecoCorrespondencia(fakerBr)
+          cy.notificacao(mensagem.DadosSalvoSucesso)      
+        }); 
+        
+        // -------- Criar operação Incluir Endereço Residencial --------//
+        it('Criar operação Incluir Endereço Residencial', () => { 
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
-        cy.incluirVeiculo(veiculo03)
-        cy.get(path.generic.mensagemFechar).click({force: true});      
+        cy.incluirEnderecoResidencial(fakerBr)
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
+      }); 
+
+      // --------- Criar operacao Incluir Motorista -----//
+      it.only('Criar operacao Incluir Motorista', () => {
+            cy.login(usuario.cpf, usuario.senha)
+            cy.acessarPedido(idPrePedido)
+          cy.incluirMotorista(fakerBr)
+          cy.notificacao(mensagem.DadosSalvoSucesso)
       }); 
       
-      // --------- Anexar crlv na operação de inclusão de veículo -------//        
-      it('Anexar crlv na operação de inclusão de veículo', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)          
-        cy.anexarDocumentosVeiculo(doc, veiculo01 )
-        cy.get(path.generic.mensagemFechar).click({force: true});      
-      });
+      it('Criar operacao Alterar Motorista', () => {
+
+        cy.login(usuario.cpf, usuario.senha)
+        cy.acessarPedido(idPrePedido)
+      cy.alterarMotorista(fakerBr, '701.796.388-15')
+      cy.notificacao(mensagem.DadosSalvoSucesso)
+  });
+        
+        // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
+        it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
+            cy.login(usuario.cpf, usuario.senha)
+            cy.acessarPedido(idPrePedido)          
+          cy.incluirVeiculo(veiculo01)
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)      
+          
+          cy.incluirVeiculo(veiculo02)
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)  
+          cy.anexarDocumentosVeiculo(doc, veiculo02 )
+          cy.notificacao(mensagem.CRLVSucesso)  
+        });     
+        
+        // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
+        it('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
+            cy.login(usuario.cpf, usuario.senha)
+            cy.acessarPedido(idPrePedido)        
+          cy.incluirVeiculo(veiculo03)
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)      
+        }); 
+        
+        // --------- Anexar crlv na operação de inclusão de veículo -------//        
+        it('Anexar crlv na operação de inclusão de veículo', () => {
+            cy.login(usuario.cpf, usuario.senha)
+            cy.acessarPedido(idPrePedido)          
+          cy.anexarDocumentosVeiculo(doc, veiculo01 )
+          cy.notificacao(mensagem.CRLVSucesso)      
+        });
+    });
       
       describe('Selecionando o sindicato e validando o pedido', () => {
           // ------- Selecionar o sindicato e gerar valor -------//        

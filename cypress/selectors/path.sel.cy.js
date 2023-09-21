@@ -227,7 +227,7 @@ module.exports = {
 
   operacaoGestor: {
     tipoVinculo: '[data-cy=tipoVinculo]',
-    cpfCnpj: '[data-cy=jujuba2]',
+    cpfCnpj: '[data-cy=cpfCnpj]',
     nome: '[data-cy=nome]',
     email: '[data-cy=email]',
     telefone: '[data-cy=telefone]',
