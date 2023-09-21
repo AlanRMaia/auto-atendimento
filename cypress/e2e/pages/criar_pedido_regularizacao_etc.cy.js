@@ -9,7 +9,7 @@ let usuario;
   let veiculo02;
   let veiculo03;
   let doc; 
-  let idPrePedido = '2071069';
+  let idPrePedido = '2071078';
   let boleto = {
     codigoBarra : '',
     nossoNumero : '',
@@ -71,7 +71,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
     cy.wait(2000)  
     
   });
-  describe('Iniciando os testes na criação do pedido e inclusão das operações', () => {
+  describe.only('Iniciando os testes na criação do pedido e inclusão das operações', () => {
       
     // ------ Abrir Atendimento de Renovação ------//
         it('Acessando a página e criando pedido', () => {
@@ -123,13 +123,13 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           cy.get(path.generic.mensagemFechar).click({force: true}); 
           });
           
-          // ------ Criar operação Incluir Contato Email ------//
-          it('Criar operação Incluir Contato Email', () => { 
-            cy.login(usuario.cpf, usuario.senha)
-            cy.acessarPedido(idPrePedido)       
-            cy.incluirContatoEmail(faker)
-            cy.get(path.generic.mensagemFechar).click({force: true}); 
-            });
+          // // ------ Criar operação Excluir Contato Email ------//
+          // it('Criar operação Incluir Contato Email', () => { 
+          //   cy.login(usuario.cpf, usuario.senha)
+          //   cy.acessarPedido(idPrePedido)       
+          //   cy.excluirContatoEmail(faker, )
+          //   cy.get(path.generic.mensagemFechar).click({force: true}); 
+          //   });
           // ------ Criar operação Incluir Contato Celular -----//
           it('Criar operação Incluir Contato Celular', () => {
           cy.login(usuario.cpf, usuario.senha)  
@@ -138,12 +138,12 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           cy.get(path.generic.mensagemFechar).click({force: true});      
           });
 
-          it('Criar operação Alterar Contato Celular', () => {
-            cy.login(usuario.cpf, usuario.senha)  
-            cy.acessarPedido(idPrePedido)        
-            cy.incluirContatoCelular(faker)   
-            cy.get(path.generic.mensagemFechar).click({force: true});      
-            });
+          // it('Criar operação Alterar Contato Celular', () => {
+          //   cy.login(usuario.cpf, usuario.senha)  
+          //   cy.acessarPedido(idPrePedido)        
+          //   cy.incluirContatoCelular(faker)   
+          //   cy.get(path.generic.mensagemFechar).click({force: true});      
+          //   });
           
           // ------ Criar operação Incluir Contato Telefone -----//
           it('Criar operação Incluir Contato Telefone', () => {   
@@ -151,6 +151,13 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
             cy.acessarPedido(idPrePedido)     
           cy.incluirContatoTelefone(faker)  
           cy.get(path.generic.mensagemFechar).click({force: true});      
+          });
+          // ------ Criar operação Excluir Contato Telefone -----//
+          it('Criar operação Excluir Contato Telefone', () => {   
+            cy.login(usuario.cpf, usuario.senha)
+            cy.acessarPedido(idPrePedido)     
+          cy.excluirContatoTelefone(faker, '(55) 3261-2695')  
+          cy.notificacao(mensagem.DadosSalvoSucesso)      
           });
           
           // ------- Criar operação Incluir Contato Fax -------//
@@ -296,7 +303,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           }); 
           
           // ---------- Criar operação Excluir Responsável Técnico --------//
-          it.only('Criar operação Excluir Responsável Técnico', () => { 
+          it('Criar operação Excluir Responsável Técnico', () => { 
         
             const rt = {
               cpf: '18024629534',
@@ -311,7 +318,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
             cy.notificacao(mensagem.DadosSalvoSucesso)      
           }); 
 
-          // ---------- Criar operação ALterar Responsável Técnico --------//
+          // ---------- Criar operação Alterar Responsável Técnico --------//
           it('Criar operação Alterar Responsável Técnico', () => { 
         
             const rt = {

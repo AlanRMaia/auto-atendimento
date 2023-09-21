@@ -1,5 +1,6 @@
  module.exports = {
     TransportadorSucesso: 'Transportador salvo com sucesso',
+    AtendimentoCanceladoSucesso: 'Atendimento cancelado com sucesso!',
     EdicaoTransportador: 'Edição salva com sucesso!',
     AtendimentoCriadoSucesso: 'Atendimento criado com sucesso!', 
     VeiculoSalvoSucesso: 'Dados salvos com sucesso!',  
@@ -15,6 +16,5 @@
     EnderecoNaoEncontrado: 'Não foi possível retornar o endereço para o CEP informado.',    
     ResponsavelTecnicoJaIncluso: 'Responsável Técnico já incluso no pedido.',
     GestorJaIncluso: 'Gestor já incluso no pedido.',
-    GestorNãoExiste: 'Gestor não existe para o transportador.'
-  
+    GestorNãoExiste: 'Gestor não existe para o transportador.'  
  };
