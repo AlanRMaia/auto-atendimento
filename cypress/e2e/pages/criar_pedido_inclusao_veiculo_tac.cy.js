@@ -1,15 +1,16 @@
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
+import urls from "../../support/urls";
 var fakerBr = require('faker-br');
 
-let usuario;
   let veiculo01;
   let veiculo02;
-  let veiculo03;
+  let veiculoImplemento;
   let veiculo04;
   let veiculo05;
+  let index = 0;
   let doc; 
-  let idPrePedido = '2071073';
+  let idPrePedido = '2071082';
   let boleto = {
     codigoBarra : '',
     nossoNumero : '',
@@ -36,60 +37,62 @@ let usuario;
     path: path.generic.perfilSitcarga.FETACMGMaster
   }  
   
-beforeEach(() => {
-  cy.fixture("data/doc/documentos").then((data) => {
-    doc = data
-  })
 
-  cy.fixture("data/veiculos/IAQ9412").then((iaq9412) => {
-    veiculo01 = iaq9412
-    veiculo01.crlv = doc.crlv
-    veiculo01.contrato = doc.contrato
-
-  })
-
-  cy.fixture("data/veiculos/DAY7G42").then((day7g42) => {
-    veiculo02 = day7g42
-    veiculo02.crlv = doc.crlv
-    veiculo02.contrato = doc.contrato
-  })
-
-  cy.fixture("data/veiculos/MCK8858").then((mck8858) => {
-    veiculo03 = mck8858
-    veiculo03.crlv = doc.crlv
-    veiculo03.contrato = doc.contrato
-  })
-
-  cy.fixture("data/veiculos/MCK8858").then((mck8858) => {
-    veiculo04 = mck8858
-    veiculo04.crlv = doc.crlv
-    veiculo04.contrato = doc.contrato
-  })
-  
-  cy.fixture("data/veiculos/GFV9E78").then((gfv9e78) => {
-    veiculo05 = gfv9e78
-    veiculo05.crlv = doc.crlv
-    veiculo05.contrato = doc.contrato
-  })
-  
-
-  cy.fixture('usuario').then((data) => {
-    usuario = data;
-  });
-  cy.reload();  
-  cy.viewport(1920, 1080);
-  cy.wait(2000) 
-  
-});
 describe('Grupo de testes para inclusão de veículo TAC', () => {
+  beforeEach(() => {
+    cy.fixture("data/doc/documentos").then((data) => {
+      doc = data
+    })
+  
+    cy.fixture("data/veiculos/IAQ9412").then((iaq9412) => {
+      veiculo01 = iaq9412
+      veiculo01.crlv = doc.crlv
+      veiculo01.contrato = doc.contrato
+  
+    })
+  
+    cy.fixture("data/veiculos/DAY7G42").then((day7g42) => {
+      veiculo02 = day7g42
+      veiculo02.crlv = doc.crlv
+      veiculo02.contrato = doc.contrato
+    })
+  
+    cy.fixture("data/veiculos/veiculo_lista_implemento").then((implementosList) => {
+      veiculoImplemento = implementosList[index]
+      veiculoImplemento.crlv = doc.crlv
+      veiculoImplemento.contrato = doc.contrato
+    })
+  
+    cy.fixture("data/veiculos/MCK8858").then((mck8858) => {
+      veiculo04 = mck8858
+      veiculo04.crlv = doc.crlv
+      veiculo04.contrato = doc.contrato
+    })
+    
+    cy.fixture("data/veiculos/GFV9E78").then((gfv9e78) => {
+      veiculo05 = gfv9e78
+      veiculo05.crlv = doc.crlv
+      veiculo05.contrato = doc.contrato
+    })
+    
+  
+    // cy.fixture('usuario').then((data) => {
+    //   usuario = data;
+    // });
+
+     
+    cy.viewport(1920, 1080);
+    cy.login()    
+    
+  });
   describe.only('Iniciando os testes para a criação do pedido e inclusão das operações', () => {
       
-    it('Inclusão de veiculo Cadastro ativo placa próprio', () => {
+    it('Criação do pedido', () => {
       cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)
-       //Logar na página com o usuario       
-       cy.login(usuario.cpf, usuario.senha)       
-       //Clicar na opção Regularização RNTRC no menu lateral
-       cy.regularizacao();
+       //Logar na página com o usuario 
+       cy.regularizacao()  
+       //Clicar na opção Regularização RNTRC no menu lateral       
+      //cy.get(path.atendimentoPage.regularizacao, {timeout: 30000}).click({force: true});       
        //Selecionando o tipo de atendimento Cadastro
        cy.atendimentosRegularizacao('Gestão de Frota')
        //selecionar o tipo de transportador Empresa para a abertura do pre-pedido
@@ -109,8 +112,7 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
     });
          // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
         it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)          
+        cy.acessarPedido(idPrePedido)          
         cy.incluirVeiculo(veiculo01)
         cy.notificacao(mensagem.VeiculoSalvoSucesso)     
         
@@ -121,26 +123,121 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       });     
       
       // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
-      it('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)        
-        cy.incluirVeiculo(veiculo03)
-        cy.notificacao(mensagem.VeiculoSalvoSucesso)      
+      it('Criar operação Incluir Veiculo AFF5514 SEMI-REBOQUE/Arrendado', () => {
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirVeiculo(veiculoImplemento)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+        cy.notificacao(mensagem.CRLVSucesso)      
+        index++
       }); 
+
+       // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
+       it('Criar operação Incluir Veiculo AJS0258 Implemento/Arrendado', () => {
+         cy.acessarPedido(idPrePedido)        
+         cy.incluirVeiculo(veiculoImplemento)
+         cy.notificacao(mensagem.VeiculoSalvoSucesso)
+         cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+         cy.notificacao(mensagem.CRLVSucesso)      
+         index++
+      }); 
+
+        // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
+        it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+          cy.acessarPedido(idPrePedido)        
+          cy.incluirVeiculo(veiculoImplemento)
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)
+          cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+          cy.notificacao(mensagem.CRLVSucesso)      
+          index++
+      }); 
+
+        // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
+      it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirVeiculo(veiculoImplemento)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso) 
+        cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+        cy.notificacao(mensagem.CRLVSucesso)     
+        index++
+      });
+
+        // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
+        it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+          cy.acessarPedido(idPrePedido)        
+          cy.incluirVeiculo(veiculoImplemento)
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)
+          cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+          cy.notificacao(mensagem.CRLVSucesso)      
+          index++
+        });
       
+        // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
+      it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirVeiculo(veiculoImplemento)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+        cy.notificacao(mensagem.CRLVSucesso)      
+        index++
+      });
+
+      // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
+      it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirVeiculo(veiculoImplemento)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso) 
+        cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+        cy.notificacao(mensagem.CRLVSucesso)     
+        index++
+      });
+
+      // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
+      it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirVeiculo(veiculoImplemento)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+        cy.notificacao(mensagem.CRLVSucesso)      
+        index++
+      });
+      
+      // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
+      it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+        veiculoImplemento.placa = 'GIZ7148'
+        veiculoImplemento.renavam = '01146947299'
+        veiculoImplemento.tipoVeiculo = 'Automotor'
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirVeiculo(veiculoImplemento)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+        cy.notificacao(mensagem.CRLVSucesso)      
+        index++
+      });
+      
+      // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
+      it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {        
+        veiculoImplemento.placa = 'FIM9923'
+        veiculoImplemento.renavam = '01087459874'
+        veiculoImplemento.tipoVeiculo = 'Automotor'
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirVeiculo(veiculoImplemento)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+        cy.notificacao(mensagem.CRLVSucesso)      
+        index++
+      });
       // --------- Anexar crlv na operação de inclusão de veículo -------//        
       it('Anexar crlv na operação de inclusão de veículo', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)          
+            cy.acessarPedido(idPrePedido)          
         cy.anexarDocumentosVeiculo(doc, veiculo01 )
         cy.notificacao(mensagem.CRLVSucesso)      
       });
 
       // --------- Anexar crlv na operação de inclusão de veículo -------//        
       it('Anexar crlv na operação de inclusão de veículo', () => {
-        cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)          
-      cy.anexarDocumentosVeiculo(doc, veiculo03 )
+      cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
       cy.notificacao(mensagem.CRLVSucesso)      
     });
   });
@@ -149,7 +246,6 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       
       it('Validação de do Pedido', () => {
     
-        cy.login(usuario.cpf, usuario.senha)
         cy.acessarPedido(idPrePedido)
     
         cy.get(path.generic.botaoConfirmar, {timeout: 20000}).click({force: true})        

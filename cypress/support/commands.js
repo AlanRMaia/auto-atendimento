@@ -59,19 +59,22 @@ Cypress.Commands.add('getByData', (selector) => {
   return cy.get(`[data-test=${selector}]`);
 });
 
-Cypress.Commands.add('login', (cpf, senha) => {
+Cypress.Commands.add('login', (usuario = Cypress.env('usuario')) => {
+  // cy.session(usuario, () => {
+    cy.visit(urls.login, {timeout: 20000});
   
-  cy.visit(urls.login, {timeout: 20000});
+    cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
+    cy.get(path.loginPage.senha).type(usuario.senha);
+    cy.get(path.generic.botaoSubmit).click({force: true}); 
 
-  cy.get(path.loginPage.cpf, {timeout:20000}).type(cpf);
-  cy.get(path.loginPage.senha).type(senha);
-  cy.get(path.generic.botaoSubmit).click({force: true});
-  cy.get(path.generic.title, {timeout: 20000}).should('have.text', ' Consultar Atendimentos ')
-  
+    cy.get(path.generic.title, {timeout: 20000}).should('have.text', ' Consultar Atendimentos ')
+  // },
+  // {cacheAcrossSpecs: true}
+  // )  
 });
 
-Cypress.Commands.add('regularizacao', () => {
-  cy.get(path.atendimentoPage.regularizacao).click({force: true});
+Cypress.Commands.add('regularizacao', () => {  
+  cy.get(path.atendimentoPage.regularizacao, {timeout: 30000}).click({force: true});
 });
 
 Cypress.Commands.add('consultaRNTRC', () => {
@@ -116,16 +119,16 @@ Cypress.Commands.add('acessarPedido', (idPedido) => {
 });
 
 Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
-  cy.document().wait(5000).then((doc) => {
+  cy.document({timeout:20000}).wait(8000).then((doc) => {
       const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
       cy.wrap(element).each((ele, index, list)=> {
         cy.wrap(list.length)       
-        cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao).then((text) => {
+        cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
           let placa = text.text().substring(0, 7)
-          cy.log('valor da placa:',placa)          
+          cy.log('valor da placa:',veiculo.placa)          
           if (placa == veiculo.placa) {
             cy.wrap(ele)
-            .find(path.detalhamentoAtendimentoPage.anexarDocumentoVeiculo).click({force: true})
+            .find(path.detalhamentoAtendimentoPage.anexarDocumentoVeiculo, {timeout: 20000}).click({force: true}).wait(2000)
           } else {
             cy.log(`não encontrou o valor: ${placa}`)
           }
@@ -136,7 +139,7 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
   
   
   
-  cy.get(path.generic.title).contains('Documento do Veículo')
+  cy.get(path.generic.title).contains('Documento do Veículo', {timeout: 20000})
 
   if (veiculo.propriedade != 'Arrendado') {
     cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv, {force: true})
