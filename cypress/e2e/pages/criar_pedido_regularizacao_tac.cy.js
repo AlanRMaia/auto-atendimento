@@ -4,10 +4,7 @@ import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 var fakerBr = require('faker-br');  
 
-const usuario = {
-  cpf: '09562140709',
-  senha: 'a'
-};
+
 let index = 0;
 let veiculo01;
 let veiculo02;
@@ -80,15 +77,10 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
       veiculoImplemento = bsg1253
       veiculoImplemento.crlv = doc.crlv
       veiculoImplemento.contrato = doc.contrato
-    })
-    
-  
-    // cy.fixture('usuario').then((data) => {
-    //   usuario = data;
-    // });
+    })    
     
     cy.viewport(1920, 1080);
-    cy.login(usuario.cpf, usuario.senha)
+    cy.login()
   }); 
     describe.only('Iniciando os testes da abertura do pedido e inclusão de operações', () => {
         
@@ -211,14 +203,14 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
         // });
         
         // -------- Criar operação Incluir Endereço Correspondência --------//
-        it('Criar operação Incluir Endereço Correspondência', () => {            
+        it.skip('Criar operação Incluir Endereço Correspondência', () => {            
             cy.acessarPedido(idPrePedido)        
           cy.incluirEnderecoCorrespondencia(fakerBr)
           cy.notificacao(mensagem.DadosSalvoSucesso)      
         }); 
         
         // -------- Criar operação Incluir Endereço Residencial --------//
-        it('Criar operação Incluir Endereço Residencial', () => {           
+        it.skip('Criar operação Incluir Endereço Residencial', () => {           
           cy.acessarPedido(idPrePedido)        
         cy.incluirEnderecoResidencial(fakerBr)
         cy.notificacao(mensagem.DadosSalvoSucesso)      

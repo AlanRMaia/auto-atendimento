@@ -172,7 +172,7 @@ Cypress.Commands.add('notificacao', (mensagem, arquivo) => {
 })
 
 Cypress.Commands.add('atendimentosRegularizacao', (atendimento) =>{
-  cy.document().wait(10000).then((doc) => {
+  cy.document({timeout: 10000}).wait(3000).then((doc) => {
           const element = doc.querySelector(path.regularizacaoPage.listaAtendimento).children
             cy.wrap(element).each((ele, index, list)=>  {
               cy.wrap(ele).find(path.regularizacaoPage.atendimento).then((text) => {

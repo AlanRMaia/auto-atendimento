@@ -7,5 +7,6 @@ module.exports = defineConfig({
       // implement node event listeners here
 
     },
+    video: true
   },
 });

@@ -8,11 +8,11 @@
     "homolog": "cypress open --config baseUrl=https://sitcarga-spa-homologacao.azurewebsites.net/#/ --env ENVIRONMENT=homolog",
     "test": "cypress open --config baseUrl=https://autoatendimentoteste/#/ --env ENVIRONMENT=test",
     "dev": "cypress open --config baseUrl=http://localhost:9000/#/ --env ENVIRONMENT=dev",
-    "headless:todos": "npm run headless:homolog && npm run headless:test",
-    "headless:homolog": "cypress run --headless=new --config baseUrl=https://sitcarga-spa-homologacao.azurewebsites.net/#/ --env ENVIRONMENT=homolog",
-    "headless:dev": "cypress run --headless=new --config baseUrl=http://localhost:9000/#/ --env ENVIRONMENT=dev",
-    "headless:test": "cypress run --headless=new  --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test",
-    "headless:test:spec": "cypress run --headless=new --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec"    
+    "hl:todos": "npm run headless:homolog && npm run headless:test",
+    "hl:homolog": "cypress run --config baseUrl=https://sitcarga-spa-homologacao.azurewebsites.net/#/ --env ENVIRONMENT=homolog",
+    "hl:dev": "cypress run --config baseUrl=http://localhost:9000/#/ --env ENVIRONMENT=dev",
+    "hl:test": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test",
+    "hl:test:spec": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec"    
     
   },
   "dependencies": {
