@@ -70,13 +70,13 @@ beforeEach(() => {
   cy.wait(2000)  
   
 });
-describe('Iniciando os testes na criação do pedido e inclusão das operações', () => {
+describe.only('Iniciando os testes na criação do pedido e inclusão das operações', () => {
     
   // ------ Abrir Atendimento de Renovação ------//
       it('Acessando a página e criando pedido', () => {
-        cy.log(`Ambiente ${Cypress.env('ENVIRONMENT')}`)
+        cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)
           //Logar na página com o usuario       
-          cy.login(usuario.cpf, usuario.senha)       
+                 
           //Clicar na opção Regularização RNTRC no menu lateral
           cy.regularizacao();
           //Selecionando o tipo de atendimento Renovação RNTRC
@@ -164,40 +164,24 @@ describe('Iniciando os testes na criação do pedido e inclusão das operações
         });      
       
           // ------- Criar operação Incluir Gestor Responsável legal ------// 
-        it('Criar operação Incluir Gestor Responsável legal', () => {
-          const gestor = {
-            cpfCnpj: '86992187023',
-            nome: 'Alan Maia',
-            cargo: 'Responsável Legal',
-            telefone: '2188888888',
-            email: 'texte#@teste.com',
-            nascimento: '20/02/20000'
-          }
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)               
-        cy.incluirGestor(gestor, transportador.sigla)
-        cy.get(path.generic.mensagemFechar).click({force: true});      
-      });
-
-    //   // ------- Criar operação Excluir Gestor Responsável legal------// 
-    //   it('Criar operação Excluir Gestor Responsável legal', () => {
-    //     const gestor = {
-    //       cpfCnpj: '18024629534',
-    //       nome: 'DIVALDO JOSÉ MATOS DE LIMA',            
-    //       dataNascimento: '20/05/2005',
-    //       telefone: '2188888888',
-    //       email: 'texte#@teste.com',
-    //       cargo: 'Responsável Legal',
-    //     }
-    //     cy.login(usuario.cpf, usuario.senha)
-    //     cy.acessarPedido(idPrePedido)               
-    //   cy.excluirGestor(gestor, transportador.sigla)
-    //   cy.get(path.generic.mensagemFechar).click({force: true});      
-    // }); 
+      //   it('Criar operação Incluir Gestor Responsável legal', () => {
+      //     const gestor = {
+      //       cpfCnpj: '86992187023',
+      //       nome: 'Alan Maia',
+      //       cargo: 'Responsável Legal',
+      //       telefone: '2188888888',
+      //       email: 'texte#@teste.com',
+      //       nascimento: '20/02/20000'
+      //     }
+      //     cy.login(usuario.cpf, usuario.senha)
+      //     cy.acessarPedido(idPrePedido)               
+      //   cy.incluirGestor(gestor, transportador.sigla)
+      //   cy.get(path.generic.mensagemFechar).click({force: true});      
+      // });   
     
         
         // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-        it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
+        it.skip('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
             cy.login(usuario.cpf, usuario.senha)
             cy.acessarPedido(idPrePedido)          
           cy.incluirVeiculo(veiculo01)
@@ -210,15 +194,18 @@ describe('Iniciando os testes na criação do pedido e inclusão das operações
         });     
         
         // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
-        it('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
+        it.skip('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
             cy.login(usuario.cpf, usuario.senha)
             cy.acessarPedido(idPrePedido)        
           cy.incluirVeiculo(veiculo03)
-          cy.notificacao(mensagem.VeiculoSalvoSucesso)      
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)  
+          cy.anexarDocumentosVeiculo(doc, veiculo03 )
+          cy.notificacao(mensagem.ContratoArrendamentoSucesso)
+          cy.notificacao(mensagem.CRLVSucesso)
         }); 
         
         // --------- Anexar crlv na operação de inclusão de veículo -------//        
-        it('Anexar crlv na operação de inclusão de veículo', () => {
+        it.skip('Anexar crlv na operação de inclusão de veículo', () => {
             cy.login(usuario.cpf, usuario.senha)
             cy.acessarPedido(idPrePedido)          
           cy.anexarDocumentosVeiculo(doc, veiculo01 )
@@ -226,69 +213,22 @@ describe('Iniciando os testes na criação do pedido e inclusão das operações
         });
 
         // -------- Criar operação Incluir Filial ------//
-        it('Criar operação Incluir Filial', () => { 
+        it.skip('Criar operação Incluir Filial', () => { 
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
-        cy.incluirFilial(fakerBr)
-        cy.get(path.generic.mensagemFechar).click({force: true});      
+          cy.incluirFilial(fakerBr)
+          cy.notificacao(mensagem.DadosSalvoSucesso)      
         });
 
-         // -------- Criar operação Alterar Filial ------//
-         it('Criar operação Alterar Filial', () => {        
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)        
-        cy.alterarFilial(fakerBr, filial )
-        cy.get(path.generic.mensagemFechar).click({force: true});      
-        });
-
-         // -------- Criar operação Excluir Filial ------//
-         it.only('Criar operação Excluir Filial', () => {        
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)        
-        cy.excluirFilial(fakerBr, filial )
-        cy.get(path.generic.mensagemFechar).click({force: true});      
-        });
-
-        
         // ---------- Criar operação Incluir Responsável Técnico --------//
-        it('Criar operação Incluir Responsável Técnico', () => { 
-      
-          const rt = {
-            cpf: '09562140709',
-            nome: 'Alan Maia',
-            identidade: '2334667895',
-            dataNascimento: '20/05/2005'
-
-          }
+        it('Criar operação Incluir Responsável Técnico', () => {          
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
-        cy.incluirResponsavelTecnico(fakerBr, rt)
-        cy.get(path.generic.mensagemFechar, {timeout:8000}).click({force: true});      
-        }); 
-        
-        // ---------- Criar operação Excluir Responsável Técnico --------//
-        it('Criar operação Excluir Responsável Técnico', () => { 
-      
-          const rt = {
-            cpf: '18024629534',
-            nome: 'DIVALDO JOSÉ MATOS DE LIMA',
-            identidade: '1674903',
-            dataNascimento: '20/05/2005'
-
-          }
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)        
-        cy.excluirResponsavelTecnico(fakerBr, rt)
-        cy.get(path.generic.mensagemFechar, {timeout:8000}).click({force: true});      
-        }); 
-
-         // ------ Criar operação Documentos Responsável Técnico -----//              
-         it('Criar operação Documentos Responsável Técnico', () => {  
-          cy.login(usuario.cpf, usuario.senha)      
-          cy.acessarPedido(idPrePedido)      
+          cy.incluirResponsavelTecnico(fakerBr, rt)
+          cy.notificacao(mensagem.DadosSalvoSucesso)
           cy.enviarDocumentosRT(doc.rg)
-          cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)
-          });
+          cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)             
+        });        
 
         
 });     

@@ -4,28 +4,52 @@ import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 var fakerBr = require('faker-br');
 
-  let usuario;
-  let veiculo01;
-  let veiculo02;
-  let veiculo03;
-  let doc; 
-  let idPrePedido = '2071477';
-  
-  let boleto = {
-    codigoBarra : '',
-    nossoNumero : '',
-    valorPago: '',
-    meioPagamento: '',
-    dataEmissao: '',
-    utilizacao: '',
-    valorBoleto: '',
-    situacao: ''    
-  };
+let veiculo01;
+let veiculo02;
+let veiculo03;
+let veiculoImplemento;
+let veiculoAutomotor;
+let index = 0;
+let doc; 
+let idPrePedido = '2071112';
+const telefone = '(55) 3261-2695'
+let boleto = {
+  codigoBarra : '',
+  nossoNumero : '',
+  valorPago: '',
+  meioPagamento: '',
+  dataEmissao: '',
+  utilizacao: '',
+  valorBoleto: '',
+  situacao: ''    
+};
+
+const enderecoComercial = {
+  tipo: "Comercial",
+  cep: "74463350",
+  logradouro: "AV VALDETE CARNEIRO",
+  bairro: "CENTRO",
+  municipio: "Goiânia",
+  uf: "GO",
+  numero: "14093",
+  complemento: "CASA",
+};
+
+const enderecoResidencial = {
+  tipo: "Residencial",
+  cep: "62700000",
+  logradouro: "R MANOEL SOBRINHO",
+  bairro: "CENTRO",
+  municipio: "Canindé/Canindé",
+  uf: "CE",
+  numero: "229",
+  complemento: "CASA",
+};
 
   const transportador = {
-    cpfCnpj: "346.575.509-00",
-    nome: "TAC - ODACIR NUNES PIRES",
-    rntrc: "000010024",
+    cpfCnpj: "820.334.041-53",
+    nome: "DANILO SOUSA BRITTO",
+    rntrc: "056287399",
     situacao: "VENCIDO",
     saldo: "R$ 0,00",
     sigla: "TAC",
@@ -40,44 +64,53 @@ var fakerBr = require('faker-br');
 
 describe('Grupo de teste Atendimento Cadastro TAC', () => {  
   beforeEach(() => {
-    cy.fixture("data/doc/documentos").then((data) => {
-      doc = data
-    })
+    cy.reload()
+      
+      cy.fixture("data/doc/documentos").then((data) => {
+        doc = data
+      })
   
-    cy.fixture("data/veiculos/IAQ9412").then((iaq9412) => {
-      veiculo01 = iaq9412
-      veiculo01.crlv = doc.crlv
-      veiculo01.contrato = doc.contrato
+      cy.fixture("data/veiculos/veiculo_lista_implemento").then((implementosList) => {
+        veiculoImplemento = implementosList[index]
+        veiculoImplemento.crlv = doc.crlv
+        veiculoImplemento.contrato = doc.contrato
+      })
   
-    })
+      cy.fixture("data/veiculos/veiculo_lista_automotor").then((automotorList) => {
+        veiculoAutomotor = automotorList[index]
+        veiculoAutomotor.crlv = doc.crlv
+        veiculoAutomotor.contrato = doc.contrato
+      })
   
-    cy.fixture("data/veiculos/DAY7G42").then((day7g42) => {
-      veiculo02 = day7g42
-      veiculo02.crlv = doc.crlv
-      veiculo02.contrato = doc.contrato
-    })
+      cy.fixture("data/veiculos/IAQ9412").then((iaq9412) => {
+        veiculo01 = iaq9412
+        veiculo01.crlv = doc.crlv
+        veiculo01.contrato = doc.contrato
   
-    cy.fixture("data/veiculos/BSG1253").then((bsg1253) => {
-      veiculo03 = bsg1253
-      veiculo03.crlv = doc.crlv
-      veiculo03.contrato = doc.contrato
-    })
-    
+      })
   
-    cy.fixture('usuario').then((data) => {
-      usuario = data;
-    });
-    cy.reload();  
-    cy.viewport(1920, 1080);
-    cy.wait(2000)  
+      cy.fixture("data/veiculos/DDD4654").then((ddd4654) => {
+        veiculo02 = ddd4654
+        veiculo02.crlv = doc.crlv
+        veiculo02.contrato = doc.contrato
+      })
+  
+      cy.fixture("data/veiculos/BSG1253").then((bsg1253) => {
+        veiculo03 = bsg1253
+        veiculo03.crlv = doc.crlv
+        veiculo03.contrato = doc.contrato
+      })
+
+      cy.viewport(1920, 1080);
+      cy.login()  
     
   });
-  describe('Grupo de teste Atendimento Cadastro TAC', () => {
+  describe.only('Grupo de teste Atendimento Cadastro TAC', () => {
       
       // ------ Abrir Atendimento de Cadastro ------//
-      it('Criar pedido Cadastro TAC', () => {          
-        //Logar na página com o usuario       
-        cy.login(usuario.cpf, usuario.senha)       
+      it('Criar pedido Cadastro TAC', () => { 
+        cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)         
+        //Logar na página com o usuario             
         //Clicar na opção Regularização RNTRC no menu lateral
         cy.regularizacao();
         //Selecionando o tipo de atendimento Cadastro
@@ -100,105 +133,119 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
       });
       
       // ------ Criar operação Salvar transportador -----//
-      it('Criar operação Salvar transportador', () => { 
-        cy.login(usuario.cpf, usuario.senha) 
-        cy.acessarPedido(idPrePedido)   
-        
+      it('Criar operação Salvar transportador', () => {        
+        cy.acessarPedido(idPrePedido)       
         cy.operacaoTransportador(fakerBr, transportador.sigla, idPrePedido)
         cy.notificacao(mensagem.TransportadorSucesso)      
       });
       
       // ------ Criar operação Enviar documentos do tipo Identidade -----//              
-      it('Criar operação Enviar documentos do tipo Identidade', () => {  
-      cy.login(usuario.cpf, usuario.senha)      
-      cy.acessarPedido(idPrePedido)      
-      cy.documentosIdentidade(doc.rg)
-      cy.get(path.generic.mensagemFechar).click({force: true});      
+      it.only('Criar operação Enviar documentos do tipo Identidade', () => {           
+        cy.acessarPedido(idPrePedido)      
+        cy.documentosIdentidade(doc.rg)
+        cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
       });
 
       // ------ Criar operação Incluir Contato Email ------//
-      it('Criar operação Incluir Contato Email', () => { 
-      cy.login(usuario.cpf, usuario.senha)
-      cy.acessarPedido(idPrePedido)       
-      cy.incluirContatoEmail(faker)
-      cy.get(path.generic.mensagemFechar).click({force: true}); 
+      it('Criar operação Incluir Contato Email', () => {     
+        cy.acessarPedido(idPrePedido)       
+        cy.incluirContatoEmail(faker)
+        cy.notificacao(mensagem.DadosSalvoSucesso)       
       });
       
       // ------ Criar operação Incluir Contato Celular -----//
-      it('Criar operação Incluir Contato Celular', () => {
-      cy.login(usuario.cpf, usuario.senha)  
-      cy.acessarPedido(idPrePedido)        
-      cy.incluirContatoCelular(faker)   
-      cy.get(path.generic.mensagemFechar).click({force: true});      
+      it.only('Criar operação Incluir Contato Celular', () => {        
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirContatoCelular(faker)   
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
       });
       
       // ------ Criar operação Incluir Contato Telefone -----//
-      it('Criar operação Incluir Contato Telefone', () => {   
-        cy.login(usuario.cpf, usuario.senha)
+      it('Criar operação Incluir Contato Telefone', () => {       
         cy.acessarPedido(idPrePedido)     
-      cy.incluirContatoTelefone(faker)  
-      cy.get(path.generic.mensagemFechar).click({force: true});      
+        cy.incluirContatoTelefone(faker)  
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
       });
       
       // ------- Criar operação Incluir Contato Fax -------//
-      it('Criar operação Incluir Contato Fax', () => {
-        cy.login(usuario.cpf, usuario.senha)      
-      cy.acessarPedido(idPrePedido)    
-      cy.incluirContatoFax(faker)     
-      cy.get(path.generic.mensagemFechar).click({force: true});      
+      it('Criar operação Incluir Contato Fax', () => {              
+        cy.acessarPedido(idPrePedido)    
+        cy.incluirContatoFax(faker)     
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
       });       
       
       // -------- Criar operação Incluir Endereço Correspondência --------//
-      it('Criar operação Incluir Endereço Correspondência', () => { 
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)        
-        cy.incluirEnderecoCorrespondencia(fakerBr)
-        cy.get(path.generic.mensagemFechar).click({froce: true});      
+      it('Criar operação Incluir Endereço Correspondência', () => {         
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirEnderecoResidencial(fakerBr, enderecoResidencial.cep)
+        cy.notificacao(mensagem.DadosSalvoSucesso)      
       });  
 
      // --------- Criar operacao Incluir Motorista -----//
-     it('Criar operacao Incluir Motorista', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)
+     it('Criar operacao Incluir Motorista', () => {         
+        cy.acessarPedido(idPrePedido)
         cy.incluirMotorista(fakerBr)
-        cy.get(path.generic.mensagemFechar).click({force: true});
+        cy.notificacao(mensagem.DadosSalvoSucesso)
      });     
       
-      // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-      it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)          
+       // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
+       it.skip('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {            
+        cy.acessarPedido(idPrePedido)          
         cy.incluirVeiculo(veiculo01)
-        cy.get(path.generic.mensagemFechar).click({force: true});      
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)      
+        cy.anexarDocumentosVeiculo(doc, veiculo01 )
+        cy.notificacao(mensagem.CRLVSucesso)  
         
         cy.incluirVeiculo(veiculo02)
-        cy.get(path.generic.mensagemFechar).click({force: true});  
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)  
         cy.anexarDocumentosVeiculo(doc, veiculo02 )
-        cy.get(path.generic.mensagemFechar).click({force: true});  
+        cy.notificacao(mensagem.CRLVSucesso)
       });     
-      
-      // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
-      it('Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)        
-        cy.incluirVeiculo(veiculo03)
-        cy.get(path.generic.mensagemFechar).click({force: true});      
-      }); 
-      
-      // --------- Anexar crlv na operação de inclusão de veículo -------//        
-      it('Anexar crlv na operação de inclusão de veículo', () => {
-          cy.login(usuario.cpf, usuario.senha)
-          cy.acessarPedido(idPrePedido)          
-        cy.anexarDocumentosVeiculo(doc, veiculo01 )
-        cy.get(path.generic.mensagemFechar).click({force: true});      
+    
+    // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
+      it.skip('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+        cy.acessarPedido(idPrePedido)        
+        cy.incluirVeiculo(veiculoImplemento)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+        cy.notificacao(mensagem.ContratoArrendamentoSucesso)      
+        cy.notificacao(mensagem.CRLVSucesso)      
+        index++
       });
+
+    it.skip('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
+      cy.acessarPedido(idPrePedido)        
+      cy.incluirVeiculo(veiculoAutomotor)
+      cy.notificacao(mensagem.VeiculoSalvoSucesso)
+      cy.anexarDocumentosVeiculo(doc, veiculoAutomotor )
+      cy.notificacao(mensagem.CRLVSucesso)      
+      index++
+    });
+
+    it.skip('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
+      cy.acessarPedido(idPrePedido)        
+      cy.incluirVeiculo(veiculoAutomotor)
+      cy.notificacao(mensagem.VeiculoSalvoSucesso)
+      cy.anexarDocumentosVeiculo(doc, veiculoAutomotor )
+      cy.notificacao(mensagem.CRLVSucesso)      
+      index++
+    });
+    
+    it.skip('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+      cy.acessarPedido(idPrePedido)        
+      cy.incluirVeiculo(veiculoImplemento)
+      cy.notificacao(mensagem.VeiculoSalvoSucesso)
+      cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+      cy.notificacao(mensagem.CRLVSucesso)      
+      index++
+    });
   });
   
   describe('Selecionar o sindicato, gerar serviço e validar o pedido', () => {
       
       // ------- Selecionar o sindicato e gerar valor -------//        
       it('Selecionar o sindicato e gerar valor', () => {
-          cy.login(usuario.cpf, usuario.senha)
+          
           cy.acessarPedido(idPrePedido)          
         cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
         
@@ -246,7 +293,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
       
       // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
       it('Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253', () => {
-            cy.login(usuario.cpf, usuario.senha)
+            
             cy.acessarPedido(idPrePedido)  
           cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
           .trigger('mouseover').click({force: true}).click({force: true});
@@ -359,7 +406,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
   });
   describe('Iniciando os testes com o Meio de pagamento', () => {
       it('Meio de pagamento', () => {
-        cy.login(usuario.cpf, usuario.senha)
+        
         cy.acessarPedido(idPrePedido)
         cy.get(path.generic.pagamento, {timeout: 20000}).click({force: true})
     

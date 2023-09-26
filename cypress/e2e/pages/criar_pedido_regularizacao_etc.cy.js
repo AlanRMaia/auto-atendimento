@@ -2,9 +2,8 @@ import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
-var fakerBr = require('faker-br');  
+var fakerBr = require('faker-br'); 
 
-let usuario;
   let veiculo01;
   let veiculo02;
   let veiculo03;
@@ -98,12 +97,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
       veiculo03 = bsg1253
       veiculo03.crlv = doc.crlv
       veiculo03.contrato = doc.contrato
-    })
-    
-
-    cy.fixture('usuario').then((data) => {
-      usuario = data;
-    });
+    })    
     cy.viewport(1920, 1080);
     cy.login()   
   });
