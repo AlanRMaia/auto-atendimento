@@ -82,7 +82,7 @@ describe('Grupo de teste Atendimento Renovação TAC', () => {
          //Logar na página com o usuario       
         cy.login(usuario.cpf, usuario.senha)       
         //Clicar na opção Regularização RNTRC no menu lateral
-        cy.regularizacao();
+        cy.get(path.atendimentoPage.regularizacao, {timeout: 30000}).click({force: true});
         //Selecionando o tipo de atendimento Renovação RNTRC
         cy.get(path.regularizacaoPage.tipoAtendimentoRenovacao).click({force: true});
         //selecionar o tipo de transportador Autônomo para a abertura do pre-pedido

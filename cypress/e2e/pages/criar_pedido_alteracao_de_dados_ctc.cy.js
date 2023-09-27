@@ -68,7 +68,7 @@ describe('Iniciando testes Autoatendimento', () => {
         //Logar na página com o usuario       
         cy.login(usuario.cpf, usuario.senha)        
         //Clicar na opção Regularização RNTRC no menu lateral
-        cy.regularizacao();
+        cy.get(path.atendimentoPage.regularizacao, {timeout: 30000}).click({force: true});
         //Selecionando o tipo de atendimento Renovação RNTRC
         cy.atendimentosRegularizacao('Alteração de Dados')        
         //

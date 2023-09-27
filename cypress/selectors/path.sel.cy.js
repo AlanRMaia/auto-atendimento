@@ -92,13 +92,17 @@ module.exports = {
   atendimentoPage: {
     //regularizacao: "[data-cy=regularizacao]",
     regularizacao: '[href="#/regularizacao"]',
-    numeroPedido: '[data-cy=numeroAtendimento]',
-    consultaRNTRC: '[href="#/consulta"]'
+    numeroAtendimento: '[data-cy=numeroAtendimento]',
+    consultaRNTRC: '[href="#/consulta"]',
+    cpfCnpj: '[data-cy=cpfCnpj]',
+    situacao: '[data-cy=situacao]',
+    dataInicioSituacao: '[data-cy=dataInicioSituacao]',
+    dataFimSituacao: '[data-cy=dataFimSituacao]'
   },
   regularizacaoPage: {
     //tipoAtendimento: '[data-cy=tipoAtendimento]',
     listaAtendimento: '[data-cy=atendimentosRegularizacao]',
-    atendimento: '[data-cy=atendimento]'    
+    atendimento: '[data-cy=atendimento]',        
   },
   consultaRNTRCPage: {
     radioPorTransportador: '[data-cy=radioPorTransportador]',

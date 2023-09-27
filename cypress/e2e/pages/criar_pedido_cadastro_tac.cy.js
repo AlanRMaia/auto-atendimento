@@ -112,7 +112,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
         cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)         
         //Logar na página com o usuario             
         //Clicar na opção Regularização RNTRC no menu lateral
-        cy.regularizacao();
+        cy.get(path.atendimentoPage.regularizacao, {timeout: 30000}).click({force: true});;
         //Selecionando o tipo de atendimento Cadastro
         cy.atendimentosRegularizacao('Novo RNTRC')
         //selecionar o tipo de transportador Autônomo para a abertura do pre-pedido

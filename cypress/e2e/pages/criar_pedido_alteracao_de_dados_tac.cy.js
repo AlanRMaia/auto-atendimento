@@ -4,25 +4,32 @@ import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 var fakerBr = require('faker-br');  
 
-  let veiculo01;
-  let veiculo02;
-  let veiculo03;
+  
   let doc;
 
   let idPrePedido = '2071106'; 
-  const celular = '11952634251';
-  const telefone = '(11)2200-2200';
-  const cpfMotorista = '38489604860';
+  const celular = '(21) 99999-9998';
+  const telefone = '(11) 4338-0201';
+  const fax = '(21) 89999-9999'
+  const email = 'nailtonnivaldosoares@gmail.com'
 
   const transportador = {
-    cpfCnpj: "346.575.509-00",
-    nome: "TAC - ODACIR NUNES PIRES",
-    rntrc: "000010024",
-    situacao: "VENCIDO",
+    cpfCnpj: "143.854.008-65",
+    nome: "TAC - NAILTON NIVALDO SOARES",
+    rntrc: "000010100",
+    situacao: "ATIVO",
     saldo: "R$ 0,00",
     sigla: "TAC",
     tipo: "Autônomo"
   };
+
+  const motorista = {
+    cpf: '963.141.920-72',
+    nome: 'MARCELO ANTONIO ZULIAN',
+    dataNascimento: '26/11/1978',
+    cnh: '11111111111',
+    categoria: 'C',    
+  }
 
   const sindicato = {
     perfil: "FETAC-MG - Master",
@@ -40,14 +47,14 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.viewport(1920, 1080);
         cy.login()
       });
-  describe('Iniciando testes Autoatendimento', () => {
+  describe.only('Iniciando testes Autoatendimento', () => {
 
     // ------ Abrir Atendimento de Alteração de dados ------//
       it('Criar pedido Alteração de dados TAC', () => {
         cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)       
           //Logar na página com o usuario         
           //Clicar na opção Regularização RNTRC no menu lateral
-          cy.regularizacao();
+          cy.get(path.atendimentoPage.regularizacao, {timeout: 30000}).click({force: true});
           //Selecionando o tipo de atendimento Renovação RNTRC
           cy.atendimentosRegularizacao('Alteração de Dados')         
           //
@@ -87,6 +94,14 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           cy.notificacao(mensagem.DadosSalvoSucesso) 
         });
         
+        // ------ Criar operação Excluir Contato Email ------//
+        it('Criar operação Excluir Contato Email', () => { 
+          cy.acessarPedido(idPrePedido)       
+          cy.incluirContatoEmail(faker, email)
+          cy.notificacao(mensagem.DadosSalvoSucesso) 
+        });
+
+        
         // ------ Criar operação Excluir Contato Celular -----//
         it('Criar operação Excluir Contato Celular', () => {         
           cy.acessarPedido(idPrePedido)        
@@ -97,7 +112,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         // ------ Criar operação Excluir Contato Telefone -----//
         it('Criar operação Excluir Contato Telefone', () => {         
           cy.acessarPedido(idPrePedido)     
-          cy.excluirContatoTelefone(fakerBr, telefone)  
+          cy.excluirContatoTelefone(faker, telefone)  
           cy.notificacao(mensagem.DadosSalvoSucesso);       
         });
         
@@ -115,6 +130,13 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           cy.notificacao(mensagem.DadosSalvoSucesso);      
         });       
         
+        // ------- Criar operação Excluir Contato Fax -------//
+        it('Criar operação Excluir Contato Fax', () => {
+          cy.acessarPedido(idPrePedido)    
+          cy.incluirContatoFax(faker, fax)     
+          cy.notificacao(mensagem.DadosSalvoSucesso);      
+        }); 
+
         // -------- Criar operação Alterar Endereço Comercial --------//
         it.skip('Criar operação Alterar Endereço Correspondência', () => { 
           cy.acessarPedido(idPrePedido)        
@@ -139,7 +161,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
       // --------- Criar operacao Alterar Motorista -----//
       it('Criar operacao Alterar Motorista', () => {        
         cy.acessarPedido(idPrePedido)
-        cy.alterarMotorista(fakerBr, cpfMotorista)
+        cy.alterarMotorista(fakerBr, motorista)
         cy.notificacao(mensagem.DadosSalvoSucesso);
       });    
       

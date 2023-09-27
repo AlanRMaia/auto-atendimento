@@ -73,15 +73,9 @@ Cypress.Commands.add('login', (usuario = Cypress.env('usuario')) => {
   // )  
 });
 
-Cypress.Commands.add('regularizacao', () => {  
-  cy.get(path.atendimentoPage.regularizacao, {timeout: 30000}).click({force: true});
-});
-
 Cypress.Commands.add('consultaRNTRC', () => {
   cy.get(path.atendimentoPage.consultaRNTRC).click({force: true});
 });
-
-
 
 Cypress.Commands.add('getElementListXpath', (xpath, element) => {
   cy.xpath(xpath, {timeout: 10000}).each(($ele, index, list) => {
@@ -114,42 +108,39 @@ Cypress.Commands.add('getElementList', (selector, element) => {
 });
 
 Cypress.Commands.add('acessarPedido', (idPedido) => { 
-  cy.get(path.atendimentoPage.numeroPedido).type(idPedido).get(path.generic.botaoSubmit).click({force: true})
+  cy.get(path.atendimentoPage.numeroAtendimento).type(idPedido).get(path.generic.botaoSubmit).click({force: true})
   .get(path.generic.idAtendimento, {timeout: 20000}).should('have.text', `#${idPedido}`);
 });
 
 Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
-  cy.document({timeout:20000}).wait(8000).then((doc) => {
-      const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
-      cy.wrap(element).each((ele, index, list)=> {
-        cy.wrap(list.length)       
-        cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
-          let placa = text.text().substring(0, 7)
-          cy.log('valor da placa:',veiculo.placa)          
-          if (placa == veiculo.placa) {
-            cy.wrap(ele)
-            .find(path.detalhamentoAtendimentoPage.anexarDocumentoVeiculo, {timeout: 20000}).click({force: true}).wait(2000)
-          } else {
-            cy.log(`não encontrou o valor: ${placa}`)
-          }
-        })
-      }) 
-      
-    })
-  
-  
-  
-  cy.get(path.generic.title).contains('Documento do Veículo', {timeout: 20000})
-
-  if (veiculo.propriedade != 'Arrendado') {
-    cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv, {force: true})
-  } else {
-    cy.get(path.anexarDocumentoVeiculo.contratoArrendamento, {timeout: 10000})
-    .selectFile(selectFile.contrato)
-    cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv)
+    cy.document({timeout:20000}).wait(8000).then((doc) => {
+        const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
+        cy.wrap(element).each((ele, index, list)=> {
+          cy.wrap(list.length)       
+          cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
+            let placa = text.text().substring(0, 7)
+            cy.log('valor da placa:',veiculo.placa)          
+            if (placa == veiculo.placa) {
+              cy.wrap(ele)
+              .find(path.detalhamentoAtendimentoPage.anexarDocumentoVeiculo, {timeout: 20000}).click({force: true}).wait(2000)
+            } else {
+              cy.log(`não encontrou o valor: ${placa}`)
+            }
+          })
+        }) 
         
-  }
-  cy.get(path.generic.botaoSubmit).click({force: true})
+      })  
+    
+    cy.get(path.generic.title).contains('Documento do Veículo', {timeout: 20000})
+
+    if (veiculo.propriedade != 'Arrendado') {
+      cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv, {force: true})
+    } else {
+      cy.get(path.anexarDocumentoVeiculo.contratoArrendamento, {timeout: 10000})
+      .selectFile(selectFile.contrato)
+      cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv)          
+    }
+    cy.get(path.generic.botaoSubmit).click({force: true})
   })
 
 

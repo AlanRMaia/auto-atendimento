@@ -138,7 +138,7 @@ Cypress.Commands.add('excluirContatoEmail', (faker, email) => {
         cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
-Cypress.Commands.add('incluirContatoFax', (faker)=>{  
+Cypress.Commands.add('incluirContatoFax', (faker, fax = faker.phone.number('(##)####-####') )=>{  
 
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Contato', {timeout: 10000}).click({force: true})
@@ -149,7 +149,7 @@ Cypress.Commands.add('incluirContatoFax', (faker)=>{
   cy.wait('@contato')
   cy.get(path.operacaoContato.tipoContato).click({force: true})    
   .get(path.operacaoContato.fax).contains('Fax', {timeout: 10000}).click({force: true})     
-  cy.get(path.operacaoContato.tipoContatoValor).type(faker.phone.number('(##)####-####'))    
+  cy.get(path.operacaoContato.tipoContatoValor).type(fax)    
   cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
   cy.get(path.generic.botaoSubmit).click({force: true})
 })
@@ -170,7 +170,7 @@ Cypress.Commands.add('alterarContatoFax', (faker, fax)=>{
   cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
-Cypress.Commands.add('excluirContatoFax', (faker, phone) =>{
+Cypress.Commands.add('excluirContatoFax', (faker, fax) =>{
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Contato', {timeout: 10000}).click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Excluir').click({force: true})
@@ -180,7 +180,7 @@ Cypress.Commands.add('excluirContatoFax', (faker, phone) =>{
         cy.wait('@contato')
         cy.get(path.operacaoContato.tipoContato).click({force: true})       
         .get(path.operacaoContato.fax).contains('Fax', {timeout: 10000}).click({force: true})      
-        cy.get(path.operacaoContato.tipoContatoValor).type(phone)    
+        cy.get(path.operacaoContato.tipoContatoValor).type(fax)    
         cy.get(path.operacaoContato.tipoDescricao).type(faker.lorem.word({strategy: 'shortext'}))
         cy.get(path.generic.botaoSubmit).click({force: true})
 })
@@ -792,13 +792,13 @@ Cypress.Commands.add('incluirMotorista', (faker) => {
 
 })
 
-Cypress.Commands.add('alterarMotorista', (faker, cpf) => {
+Cypress.Commands.add('alterarMotorista', (faker, motorista) => {
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Motorista').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})
           
   cy.get(path.generic.title, {timeout: 10000}).contains(operacao.AlterarMotorista, {timeout: 20000})
-  cy.get(path.operacaoMotorista.cpf).type(cpf)
+  cy.get(path.operacaoMotorista.cpf).type(motorista.cpf)
   //cy.get(path.generic.alert).should('not.exist')
   cy.get(path.operacaoMotorista.nome).type(`${faker.name.firstName()} ${faker.name.lastName()}`)
   //cy.get(path.generic.alert).should('not.exist')
