@@ -25,7 +25,7 @@ describe('Grupo de teste para o processo de Esqueceu a senha', () => {
         
         cy.get(path.loginPage.esqueceuSenha).should('have.text', 'Esqueceu a senha?').click({force: true});
 
-        cy.get(path.loginCadatsro.sejaBemVindo, {timeout: 20000}).should('have.text', ' Seja bem-vindo(a)! ')
+        cy.get(path.loginCadastro.sejaBemVindo, {timeout: 20000}).should('have.text', ' Seja bem-vindo(a)! ')
     });
 
     it('Clicando no link Esqueceu a senha?', () => {

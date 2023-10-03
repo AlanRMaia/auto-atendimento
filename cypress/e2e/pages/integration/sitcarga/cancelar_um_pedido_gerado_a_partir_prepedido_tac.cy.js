@@ -7,19 +7,18 @@ import  situacao  from "../../../../support/SituacaoEnum";
 var fakerBr = require('faker-br');  
 
 
-  let veiculoImplemento;
-  let veiculoAutomotor;  
-  let index = 0;
+    
   let doc; 
-  let idPrePedido = '2071163';
+  let idPrePedido = '2071165';
+  let idPedido = '2071104'
   const celular = '(21) 98878-7878';
-  const telefone = '(12) 3937-6191';
+  const telefone = '(51) 9996-6952';
   const fax = '(21) 9764-9386';
   const email = 'gghary@hjgay.com';
 
   const motorista = {
-    cpf: '019.726.838-29',
-    nome: 'TAC - DELMAR BATISTA DE OLIVEIRA',
+    cpf: '320.358.290-20',
+    nome: 'JAIR PEDRO KIPPER RISS',
     dataNascimento: '26/11/1978',
     cnh: '11111111111',
     categoria: 'C',    
@@ -35,10 +34,10 @@ var fakerBr = require('faker-br');
   };
 
   let enderecoResidencial = {
-    cep: '12236670',
-    logradouro: 'RUA JOSEFA ALBUQUERQUE DOS SANTOS',
-    municipio: 'São José dos Campos',
-    uf: 'SP',
+    cep: '96880000',
+    logradouro: 'VILA PROGRESSO',
+    municipio: 'Vera Cruz',
+    uf: 'RS',
     numero: '513',
     bairro: 'CIDADE MORUMBI',    
   };
@@ -54,9 +53,9 @@ let boleto = {
     situacao: ''    
   };
   const transportador = {
-    cpfCnpj: "019.726.838-29",
-    nome: "TAC - DELMAR BATISTA DE OLIVEIRA",
-    rntrc: "000012862",
+    cpfCnpj: "320.358.290-20",
+    nome: "TAC - JAIR PEDRO KIPPER RISS",
+    rntrc: "000011550",
     situacao: "ATIVO",
     saldo: "R$ 0,00",
     sigla: "TAC",
@@ -73,28 +72,16 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
         cy.fixture("data/doc/documentos").then((data) => {
             doc = data
           })
-
-          cy.fixture("data/veiculos/veiculo_lista_implemento").then((implementosList) => {
-            veiculoImplemento = implementosList[index]
-            veiculoImplemento.crlv = doc.crlv
-            veiculoImplemento.contrato = doc.contrato
-          })
-          
-          cy.fixture("data/veiculos/veiculo_lista_automotor").then((automotorList) => {
-            veiculoImplemento = automotorList[index]
-            veiculoImplemento.crlv = doc.crlv
-            veiculoImplemento.contrato = doc.contrato
-          })  
+            
           cy.intercept('GET', '**/validarpedido').as('validarpedido')
           cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
 
           cy.viewport(1920, 1080);
-          cy.login()
+          //cy.login()
           //cy.acessarPedido(idPrePedido)
       });
 
-  describe('criação do pedido e inclusão de operações', () => {
-    it('Iniciando so testes', () => {
+    it('Iniciando so testes no autoatendimento', () => {
             
           describe('Iniciando testes Autoatendimento', () => {
 
@@ -271,12 +258,16 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 cy.wait('@finalizarpedido')
             });  
           });
-          });
+    });
             
-          it('Iniciando oa testes no Sitcarga', () => {
+      it.only('Iniciando oa testes no Sitcarga', () => {
                 
             describe('Consultando se o pagamento do boleto foi compensado', () => {
-              
+              cy.intercept('POST', '/autoatendimento/prepedido/consultar?gridName=grid').as('listaPrepedido')
+              cy.intercept('POST', '/autoatendimento/prepedido/gerarpedido/').as('gerarpedido')
+              cy.intercept('POST', 'https://sac-evoservicosfinanceiros.ascbrazil.com.br/site-visitantes/monitor-visitante').as('visitante')
+              cy.intercept('POST', 'https://wwwsitcargateste/institucional/authsca').as('autenticacao')
+              cy.intercept('POST', '/rntrc/veiculopedido/listarservicos').as('listaServicos')
               cy.visit(urls.sitcargaInitial);
               cy.get('.cookie-message > :nth-child(1) > p', {timeout: 10000})
                 .should('be.visible')
@@ -284,7 +275,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 .get('#btnAccept').click({force: true})           
                 cy.loginSitcarga()
                 cy.get('.logo > img', {timeout: 30000}).should('have.attr','src', path.sitcargaHomePage.imgLogon)
-                cy.get(':nth-child(1) > .m-r-sm').contains(usuario.nome.toUpperCase()) 
+                cy.get(':nth-child(1) > .m-r-sm').contains(Cypress.env('usuario').nome.toUpperCase()) 
                 cy.get('.dropdown-toggle').click({force: true})
                 .get('#niveis-usuario > li > a').contains(sindicato.perfil, {timeout: 10000}).click({force: true}) 
                 cy.get('.dropdown-toggle').contains(sindicato.perfil, {timeout: 10000})
@@ -313,10 +304,43 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 .get('#btn-gerar-pedido', {timeout:20000}).click({force: true})
                 cy.get('#confirm-ok').click({force: true}) 
                 cy.wait('@gerarpedido')
+
+                cy.visit(urls.sitcargaHome, {timeout: 20000})
+                cy.wait('@visitante')
+                cy.get('#side-menu > li > a > span').contains('RNTRC', {timeout: 10000}).click({force: true}).click({force: true})
+                .get('a[href="/rntrc/pedido"]', {timeout: 10000}).contains('Acompanhamento', {timeout: 10000}).click({force: true})
+                cy.intercept('POST', 'https://wwwsitcargateste/rntrc/pedido/consultar?gridName=grid').as('listaPedidos')
                 //cy.get('.alert')
-              
+                cy.get('#IdPedido').type(idPedido, {force: true})
+                cy.get('#btn-consultar').click({force: true})
+                cy.wait('@listaPedidos')
+                cy.get('table > tbody > tr', {timeout: 10000}).each(($ele)=>{
+                  cy.get($ele).find('td', {timeout: 10000}).each(($td, index, list) => {
+                    let texto = $td.text()
+                    cy.log('ID:', idPedido)
+                    if (texto == idPedido) {
+                      cy.log('valor encontrado', texto)
+                      cy.wrap($ele).find('a[title="Alterar"]', {timeout: 10000}).click({force: true}) 
+                      return false
+                    }else {
+                      cy.log('Valor não encontrado:', texto)
+                    }
+                  })                
+                })
+               cy.wait('@autenticacao')
+               cy.wait('@listaServicos')
+               cy.get('#form-dadospedido .row .form-group .col-md-6').contains(transportador.cpfCnpj)
+               .get('#form-dadospedido .row .col-md-6 ').contains(idPedido) 
+
+               cy.get('#btnCancelarPedido').should('be.visible').and('have.text', 'Cancelar Pedido').click({force: true})
+               .get('#confirm-dialog-body > p').should('be.visible').and('have.text', 'Confirmar o cancelamento deste pedido?')
+               .get('#confirm-ok').click({force: true})
+               //cy.get('.toast').contains()   
+               cy.get('#form-resumopedido .row .col-md-6').contains(idPedido)
+               cy.get('#form-resumopedido .row .col-md-6').contains('CANCELADO')
+
             });
-          }); 
-    });
+      }); 
+  
   
 });

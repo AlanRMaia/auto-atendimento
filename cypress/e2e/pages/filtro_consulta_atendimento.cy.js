@@ -208,7 +208,7 @@ describe('', () => {
                   //
                   cy.get(path.criarPedidoPage.inputTipoTransportador)
                       .click({force: true})
-                      .get(path.criarPedidoPage.tipoTransportador).contains('Autônomo', {timeout: 200}).click({force: true})        
+                      .get(path.criarPedidoPage.tipoTransportador).contains(transportador.tipo, {timeout: 200}).click({force: true})        
                   cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
                   cy.get(path.generic.botaoSubmit).click({ force: true });
                   

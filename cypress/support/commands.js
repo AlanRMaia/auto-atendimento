@@ -146,18 +146,18 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
 
 Cypress.Commands.add('notificacao', (mensagem, arquivo) => {
   if (typeof arquivo === "undefined") {
-    cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).then((element) => {
+    cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).should('be.visible').then((element) => {
       cy.get(path.generic.mensagemNotificacao).should('be.visible')
       expect(mensagem).to.be.equal(element.text())
-      cy.get(path.generic.mensagemFechar).click({force: true});      
+      cy.get(path.generic.mensagemFechar).click({force: true}).click({force: true});      
     }     
   )
   } else {
     const caminho = require('path')
-    cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).then((element) => {
+    cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).should('be.visible').then((element) => {
       cy.get(path.generic.mensagemNotificacao).should('be.visible')      
       expect(`Arquivo ${caminho.basename(arquivo)} ${mensagem}`).to.be.contains(element.text())
-      cy.get(path.generic.mensagemFechar).click({force: true});      
+      cy.get(path.generic.mensagemFechar).click({force: true}).click({force: true});      
     }     
   )
   }

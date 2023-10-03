@@ -66,7 +66,8 @@ module.exports = {
     cadastreSe: '[data-cy=cadastreSe]',
   },
 
-  loginCadatsro: {
+  loginCadastro: {
+    codigoTipoConta: '[data-cy=codigoTipoConta]',
     sejaBemVindo: '[data-cy=sejaBemVindo]',
     nome: '[data-cy=nome]',
     cpf: '[data-cy=cpf]',
@@ -78,6 +79,10 @@ module.exports = {
     verConfirmado: '[data-cy=verConfirmado]',
     cnpj: '[data-cy=cnpj]',
     facaLogin: '[data-cy=facaLogin]',    
+  },
+
+  cadastroValidacaoEmail: {
+    sejaBemVindo: '[data-cy=sejaBemVindo]'
   },
 
   esqueceuSenhaPage: {
@@ -344,6 +349,8 @@ module.exports = {
   checkoutAtendimentoPage : {
     listaSindicatos: 'div[class="q-virtual-scroll__content"]',
     pontosAtendimento: '[data-cy=pontosAtendimento]',
+    botaoConfirmar1: '[data-cy=confirmar1]',
+    botaoConfirmar2: '[data-cy=confirmar2]'
   }
 
 };

@@ -191,14 +191,14 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
           
         });
     
-        cy.get(path.generic.botaoConfirmar).click({force: true});
+        cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
     
         cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
         .should('have.text', 'Validação do Pedido');
     
         cy.get('.text-6').should('have.text', ' Atendimento Válido ')
     
-        cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
+        cy.get(path.checkoutAtendimentoPage.botaoConfirmar2, {timeout: 10000}).click({force: true})
     
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
     

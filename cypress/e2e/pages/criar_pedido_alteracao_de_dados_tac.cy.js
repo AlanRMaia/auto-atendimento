@@ -7,7 +7,7 @@ var fakerBr = require('faker-br');
   
   let doc;
 
-  let idPrePedido = '2071106'; 
+  let idPrePedido = '2071137'; 
   const celular = '(21) 99999-9998';
   const telefone = '(11) 4338-0201';
   const fax = '(21) 89999-9999'
@@ -47,10 +47,11 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.viewport(1920, 1080);
         cy.login()
       });
-  describe.only('Iniciando testes Autoatendimento', () => {
+
+  it('Iniciando testes Autoatendimento', () => {
 
     // ------ Abrir Atendimento de Alteração de dados ------//
-      it('Criar pedido Alteração de dados TAC', () => {
+      describe('Criar pedido Alteração de dados TAC', () => {
         cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)       
           //Logar na página com o usuario         
           //Clicar na opção Regularização RNTRC no menu lateral
@@ -60,7 +61,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           //
           cy.get(path.criarPedidoPage.inputTipoTransportador)
             .click({force: true})
-            .get(path.criarPedidoPage.tipoTransportador).contains('Autônomo', {timeout: 200}).click({force: true})        
+            .get(path.criarPedidoPage.tipoTransportador).contains(transportador.tipo, {timeout: 200}).click({force: true})        
           cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
           cy.get(path.generic.botaoSubmit).click({ force: true });
           
@@ -72,106 +73,91 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           })
         
       });
-        
         // ------ Criar operação Salvar transportador -----//
-        it.skip('Criar operação Salvar transportador', () => { 
-          cy.acessarPedido(idPrePedido)       
+        describe('Criar operação Salvar transportador', () => { 
           cy.operacaoTransportador(fakerBr, transportador.sigla)
           cy.notificacao(mensagem.TransportadorSucesso)      
         });
         
         //-------- Criar operação Enviar documentos do tipo Identidade ------//              
-        it('Criar operação Enviar documentos do tipo Identidade', () => {  
-          cy.acessarPedido(idPrePedido)      
+        describe('Criar operação Enviar documentos do tipo Identidade', () => {  
           cy.documentosIdentidade(doc.rg)
           cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
         });
 
         // ------ Criar operação Incluir Contato Email ------//
-        it('Criar operação Incluir Contato Email', () => { 
-          cy.acessarPedido(idPrePedido)       
+        describe('Criar operação Incluir Contato Email', () => { 
           cy.incluirContatoEmail(faker)
           cy.notificacao(mensagem.DadosSalvoSucesso) 
         });
         
         // ------ Criar operação Excluir Contato Email ------//
-        it('Criar operação Excluir Contato Email', () => { 
-          cy.acessarPedido(idPrePedido)       
+        describe('Criar operação Excluir Contato Email', () => { 
           cy.incluirContatoEmail(faker, email)
           cy.notificacao(mensagem.DadosSalvoSucesso) 
         });
 
         
         // ------ Criar operação Excluir Contato Celular -----//
-        it('Criar operação Excluir Contato Celular', () => {         
-          cy.acessarPedido(idPrePedido)        
+        describe('Criar operação Excluir Contato Celular', () => {         
           cy.excluirContatoCelular(fakerBr, celular)   
           cy.notificacao(mensagem.DadosSalvoSucesso);
         });
 
         // ------ Criar operação Excluir Contato Telefone -----//
-        it('Criar operação Excluir Contato Telefone', () => {         
-          cy.acessarPedido(idPrePedido)     
+        describe('Criar operação Excluir Contato Telefone', () => {         
           cy.excluirContatoTelefone(faker, telefone)  
           cy.notificacao(mensagem.DadosSalvoSucesso);       
         });
         
         // ------ Criar operação Incluir Contato Telefone -----//
-        it('Criar operação Incluir Contato Telefone', () => {   
-          cy.acessarPedido(idPrePedido)     
+        describe('Criar operação Incluir Contato Telefone', () => {   
           cy.incluirContatoTelefone(faker)  
           cy.notificacao(mensagem.DadosSalvoSucesso);      
         });
         
         // ------- Criar operação Incluir Contato Fax -------//
-        it('Criar operação Incluir Contato Fax', () => {
-          cy.acessarPedido(idPrePedido)    
+        describe('Criar operação Incluir Contato Fax', () => {
           cy.incluirContatoFax(faker)     
           cy.notificacao(mensagem.DadosSalvoSucesso);      
         });       
         
         // ------- Criar operação Excluir Contato Fax -------//
-        it('Criar operação Excluir Contato Fax', () => {
-          cy.acessarPedido(idPrePedido)    
+        describe('Criar operação Excluir Contato Fax', () => {
           cy.incluirContatoFax(faker, fax)     
           cy.notificacao(mensagem.DadosSalvoSucesso);      
         }); 
 
         // -------- Criar operação Alterar Endereço Comercial --------//
-        it.skip('Criar operação Alterar Endereço Correspondência', () => { 
-          cy.acessarPedido(idPrePedido)        
+        describe('Criar operação Alterar Endereço Correspondência', () => { 
           cy.alterarEnderecoComercial(fakerBr)
           cy.notificacao(mensagem.DadosSalvoSucesso);      
         });  
 
         // -------- Criar operação Alterar Endereço Correspondência --------//
-        it.skip('Criar operação Incluir Endereço Correspondência', () => { 
-          cy.acessarPedido(idPrePedido)        
+        describe('Criar operação Incluir Endereço Correspondência', () => { 
           cy.incluirEnderecoCorrespondencia(fakerBr)
           cy.notificacao(mensagem.DadosSalvoSucesso);      
       });  
 
       // --------- Criar operacao Incluir Motorista -----//
-      it('Criar operacao Incluir Motorista', () => {
-          cy.acessarPedido(idPrePedido)
+      describe('Criar operacao Incluir Motorista', () => {
           cy.incluirMotorista(fakerBr)
           cy.notificacao(mensagem.DadosSalvoSucesso);
       });  
       
       // --------- Criar operacao Alterar Motorista -----//
-      it('Criar operacao Alterar Motorista', () => {        
-        cy.acessarPedido(idPrePedido)
+      describe('Criar operacao Alterar Motorista', () => {        
         cy.alterarMotorista(fakerBr, motorista)
         cy.notificacao(mensagem.DadosSalvoSucesso);
       });    
       
-  });
+  
       
   describe('Selecionar o sindicato e gerar valor e anexar documento no veiculo inválido', () => {
       
     // ------- Selecionar o sindicato responsável -------//        
-    it('Selecionar o sindicato responsável', () => {
-        cy.acessarPedido(idPrePedido)          
+    describe('Selecionar o sindicato responsável', () => {
         cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
         
         cy.get(path.generic.title, {timeout: 10000})
@@ -208,8 +194,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
     
     
     // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
-    it('Validação e finalização do pre-pedido', () => {
-      cy.acessarPedido(idPrePedido)  
+    describe('Validação e finalização do pre-pedido', () => {
       cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
       .click({force: true});
       
@@ -239,13 +224,13 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         
       })
       
-      cy.get(path.generic.botaoConfirmar).click({multiple: true});
+      cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
       cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
       .should('have.text', 'Validação do Pedido');
       
       cy.get('.text-6').contains('Atendimento Válido', {timeout: 10000});       
       
-      cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
+      cy.get(path.checkoutAtendimentoPage.botaoConfirmar2, {timeout: 10000}).click({force: true})
       
       cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
       
@@ -267,8 +252,10 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
       })     
     });  
   });
+  
+});
       
       
     
-
+ 
 });

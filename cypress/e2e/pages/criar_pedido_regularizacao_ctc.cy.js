@@ -313,7 +313,7 @@ describe.only('Iniciando os testes na criação do pedido e inclusão das opera�
       
     })
     
-    cy.get(path.generic.botaoConfirmar).click({multiple: true});
+    cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
     
     cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
     .should('have.text', 'Validação do Pedido');
@@ -339,11 +339,11 @@ describe.only('Iniciando os testes na criação do pedido e inclusão das opera�
     
     cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({multiple: true})        
     
-    cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({multiple: true})
+    cy.get(path.checkoutAtendimentoPage.botaoConfirmar1, {timeout: 10000}).should('be.visible').click({force: true})
     
     cy.get('.text-6').should('have.text', ' Atendimento Válido ')
     
-    cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
+    cy.get(path.checkoutAtendimentoPage.botaoConfirmar2, {timeout: 10000}).click({force: true})
     
     cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
     

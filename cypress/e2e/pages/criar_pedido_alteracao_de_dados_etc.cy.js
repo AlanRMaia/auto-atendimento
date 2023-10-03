@@ -76,7 +76,7 @@ describe('Iniciando testes Autoatendimento', () => {
         //
         cy.get(path.criarPedidoPage.inputTipoTransportador)
           .click({force: true})
-          .get(path.criarPedidoPage.tipoTransportador).contains('Empresa').click({force: true})        
+          .get(path.criarPedidoPage.tipoTransportador).contains(transportador.tipo).click({force: true})        
         cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
         cy.get(path.generic.botaoSubmit).click({ force: true });
         
@@ -281,7 +281,7 @@ describe('Selecionar o sindicato e gerar valor e anexar documento no veiculo inv
         
       });
       
-      cy.get(path.generic.botaoConfirmar).click({multiple: true});
+      cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
   });
 
 
@@ -318,13 +318,13 @@ describe('Selecionar o sindicato e gerar valor e anexar documento no veiculo inv
       
     })
     
-    cy.get(path.generic.botaoConfirmar).click({multiple: true});
+    cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
     cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
     .should('have.text', 'Validação do Pedido');
     
     cy.get('.text-6').should('have.text', ' Atendimento Válido ');       
     
-    cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[3]/button[1]/span[2]/span', {timeout: 10000}).should('have.text', 'Confirmar').click({force: true})
+    cy.get(path.checkoutAtendimentoPage.botaoConfirmar2, {timeout: 10000}).click({force: true})
     
     cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
     

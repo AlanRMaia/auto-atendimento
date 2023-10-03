@@ -5,10 +5,7 @@ import mensagem from "../../../../support/mensagemAlertEnum";
 import  urls  from "../../../../support/urls";
 import  situacao  from "../../../../support/SituacaoEnum";
 var fakerBr = require('faker-br');  
-
-
-  let veiculoImplemento;
-  let veiculoAutomotor;  
+   
   let index = 0;
   let doc; 
   let idPrePedido = '2071163';
@@ -73,18 +70,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
         cy.fixture("data/doc/documentos").then((data) => {
             doc = data
           })
-
-          cy.fixture("data/veiculos/veiculo_lista_implemento").then((implementosList) => {
-            veiculoImplemento = implementosList[index]
-            veiculoImplemento.crlv = doc.crlv
-            veiculoImplemento.contrato = doc.contrato
-          })
-          
-          cy.fixture("data/veiculos/veiculo_lista_automotor").then((automotorList) => {
-            veiculoImplemento = automotorList[index]
-            veiculoImplemento.crlv = doc.crlv
-            veiculoImplemento.contrato = doc.contrato
-          })  
+            
           cy.intercept('GET', '**/validarpedido').as('validarpedido')
           cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
 
@@ -197,7 +183,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
         
                 // -------- Criar operação Alterar Endereço Correspondência --------//
                 describe('Criar operação Incluir Endereço Residencial', () => { 
-                  cy.incluirEnderecoResidencial(fakerBr, enderecoResidencial.cep)
+                  cy.alterarEnderecoResidencial(fakerBr, enderecoResidencial.cep)
                   //cy.notificacao(mensagem.DadosSalvoSucesso);      
               }); 
               
@@ -292,7 +278,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 cy.get('#side-menu > li > a > span').contains('Auto Atendimento', {timeout: 10000}).click({force: true}).click({force: true})
                 .get('a[href="/autoatendimento/prepedido"]', {timeout: 10000}).contains('Acompanhamento', {timeout: 10000}).click({force: true})
                          
-                cy.get('#CPFCNPJ').type(transportador.cpfCnpj)
+                cy.get('#IdPedido').type(idPrePedido, {force: true})
                 cy.get('#btn-consultar').click({force: true})  
                 cy.wait('@listaPrepedido')
                 cy.get('table > tbody > tr', {timeout: 10000}).each(($ele)=>{
@@ -313,7 +299,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 .get('#btn-gerar-pedido', {timeout:20000}).click({force: true})
                 cy.get('#confirm-ok').click({force: true}) 
                 cy.wait('@gerarpedido')
-                //cy.get('.alert')
+                cy.get('.alert alert-danger > b').contains('Rejeição: Esse CPF não está cadastrado ou não está ativo na Receita Federal do Brasil.')
               
             });
           }); 

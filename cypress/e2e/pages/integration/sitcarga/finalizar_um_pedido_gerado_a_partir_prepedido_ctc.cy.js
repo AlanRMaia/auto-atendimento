@@ -5,86 +5,75 @@ import mensagem from "../../../../support/mensagemAlertEnum";
 import  urls  from "../../../../support/urls";
 import  situacao  from "../../../../support/SituacaoEnum";
 var fakerBr = require('faker-br');  
-
-
-  let veiculoImplemento;
-  let veiculoAutomotor;  
-  let index = 0;
+    
   let doc; 
-  let idPrePedido = '2071163';
-  const celular = '(21) 98878-7878';
-  const telefone = '(12) 3937-6191';
-  const fax = '(21) 9764-9386';
-  const email = 'gghary@hjgay.com';
+  let idPrePedido = '2071165';
+  const celular = '(21) 98887-7777';
+  const telefone = '(11) 4229-7833';
+  const fax = '(11) 4229-7291';
+  const email = 'cooperativa@coopabc.com.br';
 
-  const motorista = {
-    cpf: '019.726.838-29',
-    nome: 'TAC - DELMAR BATISTA DE OLIVEIRA',
-    dataNascimento: '26/11/1978',
-    cnh: '11111111111',
-    categoria: 'C',    
-  };
+  //const filial = '80.224.348/0002-82';
 
-  let enderecoComercial = {
-    cep: '12236670',
-    logradouro: 'RUA JOSEFA ALBUQUERQUE DOS SANTOS',
-    municipio: 'São José dos Campos',
-    uf: 'SP',
-    numero: '513',
-    bairro: 'CIDADE MORUMBI',    
+  const enderecoComercial = {
+    tipo: "Comercial",
+    cep: "09521080",
+    logradouro: "RUA PINTO FERRAZ",
+    bairro: "CENTRO",
+    municipio: "São Caetano do Sul",
+    uf: "SP",
+    numero: "76",
+    complemento: "",
   };
-
-  let enderecoResidencial = {
-    cep: '12236670',
-    logradouro: 'RUA JOSEFA ALBUQUERQUE DOS SANTOS',
-    municipio: 'São José dos Campos',
-    uf: 'SP',
-    numero: '513',
-    bairro: 'CIDADE MORUMBI',    
+  
+  const gestor = {
+    cpfCnpj: '816.333.008-20',
+    nome: 'JOAQUIM ANTONIO FERNANDES',
+    cargo: 'Responsável Legal',
+    telefone: '(55) 99933-4031',
+    email: 'sistema@evo-sa.com.br',
+    nascimento: '28/03/1957'
+  }
+  
+  const rt = {
+    cpf: '816.333.008-20',
+    nome: 'JOAQUIM ANTONIO FERNANDES',
+    identidade: '75024883',
+    dataNascimento: '28/03/1957'  
+  }
+  
+  const enderecoCorrespondencia = {
+    tipo: "Comercial",
+    cep: "48700000",
+    logradouro: "AV VALDETE CARNEIRO",
+    bairro: "CENTRO",
+    municipio: "Serrinha",
+    uf: "BA",
+    numero: "S/N",
+    complemento: "CASA",
   };
-
-let boleto = {
-    codigoBarra : '',
-    nossoNumero : '',
-    valorPago: '',
-    meioPagamento: '',
-    dataEmissao: '',
-    utilizacao: '',
-    valorBoleto: '',
-    situacao: ''    
-  };
+    
   const transportador = {
-    cpfCnpj: "019.726.838-29",
-    nome: "TAC - DELMAR BATISTA DE OLIVEIRA",
-    rntrc: "000012862",
-    situacao: "ATIVO",
+    cpfCnpj: "80.224.348/0001-00",
+    nome: "CTC - COOPERATIVA AGRICOLA MISTA DE PONTA GROSSA LTDA",
+    rntrc: "003743002",
+    situacao: "VENCIDO",
     saldo: "R$ 0,00",
-    sigla: "TAC",
-    tipo: "Autônomo"
+    sigla: "CTC",
+    tipo: "Cooperativa"
   };
   const sindicato = {
-    perfil: "FETAC-MG - Master",
-    sigla: "FETAC-MG",
-    path: path.generic.perfilSitcarga.FETACMGMaster
-  }  
+    perfil: "OCERGS - Master",
+    sigla: "OCERGS",
+    path: path.generic.perfilSitcarga.OCERGSMAster
+  }     
 
 describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentação de forta', () => {
       beforeEach(() => {
         cy.fixture("data/doc/documentos").then((data) => {
             doc = data
           })
-
-          cy.fixture("data/veiculos/veiculo_lista_implemento").then((implementosList) => {
-            veiculoImplemento = implementosList[index]
-            veiculoImplemento.crlv = doc.crlv
-            veiculoImplemento.contrato = doc.contrato
-          })
-          
-          cy.fixture("data/veiculos/veiculo_lista_automotor").then((automotorList) => {
-            veiculoImplemento = automotorList[index]
-            veiculoImplemento.crlv = doc.crlv
-            veiculoImplemento.contrato = doc.contrato
-          })  
+           
           cy.intercept('GET', '**/validarpedido').as('validarpedido')
           cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
 
@@ -93,13 +82,12 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
           //cy.acessarPedido(idPrePedido)
       });
 
-  describe('criação do pedido e inclusão de operações', () => {
-    it('Iniciando so testes', () => {
+    it('Iniciando so testes no autoatendimento', () => {
             
           describe('Iniciando testes Autoatendimento', () => {
 
             //------ Abrir Atendimento de Alteração de dados ------//
-              describe('Criar pedido Alteração de dados TAC', () => {
+              describe('Criar pedido Alteração de dados ETC', () => {
                 cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)       
                   //Logar na página com o usuario         
                   //Clicar na opção Regularização RNTRC no menu lateral
@@ -122,11 +110,11 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 
               });
                 
-          //       //------ Criar operação Salvar transportador -----//
-          //       // describe('Criar operação Salvar transportador', () => { 
-          //       //   cy.operacaoTransportador(fakerBr, transportador.sigla)
-          //       //   cy.notificacao(mensagem.TransportadorSucesso)      
-          //       // });
+                //------ Criar operação Salvar transportador -----//
+                describe('Criar operação Salvar transportador', () => { 
+                  cy.operacaoTransportador(fakerBr, transportador.sigla)
+                  cy.notificacao(mensagem.TransportadorSucesso)      
+                });
                 
                 //-------- Criar operação Enviar documentos do tipo Identidade ------//              
                 describe('Criar operação Enviar documentos do tipo Identidade', () => {  
@@ -177,9 +165,9 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                   cy.notificacao(mensagem.DadosSalvoSucesso);      
                 });              
         
-              // --------- Criar operacao Incluir Motorista -----//
-              describe('Criar operacao Incluir Motorista', () => {
-                  cy.incluirMotorista(fakerBr, motorista.cpf)
+              // --------- Criar operacao Incluir Gestor Responsável legal -----//
+              describe('Criar operacao Incluir Gestor Responsável legal', () => {
+                  cy.incluirGestor(gestor, transportador.tipo )
                   cy.notificacao(mensagem.DadosSalvoSucesso);
               });  
               
@@ -194,10 +182,23 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
           //     //     cy.alterarEnderecoResidencial(fakerBr, enderecoComercial.cep )
           //     //     cy.notificacao(mensagem.DadosSalvoSucesso);      
           //     //   });  
+                 // -------- Criar operação Incluir Filial ------//
+                it.skip('Criar operação Incluir Filial', () => {                 
+                  cy.incluirFilial(fakerBr)
+                  cy.notificacao(mensagem.DadosSalvoSucesso)      
+                });
+                
+                // ---------- Criar operação Incluir Responsável Técnico --------//
+                it.skip('Criar operação Incluir Responsável Técnico', () => {          
+                  cy.incluirResponsavelTecnico(fakerBr, rt)
+                  cy.notificacao(mensagem.DadosSalvoSucesso)
+                  cy.enviarDocumentosRT(doc.rg)
+                  cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)
+                });  
         
-                // -------- Criar operação Alterar Endereço Correspondência --------//
-                describe('Criar operação Incluir Endereço Residencial', () => { 
-                  cy.incluirEnderecoResidencial(fakerBr, enderecoResidencial.cep)
+                // -------- Criar operação Alterar Endereço Comercial --------//
+                describe('Criar operação Alterar Endereço Comercial', () => { 
+                  cy.alterarEnderecoComercial(fakerBr, enderecoComercial.cep)
                   //cy.notificacao(mensagem.DadosSalvoSucesso);      
               }); 
               
@@ -271,11 +272,15 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 cy.wait('@finalizarpedido')
             });  
           });
-          });
+    });
             
-          it('Iniciando oa testes no Sitcarga', () => {
+      it('Iniciando oa testes no Sitcarga', () => {
                 
-            describe('Consultando se o pagamento do boleto foi compensado', () => {
+            describe('Criando o pedido e finalizando o mesmo no Sitcarga', () => {
+              cy.intercept('POST', '/autoatendimento/prepedido/consultar?gridName=grid').as('listaPrepedido')
+              cy.intercept('POST', '/autoatendimento/prepedido/gerarpedido/').as('gerarpedido')
+              cy.intercept('POST', 'https://sac-evoservicosfinanceiros.ascbrazil.com.br/site-visitantes/monitor-visitante').as('visitante')
+              cy.intercept('POST', 'https://wwwsitcargateste/institucional/authsca').as('autenticacao')
               
               cy.visit(urls.sitcargaInitial);
               cy.get('.cookie-message > :nth-child(1) > p', {timeout: 10000})
@@ -284,7 +289,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 .get('#btnAccept').click({force: true})           
                 cy.loginSitcarga()
                 cy.get('.logo > img', {timeout: 30000}).should('have.attr','src', path.sitcargaHomePage.imgLogon)
-                cy.get(':nth-child(1) > .m-r-sm').contains(usuario.nome.toUpperCase()) 
+                cy.get(':nth-child(1) > .m-r-sm').contains(Cypress.env('usuario').nome.toUpperCase()) 
                 cy.get('.dropdown-toggle').click({force: true})
                 .get('#niveis-usuario > li > a').contains(sindicato.perfil, {timeout: 10000}).click({force: true}) 
                 cy.get('.dropdown-toggle').contains(sindicato.perfil, {timeout: 10000})
@@ -316,7 +321,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 //cy.get('.alert')
               
             });
-          }); 
-    });
+      }); 
+  
   
 });

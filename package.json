@@ -12,16 +12,15 @@
     "hl:homolog": "cypress run --config baseUrl=https://sitcarga-spa-homologacao.azurewebsites.net/#/ --env ENVIRONMENT=homolog",
     "hl:dev": "cypress run --config baseUrl=http://localhost:9000/#/ --env ENVIRONMENT=dev",
     "hl:test": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test",
-    "hl:test:spec": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec"    
-    
+    "hl:test:spec": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec"
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.2",
     "@quasar/quasar-app-extension-testing-e2e-cypress": "^4.0.2",
     "cypress-get-table": "^1.0.1",
+    "cypress-promise": "^1.1.0",
     "faker-br": "^0.4.1",
     "nodemailer": "^6.9.4"
   },
-
   "chromeWebSecurity": false
 }

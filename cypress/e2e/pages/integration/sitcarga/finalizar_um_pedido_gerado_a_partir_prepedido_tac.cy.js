@@ -11,15 +11,15 @@ var fakerBr = require('faker-br');
   let veiculoAutomotor;  
   let index = 0;
   let doc; 
-  let idPrePedido = '2071163';
+  let idPrePedido = '2071165';
   const celular = '(21) 98878-7878';
-  const telefone = '(12) 3937-6191';
+  const telefone = '(51) 9996-6952';
   const fax = '(21) 9764-9386';
   const email = 'gghary@hjgay.com';
 
   const motorista = {
-    cpf: '019.726.838-29',
-    nome: 'TAC - DELMAR BATISTA DE OLIVEIRA',
+    cpf: '320.358.290-20',
+    nome: 'JAIR PEDRO KIPPER RISS',
     dataNascimento: '26/11/1978',
     cnh: '11111111111',
     categoria: 'C',    
@@ -35,10 +35,10 @@ var fakerBr = require('faker-br');
   };
 
   let enderecoResidencial = {
-    cep: '12236670',
-    logradouro: 'RUA JOSEFA ALBUQUERQUE DOS SANTOS',
-    municipio: 'São José dos Campos',
-    uf: 'SP',
+    cep: '96880000',
+    logradouro: 'VILA PROGRESSO',
+    municipio: 'Vera Cruz',
+    uf: 'RS',
     numero: '513',
     bairro: 'CIDADE MORUMBI',    
   };
@@ -54,9 +54,9 @@ let boleto = {
     situacao: ''    
   };
   const transportador = {
-    cpfCnpj: "019.726.838-29",
-    nome: "TAC - DELMAR BATISTA DE OLIVEIRA",
-    rntrc: "000012862",
+    cpfCnpj: "320.358.290-20",
+    nome: "TAC - JAIR PEDRO KIPPER RISS",
+    rntrc: "000011550",
     situacao: "ATIVO",
     saldo: "R$ 0,00",
     sigla: "TAC",
@@ -93,8 +93,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
           //cy.acessarPedido(idPrePedido)
       });
 
-  describe('criação do pedido e inclusão de operações', () => {
-    it('Iniciando so testes', () => {
+    it('Iniciando so testes no autoatendimento', () => {
             
           describe('Iniciando testes Autoatendimento', () => {
 
@@ -271,11 +270,15 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 cy.wait('@finalizarpedido')
             });  
           });
-          });
+    });
             
-          it('Iniciando oa testes no Sitcarga', () => {
+      it('Iniciando oa testes no Sitcarga', () => {
                 
             describe('Consultando se o pagamento do boleto foi compensado', () => {
+              cy.intercept('POST', '/autoatendimento/prepedido/consultar?gridName=grid').as('listaPrepedido')
+              cy.intercept('POST', '/autoatendimento/prepedido/gerarpedido/').as('gerarpedido')
+              cy.intercept('POST', 'https://sac-evoservicosfinanceiros.ascbrazil.com.br/site-visitantes/monitor-visitante').as('visitante')
+              cy.intercept('POST', 'https://wwwsitcargateste/institucional/authsca').as('autenticacao')
               
               cy.visit(urls.sitcargaInitial);
               cy.get('.cookie-message > :nth-child(1) > p', {timeout: 10000})
@@ -284,7 +287,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 .get('#btnAccept').click({force: true})           
                 cy.loginSitcarga()
                 cy.get('.logo > img', {timeout: 30000}).should('have.attr','src', path.sitcargaHomePage.imgLogon)
-                cy.get(':nth-child(1) > .m-r-sm').contains(usuario.nome.toUpperCase()) 
+                cy.get(':nth-child(1) > .m-r-sm').contains(Cypress.env('usuario').nome.toUpperCase()) 
                 cy.get('.dropdown-toggle').click({force: true})
                 .get('#niveis-usuario > li > a').contains(sindicato.perfil, {timeout: 10000}).click({force: true}) 
                 cy.get('.dropdown-toggle').contains(sindicato.perfil, {timeout: 10000})
@@ -316,7 +319,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 //cy.get('.alert')
               
             });
-          }); 
-    });
+      }); 
+  
   
 });
