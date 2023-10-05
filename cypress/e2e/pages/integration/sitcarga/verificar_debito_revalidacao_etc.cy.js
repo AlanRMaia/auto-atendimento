@@ -65,6 +65,9 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
       veiculo03.crlv = doc.crlv
       veiculo03.contrato = doc.contrato
     })
+
+    cy.intercept('GET', '**/validarpedido').as('validarpedido')
+    cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
     
 
     cy.fixture('usuario').then((data) => {

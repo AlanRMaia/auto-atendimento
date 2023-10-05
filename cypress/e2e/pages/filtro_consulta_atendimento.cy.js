@@ -195,7 +195,7 @@ describe('', () => {
   
           });
         
-          describe('Cria pedido e consultar se ele aparece no grid de atendimentos em primeiro na finla', () => {
+          describe('Cria pedido e consulta se ele aparece no grid de atendimentos em primeiro na fila', () => {
             
               // ------ Abrir Atendimento de Alteração de dados ------//
               describe('Criar pedido Alteração de dados TAC', () => {

@@ -42,7 +42,10 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
     beforeEach(() => {
         cy.fixture("data/doc/documentos").then((data) => {
           doc = data
-        })     
+        })
+        
+        cy.intercept('GET', '**/validarpedido').as('validarpedido')
+          cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
         
         cy.viewport(1920, 1080);
         cy.login()

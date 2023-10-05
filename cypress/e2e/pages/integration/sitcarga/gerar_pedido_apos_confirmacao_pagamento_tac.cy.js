@@ -239,8 +239,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
               
 
-            });
-            
+            });            
             
             // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
             describe('Validação e finalização do pre-pedido', () => {
@@ -271,7 +270,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 cy.wait('@finalizarpedido')
             });  
           });
-          });
+    });
             
           it('Iniciando oa testes no Sitcarga', () => {
                 
@@ -292,7 +291,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 cy.get('#side-menu > li > a > span').contains('Auto Atendimento', {timeout: 10000}).click({force: true}).click({force: true})
                 .get('a[href="/autoatendimento/prepedido"]', {timeout: 10000}).contains('Acompanhamento', {timeout: 10000}).click({force: true})
                          
-                cy.get('#CPFCNPJ').type(transportador.cpfCnpj)
+                cy.get('#IdPedido').type(idPrePedido)
                 cy.get('#btn-consultar').click({force: true})  
                 cy.wait('@listaPrepedido')
                 cy.get('table > tbody > tr', {timeout: 10000}).each(($ele)=>{

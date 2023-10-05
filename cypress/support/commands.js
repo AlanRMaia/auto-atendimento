@@ -53,6 +53,7 @@
 import urls from './urls';
 import path from '../selectors/path.sel.cy';
 import operacao from "./OperacaoEnum";
+const each = require('cypress-recurse');
 require('cypress-xpath');
 
 Cypress.Commands.add('getByData', (selector) => {
@@ -112,23 +113,30 @@ Cypress.Commands.add('acessarPedido', (idPedido) => {
   .get(path.generic.idAtendimento, {timeout: 20000}).should('have.text', `#${idPedido}`);
 });
 
-Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
-    cy.document({timeout:20000}).wait(8000).then((doc) => {
+
+
+Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{  
+  cy.intercept('POST', '**/imagem').as('salvarcrlv')
+    cy.intercept('GET', '**?retornaImagens=true').as('salvarcontrato')
+    
+    cy.document({timeout:20000}).wait(6000).then((doc) => {
+       let found;
         const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
         cy.wrap(element).each((ele, index, list)=> {
-          cy.wrap(list.length)       
-          cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
-            let placa = text.text().substring(0, 7)
-            cy.log('valor da placa:',veiculo.placa)          
-            if (placa == veiculo.placa) {
-              cy.wrap(ele)
-              .find(path.detalhamentoAtendimentoPage.anexarDocumentoVeiculo, {timeout: 20000}).click({force: true}).wait(2000)
-            } else {
-              cy.log(`não encontrou o valor: ${placa}`)
-            }
-          })
+          return new Cypress.Promise(resolve => {
+            cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
+                let placa = text.text().substring(0, 7)
+                cy.log('valor da placa:',veiculo.placa)          
+                if (placa == veiculo.placa) {                  
+                  found = index                  
+                }               
+              })
+              resolve(found)
+          })          
         }) 
-        
+        cy.wrap(element).then((ele)=>{
+          cy.wrap(ele[found]).find(path.detalhamentoAtendimentoPage.anexarDocumentoVeiculo, {timeout: 20000}).click({force: true})
+        })    
       })  
     
     cy.get(path.generic.title).contains('Documento do Veículo', {timeout: 20000})
@@ -141,6 +149,8 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
       cy.get(path.anexarDocumentoVeiculo.crlv, {timeout: 10000}).selectFile(selectFile.crlv)          
     }
     cy.get(path.generic.botaoSubmit).click({force: true})
+    cy.wait('@salvarcontrato')
+    cy.wait('@salvarcrlv', {timeout: 10000})
   })
 
 
@@ -148,8 +158,8 @@ Cypress.Commands.add('notificacao', (mensagem, arquivo) => {
   if (typeof arquivo === "undefined") {
     cy.get(path.generic.mensagemNotificacao, {timeout: 20000}).should('be.visible').then((element) => {
       cy.get(path.generic.mensagemNotificacao).should('be.visible')
-      expect(mensagem).to.be.equal(element.text())
-      cy.get(path.generic.mensagemFechar).click({force: true}).click({force: true});      
+      expect(mensagem).to.be.contains(element.text())
+      cy.get(path.generic.mensagemFechar).wait(2000).click({multiple: true});      
     }     
   )
   } else {

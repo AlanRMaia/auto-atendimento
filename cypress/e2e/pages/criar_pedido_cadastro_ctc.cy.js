@@ -115,6 +115,9 @@ describe('Grupo de teste Atendimento Cadastro CTC', () => {
         veiculo03.contrato = doc.contrato
       })
 
+      cy.intercept('GET', '**/validarpedido').as('validarpedido')
+      cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
+
       cy.viewport(1920, 1080);
       cy.login()
   });

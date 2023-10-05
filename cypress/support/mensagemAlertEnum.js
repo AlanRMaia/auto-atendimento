@@ -16,5 +16,6 @@
     EnderecoNaoEncontrado: 'Não foi possível retornar o endereço para o CEP informado.',    
     ResponsavelTecnicoJaIncluso: 'Responsável Técnico já incluso no pedido.',
     GestorJaIncluso: 'Gestor já incluso no pedido.',
-    GestorNãoExiste: 'Gestor não existe para o transportador.'  
+    GestorNãoExiste: 'Gestor não existe para o transportador.',
+    CRLVContratoSucesso: 'CRLV incluído com sucesso!Contrato de arrendamento incluído com sucesso!'  
  };

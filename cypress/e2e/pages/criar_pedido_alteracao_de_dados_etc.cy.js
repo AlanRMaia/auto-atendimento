@@ -57,6 +57,9 @@ describe('Grupo de teste Atendimento Alteração de dados ETC', () => {
         cy.fixture('usuario').then((data) => {
           usuario = data;
         });
+
+        cy.intercept('GET', '**/validarpedido').as('validarpedido')
+          cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
         cy.reload();  
         cy.viewport(1920, 1080);
         cy.wait(2000)  

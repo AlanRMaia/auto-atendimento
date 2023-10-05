@@ -4,20 +4,15 @@ import { faker } from '@faker-js/faker';
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 
-  let usuario;
-
+const usuario = Cypress.env('usuario')
 describe('Grupo de testes navegação de serviços', () => {
-    beforeEach(() => {
-        cy.fixture('usuario').then((data) => {
-          usuario = data;
-        });
+    beforeEach(() => {        
         cy.reload();  
         cy.viewport(1280, 720);
-        cy.wait(2000)  
       });
 
       it('Emitir novo RNTRC', () => {
-        cy.visit('http://localhost:9000/#/')
+        cy.visit('/')
         cy.getElementList(path.institucionalPage.tipoAtendimento, 'Emitir Novo RNTRC')
         //login
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
@@ -31,7 +26,7 @@ describe('Grupo de testes navegação de serviços', () => {
       //RenovaçãoRNTRC
 
       it('Renovação RNTRC', () => {
-        cy.visit('http://localhost:9000/#/')
+        cy.visit('/')
         cy.getElementList(path.institucionalPage.tipoAtendimento, 'RenovaçãoRNTRC')
         //login
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
@@ -45,7 +40,7 @@ describe('Grupo de testes navegação de serviços', () => {
       //Gerenciamento deFrota
 
       it('Gerenciamento de Frota', () => {
-        cy.visit('http://localhost:9000/#/')
+        cy.visit('/')
         cy.getElementList(path.institucionalPage.tipoAtendimento, 'Gerenciamento deFrota')
         //login
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
@@ -59,7 +54,7 @@ describe('Grupo de testes navegação de serviços', () => {
       //Consulta RNTRCe Frota
 
       it('Consulta RNTRC e Frota', () => {
-        cy.visit('http://localhost:9000/#/')
+        cy.visit('/')
         cy.getElementList(path.institucionalPage.tipoAtendimento, 'Consulta RNTRCe Frota')
         //login
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
@@ -72,7 +67,7 @@ describe('Grupo de testes navegação de serviços', () => {
       //Emissão deDocumentos
 
       it('Emissão de Documentos', () => {
-        cy.visit('http://localhost:9000/#/')
+        cy.visit('/')
         cy.getElementList(path.institucionalPage.tipoAtendimento, 'Emissão deDocumentos')
         //login
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
@@ -84,7 +79,7 @@ describe('Grupo de testes navegação de serviços', () => {
       //Outros
 
       it.only('Outros', () => {
-        cy.visit('http://localhost:9000/#/')
+        cy.visit('/')
 
         cy.get(path.institucionalPage.tipoAtendimento).contains('Outros').click()
         //cy.getElementList(path.institucionalPage.tipoAtendimento, 'Outros ')

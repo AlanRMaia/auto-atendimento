@@ -1381,6 +1381,13 @@ cypress-promise@^1.1.0:
   resolved "https://registry.npmjs.org/cypress-promise/-/cypress-promise-1.1.0.tgz"
   integrity sha512-DhIf5PJ/a0iY+Yii6n7Rbwq+9TJxU4pupXYzf9mZd8nPG0AzQrj9i+pqINv4xbI2EV1p+PKW3maCkR7oPG4GrA==
 
+cypress-recurse@^1.35.2:
+  version "1.35.2"
+  resolved "https://registry.npmjs.org/cypress-recurse/-/cypress-recurse-1.35.2.tgz"
+  integrity sha512-G6HfxP90xa7phw8oeOX4uabxcI9gE1ktkKHShcA3nCByrkMLs56+GIJVn0A+ws1tI0PGRKBz6+V9DHS5WnZX4A==
+  dependencies:
+    humanize-duration "^3.27.3"
+
 cypress-xpath@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/cypress-xpath/-/cypress-xpath-2.0.1.tgz"
@@ -2381,6 +2388,11 @@ human-signals@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/human-signals/-/human-signals-2.1.0.tgz"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
+
+humanize-duration@^3.27.3:
+  version "3.30.0"
+  resolved "https://registry.npmjs.org/humanize-duration/-/humanize-duration-3.30.0.tgz"
+  integrity sha512-NxpT0fhQTFuMTLnuu1Xp+ozNpYirQnbV3NlOjEKBYlE3uvMRu3LDuq8EPc3gVXxVYnchQfqVM4/+T9iwHPLLeA==
 
 iconv-lite@0.4.24:
   version "0.4.24"

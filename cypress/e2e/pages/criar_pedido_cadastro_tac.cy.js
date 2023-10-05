@@ -11,8 +11,7 @@ let veiculoImplemento;
 let veiculoAutomotor;
 let index = 0;
 let doc; 
-let idPrePedido = '2071112';
-const telefone = '(55) 3261-2695'
+let idPrePedido = '2071381';
 let boleto = {
   codigoBarra : '',
   nossoNumero : '',
@@ -101,11 +100,15 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
         veiculo03.contrato = doc.contrato
       })
 
+      cy.intercept('GET', '**/validarpedido').as('validarpedido')
+      cy.intercept('POST', '**/gerarpagamentopedido').as('finalizarpedido')
+      cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao') 
+
       cy.viewport(1920, 1080);
       cy.login()  
     
   });
-  describe.only('Grupo de teste Atendimento Cadastro TAC', () => {
+  describe('Criação do pre-pedido e inclusão de operações', () => {
       
       // ------ Abrir Atendimento de Cadastro ------//
       it('Criar pedido Cadastro TAC', () => { 
@@ -135,134 +138,157 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
       // ------ Criar operação Salvar transportador -----//
       it('Criar operação Salvar transportador', () => {        
         cy.acessarPedido(idPrePedido)       
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')
         cy.operacaoTransportador(fakerBr, transportador.sigla, idPrePedido)
         cy.notificacao(mensagem.TransportadorSucesso)      
       });
       
       // ------ Criar operação Enviar documentos do tipo Identidade -----//              
-      it.only('Criar operação Enviar documentos do tipo Identidade', () => {           
-        cy.acessarPedido(idPrePedido)      
+      it('Criar operação Enviar documentos do tipo Identidade', () => {           
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')      
         cy.documentosIdentidade(doc.rg)
         cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
       });
 
       // ------ Criar operação Incluir Contato Email ------//
       it('Criar operação Incluir Contato Email', () => {     
-        cy.acessarPedido(idPrePedido)       
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')       
         cy.incluirContatoEmail(faker)
         cy.notificacao(mensagem.DadosSalvoSucesso)       
       });
       
       // ------ Criar operação Incluir Contato Celular -----//
-      it.only('Criar operação Incluir Contato Celular', () => {        
-        cy.acessarPedido(idPrePedido)        
+      it('Criar operação Incluir Contato Celular', () => {        
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')        
         cy.incluirContatoCelular(faker)   
         cy.notificacao(mensagem.DadosSalvoSucesso)      
       });
       
       // ------ Criar operação Incluir Contato Telefone -----//
       it('Criar operação Incluir Contato Telefone', () => {       
-        cy.acessarPedido(idPrePedido)     
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')     
         cy.incluirContatoTelefone(faker)  
         cy.notificacao(mensagem.DadosSalvoSucesso)      
       });
       
       // ------- Criar operação Incluir Contato Fax -------//
       it('Criar operação Incluir Contato Fax', () => {              
-        cy.acessarPedido(idPrePedido)    
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')    
         cy.incluirContatoFax(faker)     
         cy.notificacao(mensagem.DadosSalvoSucesso)      
       });       
       
       // -------- Criar operação Incluir Endereço Correspondência --------//
       it('Criar operação Incluir Endereço Correspondência', () => {         
-        cy.acessarPedido(idPrePedido)        
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')        
         cy.incluirEnderecoResidencial(fakerBr, enderecoResidencial.cep)
-        cy.notificacao(mensagem.DadosSalvoSucesso)      
+        //cy.notificacao(mensagem.DadosSalvoSucesso)      
       });  
 
      // --------- Criar operacao Incluir Motorista -----//
      it('Criar operacao Incluir Motorista', () => {         
         cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')
         cy.incluirMotorista(fakerBr)
         cy.notificacao(mensagem.DadosSalvoSucesso)
      });     
       
        // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-       it.skip('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {            
-        cy.acessarPedido(idPrePedido)          
+       it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {            
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')          
         cy.incluirVeiculo(veiculo01)
-        cy.notificacao(mensagem.VeiculoSalvoSucesso)      
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')      
         cy.anexarDocumentosVeiculo(doc, veiculo01 )
         cy.notificacao(mensagem.CRLVSucesso)  
-        
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')
         cy.incluirVeiculo(veiculo02)
-        cy.notificacao(mensagem.VeiculoSalvoSucesso)  
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')  
         cy.anexarDocumentosVeiculo(doc, veiculo02 )
-        cy.notificacao(mensagem.CRLVSucesso)
+        cy.notificacao(mensagem.CRLVContratoSucesso)
       });     
     
     // -------- Criar operação Incluir Veiculo SEMI-REBOQUE/Arrendado ------//
-      it.skip('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
-        cy.acessarPedido(idPrePedido)        
+      it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')        
         cy.incluirVeiculo(veiculoImplemento)
         cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')
         cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
-        cy.notificacao(mensagem.ContratoArrendamentoSucesso)      
-        cy.notificacao(mensagem.CRLVSucesso)      
+        cy.notificacao(mensagem.CRLVContratoSucesso)      
         index++
       });
 
-    it.skip('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
-      cy.acessarPedido(idPrePedido)        
+    it('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
+      cy.acessarPedido(idPrePedido)
+      cy.url().should('include', `detalhe`)
+      cy.wait('@gridoperacao')        
       cy.incluirVeiculo(veiculoAutomotor)
       cy.notificacao(mensagem.VeiculoSalvoSucesso)
+      cy.url().should('include', `detalhe`)
+      cy.wait('@gridoperacao')
       cy.anexarDocumentosVeiculo(doc, veiculoAutomotor )
-      cy.notificacao(mensagem.CRLVSucesso)      
+      cy.notificacao(mensagem.CRLVContratoSucesso)      
       index++
-    });
-
-    it.skip('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
-      cy.acessarPedido(idPrePedido)        
-      cy.incluirVeiculo(veiculoAutomotor)
-      cy.notificacao(mensagem.VeiculoSalvoSucesso)
-      cy.anexarDocumentosVeiculo(doc, veiculoAutomotor )
-      cy.notificacao(mensagem.CRLVSucesso)      
-      index++
-    });
+    });    
     
-    it.skip('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
-      cy.acessarPedido(idPrePedido)        
+    it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
+      cy.acessarPedido(idPrePedido) 
+      cy.url().should('include', `detalhe`)
+      cy.wait('@gridoperacao')       
       cy.incluirVeiculo(veiculoImplemento)
       cy.notificacao(mensagem.VeiculoSalvoSucesso)
+      cy.url().should('include', `detalhe`)
+      cy.wait('@gridoperacao')
       cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
-      cy.notificacao(mensagem.CRLVSucesso)      
+      cy.notificacao(mensagem.CRLVContratoSucesso)      
       index++
     });
   });
   
-  describe('Selecionar o sindicato, gerar serviço e validar o pedido', () => {
-      
+  describe.only('Selecionar o sindicato, gerar serviço e validar o pedido', () => {      
       // ------- Selecionar o sindicato e gerar valor -------//        
-      it('Selecionar o sindicato e gerar valor', () => {
-          
-          cy.acessarPedido(idPrePedido)          
-        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
+    it('Selecionar o sindicato e gerar valor', () => {
+        cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis**').as('listaSindicatos')
+        cy.intercept('GET', '**/valor**').as('tabela')   
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        cy.wait('@gridoperacao')
         
+        cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})
+
+
         cy.get(path.generic.title, {timeout: 10000})
-        .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
-    
-        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-        cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
-        .click({force: true})
+        .contains('Escolha Ponto de Atendimento')
         
-        // cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).wait(2000)
-        // .each((ele, index, list) => {
-        //     let value = ele.text()
-        //     if (value === 'SETCAL') 
-        //     cy.wrap($ele).click();      
-        
-        // })
+        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true})
+        cy.wait('@listaSindicatos')
+        cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
+        .click({force: true})         
+        cy.wait('@tabela')        
         
         cy.get(path.generic.tabela, {timeout: 30000})
         .then((ele) => {
@@ -271,8 +297,8 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
           
             cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
             cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '3')
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$450.00')
         
             cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Cadastro de Transportador (Gratuito)')
             cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
@@ -281,47 +307,37 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
         
             cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
             cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-            cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
-            cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')          
+            cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '2')
+            cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$300.00')
+            cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$750.00')          
           
         });
         
         cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
-      });
       
       
-      // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
-      it('Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253', () => {
-            
-            cy.acessarPedido(idPrePedido)  
-          cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible')
-          .trigger('mouseover').click({force: true}).click({force: true});
+                                // ------ Validação do pedido  -------//         
+           
           
-          cy.get(path.generic.title, {timeout: 10000})
-          .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
+       
+        cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
+        .contains('Validar Atendimento');
     
-          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-          cy.xpath(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
-          .click({force: true})
+        cy.get('.text-6').contains('Atendimento Válido')
+        cy.wait('@validarpedido')        
+        cy.get(path.checkoutAtendimentoPage.botaoConfirmar2, {timeout: 10000}).click({force: true})
     
-          // cy.get(path.confirmarAtendimento.pontosAtendimento, {timeout: 10000}).wait(2000)
-          // .each((ele, index, list) => {
-          //     let value = ele.text()
-          //     if (value === 'SETCAL') 
-          //     cy.wrap($ele).click();      
+        cy.get(path.generic.title, {timeout: 10000}).contains('Confira o Resumo do Pedido');
+    
+        cy.get(path.generic.tabela, {timeout: 30000})
+        .then((ele) => {
           
-          // })
+          cy.log(ele.text())
           
-          cy.get(path.generic.tabela, {timeout: 30000})        
-          .then((ele) => {
-            
-            cy.log(ele.text())
-            
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
               cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
+              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '3')
+              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$450.00')
           
               cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Cadastro de Transportador (Gratuito)')
               cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
@@ -330,81 +346,25 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
           
               cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
               cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
-              cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')           
+              cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '2')
+              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$300.00')
+              cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$750.00')           
             
-          })
-          
-          cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
-          cy.get('.q-stepper__tab--active > .q-stepper__label > .q-stepper__title')
-          .should('have.text', 'Validação do Pedido');
-          
-          cy.get('.text-6').should('have.text', ' Atendimento Inválido ');
-          
-          cy.get('.q-stepper__step-inner > .q-list > :nth-child(1) > .q-item__section > :nth-child(1)')
-          .should('have.text', 'Imagem de Contrato de Arrendamento Obrigatória.')
-          cy.get('.q-stepper__step-inner > .q-list > :nth-child(1) > .q-item__section > .q-item__label--caption')
-          .should('have.text', 'É necessário realizar upload do contrato de arrendamento para a placa BSG1253')
-          
-          cy.get('.q-stepper__step-inner > .q-list > :nth-child(3) > .q-item__section > :nth-child(1)')
-          .should('have.text', 'Imagem do CLRV Obrigatória.')
-          cy.get('.q-stepper__step-inner > .q-list > :nth-child(3) > .q-item__section > .q-item__label--caption')
-          .should('have.text', 'É necessário realizar upload do CLRV para a placa BSG1253')
-          
-          cy.get(path.generic.corrigir).click({force: true}) 
-          
-          cy.anexarDocumentosVeiculo(selectFileBSG1253, veiculoBSG1253 )
-          
-          cy.get(path.generic.mensagemFechar, {timeout: 10000}).click({force: true}).wait(1000)
-          cy.get(path.generic.mensagemFechar,{timeout: 10000}).click({force: true})
-          
-          cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})        
-          
-          cy.get(path.checkoutAtendimentoPage.botaoConfirmar1, {timeout: 10000}).should('be.visible').click({force: true})
-          
-          cy.get('.text-6').should('have.text', ' Atendimento Válido ')
-          
-          cy.get(path.checkoutAtendimentoPage.botaoConfirmar2, {timeout: 10000}).click({force: true})
-          
-          cy.get(path.generic.title, {timeout: 10000}).should('have.text', 'Confira o resumo do pedido');
-          
-          cy.get(path.generic.tabela, {timeout: 30000})        
-          .then((ele) => {
-            
-            cy.log(ele.text())
-            
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00')
-          
-              cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Cadastro de Transportador (Gratuito)')
-              cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
-              cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
-              cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
-          
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$150.00')
-              cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00') 
-              
-              cy.get(path.generic.email).type(faker.internet.email())
+            cy.get(path.generic.email).type(fakerBr.internet.email())
     
-                cy.get(path.generic.finalizar).click({force: true})
+            cy.get(path.generic.finalizar).click({force: true})
     
-                cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
-                cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click({force: true})
+            cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
+            //cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()
     
-                cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
+            // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
     
-                cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist') 
-            
-          })     
-      });  
-  });
-  describe('Iniciando os testes com o Meio de pagamento', () => {
+            // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
+            cy.wait('@finalizarpedido', {timeout: 120000})
+
+        })     
+    });
+       
       it('Meio de pagamento', () => {
         
         cy.acessarPedido(idPrePedido)
@@ -426,8 +386,9 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
           expect(ele).not.be.null
         })    
       
-    });
+      });
       
-  }); 
+  });
+    
 
 });

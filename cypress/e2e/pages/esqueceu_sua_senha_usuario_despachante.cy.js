@@ -18,7 +18,7 @@ describe('Grupo de teste para o processo de Esqueceu a senha', () => {
     });   
     
 
-    it('clicar em Esqueceu a senha?', () => {
+    it.only('clicar em Esqueceu a senha?', () => {
         cy.visit(urls.home)
         cy.get(path.institucionalPage.login).should('have.text', 'Entrar').click({force: true})  
         cy.get(path.loginPage.sejaBemVindo, {timeout: 20000}).should('have.text', ' Seja bem-vindo(a)! ')
@@ -29,6 +29,7 @@ describe('Grupo de teste para o processo de Esqueceu a senha', () => {
     });
 
     it('Clicando no link Esqueceu a senha?', () => {
+        cy.intercept('POST', 'https://sitcargaapitest/gestao/usuario/esqueciminhasenha**').as('envioEmailStatus')    
         cy.visit(urls.home)
         cy.get(path.institucionalPage.login).should('have.text', 'Entrar').click({force: true})  
         cy.get(path.loginPage.sejaBemVindo, {timeout: 20000}).should('have.text', ' Seja bem-vindo(a)! ')
@@ -40,7 +41,6 @@ describe('Grupo de teste para o processo de Esqueceu a senha', () => {
         cy.get(path.esqueceuSenhaPage.cpf).type(usuario.cpf);
         cy.get(path.generic.botaoSubmit).should('have.text', 'Enviar').click({force: true});
 
-        cy.intercept('POST', 'https://sitcargaapidevelop/gestao/usuario/esqueciminhasenha?usuario=66248686009').as('envioEmailStatus')    
 
         cy.wait('@envioEmailStatus').its('response.statusCode').then(response => {
             expect(response).to.be.equal(200)
