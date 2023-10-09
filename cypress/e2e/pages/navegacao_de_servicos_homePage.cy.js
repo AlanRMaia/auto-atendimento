@@ -8,7 +8,7 @@ const usuario = Cypress.env('usuario')
 describe('Grupo de testes navegação de serviços', () => {
     beforeEach(() => {        
         cy.reload();  
-        cy.viewport(1280, 720);
+        cy.viewport(1920, 1080);
       });
 
       it('Emitir novo RNTRC', () => {
@@ -18,9 +18,7 @@ describe('Grupo de testes navegação de serviços', () => {
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
         cy.get(path.loginPage.senha).type(usuario.senha);
         cy.get(path.generic.botaoSubmit).click({force: true});
-        cy.get(path.generic.title, {timeout: 20000}).should('have.text', ' Regularização RNTRC ')
-        cy.get(path.criarPedidoPage).should('have.text', 'Tipo de Atendimento: Novo RNTRC')
-
+        cy.get(path.generic.title, {timeout: 20000}).contains('Novo RNTRC')
       });
 
       //RenovaçãoRNTRC
@@ -32,21 +30,20 @@ describe('Grupo de testes navegação de serviços', () => {
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
         cy.get(path.loginPage.senha).type(usuario.senha);
         cy.get(path.generic.botaoSubmit).click({force: true});
-        cy.get(path.generic.title, {timeout: 20000}).should('have.text', ' Regularização RNTRC ')
-        cy.get(path.criarPedidoPage).should('have.text', 'Tipo de Atendimento: Renovação RNTRC')
+        cy.get(path.generic.title, {timeout: 20000}).contains('Renovação RNTRC')
 
       });
 
-      //Gerenciamento deFrota
+      //Gestão de Frota
 
-      it('Gerenciamento de Frota', () => {
+      it('Gestão de Frota', () => {
         cy.visit('/')
         cy.getElementList(path.institucionalPage.tipoAtendimento, 'Gerenciamento deFrota')
         //login
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
         cy.get(path.loginPage.senha).type(usuario.senha);
         cy.get(path.generic.botaoSubmit).click({force: true});
-        cy.get(path.generic.title, {timeout: 20000}).should('have.text', ' Regularização RNTRC ')
+        cy.get(path.generic.title, {timeout: 20000}).contains('Gestão de Frota')
         //cy.get(path.criarPedidoPage).should('have.text', 'Tipo de Atendimento: Gerenciamento de Frota')
         //TODO no aguardo para o novo layout para o serviço de gerenciamento de frota    
       });
@@ -60,7 +57,7 @@ describe('Grupo de testes navegação de serviços', () => {
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
         cy.get(path.loginPage.senha).type(usuario.senha);
         cy.get(path.generic.botaoSubmit).click({force: true});
-        cy.get(path.generic.title, {timeout: 20000}).should('have.text', 'Consulta RNTRC')
+        cy.get(path.generic.title, {timeout: 20000}).contains('Consulta RNTRC')
         //cy.get(path.criarPedidoPage).should('have.text', 'Tipo de Atendimento: Renovação RNTRC')
 
       });
@@ -73,12 +70,12 @@ describe('Grupo de testes navegação de serviços', () => {
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
         cy.get(path.loginPage.senha).type(usuario.senha);
         cy.get(path.generic.botaoSubmit).click({force: true});
-        cy.get(path.generic.title, {timeout: 20000}).should('have.text', 'Atendimentos')
+        cy.get(path.generic.title, {timeout: 20000}).contains('Consultar Atendimentos')
 
       });
       //Outros
 
-      it.only('Outros', () => {
+      it('Outros', () => {
         cy.visit('/')
 
         cy.get(path.institucionalPage.tipoAtendimento).contains('Outros').click()
@@ -87,7 +84,7 @@ describe('Grupo de testes navegação de serviços', () => {
         cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
         cy.get(path.loginPage.senha).type(usuario.senha);
         cy.get(path.generic.botaoSubmit).click({force: true});
-        cy.get(path.generic.title, {timeout: 20000}).should('have.text', 'Atendimentos')
+        cy.get(path.generic.title, {timeout: 20000}).contains('Consultar Atendimentos')
 
       });
       

@@ -43,7 +43,7 @@ let idPrePedido = '2071380';
   describe('Grupo de testes para inclusão de veículo CTC', () => {
   
     beforeEach(() =>  {
-  
+      cy.reload()  
       cy.fixture("data/doc/documentos").then( (data) => {
         doc = data
       })
@@ -86,7 +86,6 @@ let idPrePedido = '2071380';
         veiculo05.contrato = doc.contrato
       })
       
-      cy.reload()   
       cy.intercept('GET', '**/validarpedido').as('validarpedido')
       cy.intercept('POST', '**/gerarpagamentopedido').as('finalizarpedido')
       cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao') 

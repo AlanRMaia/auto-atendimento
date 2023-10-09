@@ -42,6 +42,8 @@ var fakerBr = require('faker-br');
 describe('Grupo de testes para inclusão de veículo ETC', () => {
   
   beforeEach(() => {
+    cy.reload()   
+
 
     cy.fixture("data/doc/documentos").then( (data) => {
       doc = data
@@ -84,7 +86,6 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
       veiculo05.contrato = doc.contrato
     })
     
-    cy.reload()   
     cy.intercept('GET', '**/validarpedido').as('validarpedido')
     cy.intercept('POST', '**/gerarpagamentopedido').as('finalizarpedido')
     cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao') 

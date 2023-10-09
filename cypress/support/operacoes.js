@@ -2,6 +2,7 @@ import urls from './urls';
 import path, { operacaoDocumentos, operacaoContato } from '../selectors/path.sel.cy';
 import operacao from './OperacaoEnum';
 import ufEnum from "./uf";
+import { faker } from '@faker-js/faker';
 require('cypress-xpath');
 
 Cypress.Commands.add('operacaoTransportador', (faker, tipoTransportador) => {    
@@ -74,14 +75,14 @@ Cypress.Commands.add('documentosIdentidade', (selectFile) => {
 })
 
 Cypress.Commands.add('enviarDocumentosRT', (selectFile) => {
-
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('documentoRT')
+  cy.intercept('POST', '**/imagem').as('salvarimagem')
   cy.get(path.detalhamentoAtendimentoPage.operacaoDocumentos)
   .contains('Documentos').click({force: true})
       //Confirmar titulo
-      cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('documento')
       cy.get(path.generic.title, {timeout: 10000}).contains('Documento', {timeout: 20000})
       //selecionando o tipo de documento
-      cy.wait('@documento')      
+      cy.wait('@documentoRT')      
       cy.get(path.operacaoDocumentos.tipoDocumento).click({force: true})       
       cy.get(path.operacaoDocumentos.registroRT, {timeout: 10000}).contains('Registro de RT', {timeout: 20000}).click({force: true})  
       //Anexando o documento Responsável Técnico
@@ -90,7 +91,8 @@ Cypress.Commands.add('enviarDocumentosRT', (selectFile) => {
           selectFile
         );
         //Salvando a operação  
-        cy.get(path.generic.botaoSubmit).click({force: true});        
+        cy.get(path.generic.botaoSubmit).click({force: true}); 
+        cy.wait('@salvarimagem')       
 })
 
 Cypress.Commands.add('incluirContatoEmail', (faker)=>{   
@@ -281,8 +283,9 @@ Cypress.Commands.add('excluirContatoTelefone', (faker, phone) => {
 Cypress.Commands.add('incluirEnderecoComercial', (faker, cep = faker.address.zipCodeValid()) => {
   let uf = faker.random.arrayElement(path.generic.uf)
   cy.intercept('GET', 'https://sitcargaapitest/util/Cep/**').as('cep')
-  cy.intercept('GET', '**/endereco/COM').as('salvarEndereco')
+  cy.intercept('GET', '**/endereco/COM').as('enderecoCOM')
   cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('endereco')
+  cy.intercept('POST','**/endereco/salvar' ).as('salvarEndereco')
 
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Endereço').click({force: true})
@@ -290,11 +293,12 @@ Cypress.Commands.add('incluirEnderecoComercial', (faker, cep = faker.address.zip
 
         cy.get(path.generic.title, {timeout: 10000}).contains(operacao.IncluirEndereco, {timeout: 20000})
         cy.wait('@endereco')
-        cy.get(path.operacaoEndereco.tipoEndereco).click({froce: true})
-        .get(path.operacaoEndereco.comercial)
+        cy.get(path.operacaoEndereco.tipoEndereco).contains('Comercial', {timeout: 60000}).click({force: true})
+        .get(path.operacaoEndereco.listaEndereco)
         .contains('Comercial').click({force: true})
+        
         cy.get(path.operacaoEndereco.cep)
-        .type(cep).next()
+        .type(cep)
         
         cy.get(path.operacaoEndereco.logradouro)
         .type(faker.address.streetAddress())
@@ -316,25 +320,27 @@ Cypress.Commands.add('incluirEnderecoComercial', (faker, cep = faker.address.zip
         cy.get(path.operacaoEndereco.bairro)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.cidade)
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.cidade)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
         cy.get(path.operacaoEndereco.pontoDeReferencia)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.uf).click()        
-        .get(path.generic.listaVirtual)        
-        .contains(uf.nome).click({force: true})              
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .get(path.generic.listaVirtual)        
+        // .contains(uf.nome).click({force: true})              
         
         cy.get(path.generic.botaoSubmit).click({force: true})
+        cy.wait('@enderecoCOM', {timeout: 30000})
         cy.wait('@salvarEndereco', {timeout:30000})
 })
 
 Cypress.Commands.add('alterarEnderecoComercial', (faker, cep = faker.address.zipCodeValid()) => {
   let uf = faker.random.arrayElement(path.generic.uf)
   cy.intercept('GET', 'https://sitcargaapitest/util/Cep/**').as('cep')
-  cy.intercept('GET', '**/endereco/COM').as('salvarEndereco')
+  cy.intercept('GET', '**/endereco/COM').as('enderecoCOM')
   cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('endereco')
+  cy.intercept('POST','**/endereco/salvar' ).as('salvarEndereco')
   
   cy.get(path.detalhamentoAtendimentoPage.operacao, {timeout: 20000})
   .contains('Endereço').click({force: true})
@@ -342,12 +348,12 @@ Cypress.Commands.add('alterarEnderecoComercial', (faker, cep = faker.address.zip
 
         cy.get(path.generic.title, {timeout: 10000}).contains(operacao.IncluirEndereco)
         cy.wait('@endereco')
-        cy.get(path.operacaoEndereco.tipoEndereco).click({force: true})
-        .get(path.operacaoEndereco.comercial)
+        cy.get(path.operacaoEndereco.tipoEndereco).contains('Comercial', {timeout: 60000}).click({force: true})        
+        .get(path.operacaoEndereco.listaEndereco)
         .contains('Comercial').click({force: true})
 
         cy.get(path.operacaoEndereco.cep)
-        .type(cep).next()
+        .type(cep)
 
         cy.get(path.operacaoEndereco.logradouro)
         .type(faker.address.streetAddress())
@@ -356,6 +362,10 @@ Cypress.Commands.add('alterarEnderecoComercial', (faker, cep = faker.address.zip
 
         // cy.get('.q-inner-loading', {timeout: 50000}).should('not.exist')
         cy.wait('@cep')
+
+        cy.get(path.operacaoEndereco.logradouro)
+        .type(faker.address.streetAddress())
+
         cy.get(path.operacaoEndereco.numero)
         .type(faker.random.number(), {force: true})
 
@@ -365,17 +375,18 @@ Cypress.Commands.add('alterarEnderecoComercial', (faker, cep = faker.address.zip
         cy.get(path.operacaoEndereco.bairro)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.cidade)
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.cidade)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
         cy.get(path.operacaoEndereco.pontoDeReferencia)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.uf).click()        
-        .get(path.generic.listaVirtual)        
-        .contains(uf.nome).click({force: true})                
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .get(path.generic.listaVirtual)        
+        // .contains(uf.nome).click({force: true})                
         
         cy.get(path.generic.botaoSubmit).click({force: true})
+        cy.wait('@enderecoCOM', {timeout:30000})        
         cy.wait('@salvarEndereco', {timeout:30000})
 
 })
@@ -383,14 +394,17 @@ Cypress.Commands.add('alterarEnderecoComercial', (faker, cep = faker.address.zip
 Cypress.Commands.add('excluirEnderecoComercial', (faker, cep = faker.address.zipCodeValid()) => {
   let uf = faker.random.arrayElement(path.generic.uf)
   cy.intercept('GET', 'https://sitcargaapitest/util/Cep/**').as('cep')
-  cy.intercept('GET', '**/endereco/COM').as('salvarEndereco')
+  cy.intercept('GET', '**/endereco/COM').as('enderecoCOM')
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('endereco')
+  cy.intercept('POST','**/endereco/salvar' ).as('salvarEndereco')
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Endereço').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Excluir').click({force: true})
   
         cy.get(path.generic.title, {timeout: 10000}).contains(operacao.ExcluirEndereco, {timeout: 20000})
-        cy.get(path.operacaoEndereco.tipoEndereco).click({force: true})
-        .get(path.operacaoEndereco.comercial)
+        cy.wait('@endereco')
+        cy.get(path.operacaoEndereco.tipoEndereco).contains('Comercial', {timeout: 60000}).click({force: true})
+        .get(path.operacaoEndereco.listaEndereco)
         .contains('Comercial').click({force: true})
 
         cy.get(path.operacaoEndereco.cep)
@@ -416,34 +430,36 @@ Cypress.Commands.add('excluirEnderecoComercial', (faker, cep = faker.address.zip
         cy.get(path.operacaoEndereco.bairro)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.cidade)
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.cidade)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
         cy.get(path.operacaoEndereco.pontoDeReferencia)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.uf).click()        
-        .get(path.generic.listaVirtual)        
-        .contains(uf.nome).click({force: true})               
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .get(path.generic.listaVirtual)        
+        // .contains(uf.nome).click({force: true})               
         
         cy.get(path.generic.botaoSubmit).click({force: true})
+        cy.wait('@enderecoCOM', {timeout:30000})        
         cy.wait('@salvarEndereco', {timeout:30000})
 })
 
 Cypress.Commands.add('incluirEnderecoResidencial', (faker, cep = faker.address.zipCodeValid()) => {
   let uf = faker.random.arrayElement(path.generic.uf)
   cy.intercept('GET', 'https://sitcargaapitest/util/Cep/**').as('cep')
-  cy.intercept('GET', '**/endereco/COM').as('salvarEndereco')
-  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('enderecoResidencial')
+  cy.intercept('GET', '**/endereco/COM').as('enderecoCOM')
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('endereco')
+  cy.intercept('POST','**/endereco/salvar' ).as('salvarEndereco')
  
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Endereço').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})
 
         cy.get(path.generic.title, {timeout: 10000}).contains(operacao.IncluirEndereco, {timeout: 20000})
-        cy.wait('@enderecoResidencial')
-        cy.get(path.operacaoEndereco.tipoEndereco).click({froce: true})
-        .get(path.operacaoEndereco.comercial)
+        cy.wait('@endereco')        
+        cy.get(path.operacaoEndereco.tipoEndereco).contains('Residencial', {timeout: 60000}).click({force: true})       
+        .get(path.operacaoEndereco.listaEndereco)
         .contains('Residencial').click({force: true})
 
         cy.get(path.operacaoEndereco.cep)
@@ -468,38 +484,40 @@ Cypress.Commands.add('incluirEnderecoResidencial', (faker, cep = faker.address.z
         cy.get(path.operacaoEndereco.bairro)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.cidade)
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.cidade)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
         cy.get(path.operacaoEndereco.pontoDeReferencia)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.uf).click()        
-        .get(path.generic.listaVirtual)        
-        .contains(uf.nome).click({force: true})              
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .get(path.generic.listaVirtual)        
+        // .contains(uf.nome).click({force: true})              
         
         cy.get(path.generic.botaoSubmit).click({force: true})
+        cy.wait('@enderecoCOM', {timeout:30000})        
         cy.wait('@salvarEndereco', {timeout:30000})
 })
 
-Cypress.Commands.add('alterarEnderecoResidencial', (faker) => {
+Cypress.Commands.add('alterarEnderecoResidencial', (faker, cep = faker.address.zipCodeValid()) => {
   let uf = faker.random.arrayElement(path.generic.uf)
   cy.intercept('GET', 'https://sitcargaapitest/util/Cep/**').as('cep')
-  cy.intercept('GET', '**/endereco/COM').as('salvarEndereco')
-  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('alterarResidencial')
+  cy.intercept('GET', '**/endereco/COM').as('enderecoCOM')
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('endereco')
+  cy.intercept('POST','**/endereco/salvar' ).as('salvarEndereco')
 
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Endereço').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})
 
         cy.get(path.generic.title, {timeout: 10000}).contains(operacao.IncluirEndereco, {timeout: 20000})
-        cy.wait('@alterarResidencial')
-        cy.get(path.operacaoEndereco.tipoEndereco).click({froce: true})
-        .get(path.operacaoEndereco.comercial)
+        cy.wait('@endereco')        
+        cy.get(path.operacaoEndereco.tipoEndereco).contains('Residencial', {timeout: 60000}).click({force: true})        
+        .get(path.operacaoEndereco.listaEndereco)
         .contains('Residencial').click({force: true})
 
         cy.get(path.operacaoEndereco.cep)
-        .type(faker.address.zipCodeValid())
+        .type(cep)
 
         cy.get(path.operacaoEndereco.logradouro)
         .type(faker.address.streetAddress())
@@ -507,7 +525,7 @@ Cypress.Commands.add('alterarEnderecoResidencial', (faker) => {
         // cy.get('.q-inner-loading', {timeout: 30000}).should('be.visible')
 
         // cy.get('.q-inner-loading', {timeout: 50000}).should('not.exist')
-        cy.wait('@cep')
+        cy.wait('@cep', {timeout: 90000})
         cy.get(path.operacaoEndereco.logradouro)
         .type(faker.address.streetAddress())
 
@@ -520,31 +538,35 @@ Cypress.Commands.add('alterarEnderecoResidencial', (faker) => {
         cy.get(path.operacaoEndereco.bairro)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.cidade)
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.cidade)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
         cy.get(path.operacaoEndereco.pontoDeReferencia)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.uf).click()        
-        .get(path.generic.listaVirtual)        
-        .contains(uf.nome).click({force: true})              
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .get(path.generic.listaVirtual)        
+        // .contains(uf.nome).click({force: true})              
         
         cy.get(path.generic.botaoSubmit).click({force: true})
+        cy.wait('@enderecoCOM', {timeout:30000})        
         cy.wait('@salvarEndereco', {timeout:30000})
 })
 
 Cypress.Commands.add('excluirEnderecoResidencial', (faker, cep = faker.address.zipCodeValid()) => {
   let uf = faker.random.arrayElement(path.generic.uf)
   cy.intercept('GET', 'https://sitcargaapitest/util/Cep/**').as('cep')
-  cy.intercept('GET', '**/endereco/COM').as('salvarEndereco')
+  cy.intercept('GET', '**/endereco/COM').as('enderecoCOM')
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('endereco')
+  cy.intercept('POST','**/endereco/salvar' ).as('salvarEndereco')
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Endereço').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})
 
         cy.get(path.generic.title, {timeout: 10000}).contains(operacao.IncluirEndereco, {timeout: 20000})
-        cy.get(path.operacaoEndereco.tipoEndereco).click({froce: true})
-        .get(path.operacaoEndereco.comercial)
+        cy.wait('@endereco')
+        cy.get(path.operacaoEndereco.tipoEndereco).contains('Residencial', {timeout: 60000}).click({force: true})        
+        .get(path.operacaoEndereco.listaEndereco)
         .contains('Residencial').click({force: true})
 
         cy.get(path.operacaoEndereco.cep)
@@ -557,6 +579,9 @@ Cypress.Commands.add('excluirEnderecoResidencial', (faker, cep = faker.address.z
 
         // cy.get('.q-inner-loading', {timeout: 50000}).should('not.exist')
         cy.wait('@cep')
+        cy.get(path.operacaoEndereco.logradouro)
+        .type(faker.address.streetAddress())
+
         cy.get(path.operacaoEndereco.numero)
         .type(faker.random.number(), {force: true})
 
@@ -566,38 +591,95 @@ Cypress.Commands.add('excluirEnderecoResidencial', (faker, cep = faker.address.z
         cy.get(path.operacaoEndereco.bairro)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.cidade)
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.cidade)
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
         cy.get(path.operacaoEndereco.pontoDeReferencia)
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.uf).click()        
-        .get(path.generic.listaVirtual)        
-        .contains(uf.nome).click({force: true})              
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .get(path.generic.listaVirtual)        
+        // .contains(uf.nome).click({force: true})              
         
         cy.get(path.generic.botaoSubmit).click({force: true})
+        cy.wait('@enderecoCOM', {timeout:30000})        
+        cy.wait('@salvarEndereco', {timeout:30000})
+})
+
+Cypress.Commands.add('incluirEnderecoCorrespondenciaTAC', (faker, cep = faker.address.zipCodeValid()) => {
+  let uf = faker.random.arrayElement(path.generic.uf)
+  cy.intercept('GET', 'https://sitcargaapitest/util/Cep/**').as('cep')
+  cy.intercept('GET', '**/endereco/COR').as('enderecoCOR')
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('endereco')
+  cy.intercept('POST','**/endereco/salvar' ).as('salvarEndereco')
+
+  cy.get(path.detalhamentoAtendimentoPage.operacao)
+  .contains('Endereço').click({force: true})
+  .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})
+
+        cy.get(path.generic.title, {timeout: 10000}).contains(operacao.IncluirEndereco, {timeout: 20000})
+        cy.wait('@endereco')
+        cy.get(path.operacaoEndereco.tipoEndereco).contains('Residencial', {timeout: 60000}).click({force: true})
+        .get(path.operacaoEndereco.listaEndereco)
+        .contains('Correspondência').click({force: true})
+
+        cy.get(path.operacaoEndereco.cep)
+        .type(cep)
+
+        cy.get(path.operacaoEndereco.logradouro, {timeout: 20000}).trigger('mouseover').click({force: true})
+
+        // cy.get('.q-inner-loading', {timeout: 30000}).should('be.visible')
+
+        // cy.get('.q-inner-loading', {timeout: 50000}).should('not.exist')
+        cy.wait('@cep')
+        cy.get(path.operacaoEndereco.logradouro, {timeout: 20000})
+        .type(faker.address.streetAddress())        
+
+        cy.get(path.operacaoEndereco.numero, {timeout: 20000})
+        .type(faker.random.number())
+
+        cy.get(path.operacaoEndereco.complemento, {timeout: 20000})
+        .type(faker.lorem.word({strategy: 'shortext'}))
+
+        cy.get(path.operacaoEndereco.bairro, {timeout: 20000})
+        .type(faker.lorem.word({strategy: 'shortext'}))
+
+        // cy.get(path.operacaoEndereco.cidade, {timeout: 20000})
+        // .type(faker.lorem.word({strategy: 'shortext'}))
+
+        cy.get(path.operacaoEndereco.pontoDeReferencia, {timeout: 20000})
+        .type(faker.lorem.word({strategy: 'shortext'}))
+
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .get(path.generic.listaVirtual)        
+        // .contains(uf.nome).click({force: true})               
+        
+        cy.get(path.generic.botaoSubmit).click({force: true})
+
+        cy.wait('@enderecoCOR', {timeout:30000})
         cy.wait('@salvarEndereco', {timeout:30000})
 })
 
 Cypress.Commands.add('incluirEnderecoCorrespondencia', (faker, cep = faker.address.zipCodeValid()) => {
   let uf = faker.random.arrayElement(path.generic.uf)
   cy.intercept('GET', 'https://sitcargaapitest/util/Cep/**').as('cep')
-  cy.intercept('GET', '**/endereco/COM').as('salvarEndereco')
+  cy.intercept('GET', '**/endereco/COR').as('enderecoCOR')
   cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('endereco')
+  cy.intercept('POST','**/endereco/salvar' ).as('salvarEndereco')
 
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Endereço').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})
 
-        cy.wait('@endereco')
         cy.get(path.generic.title, {timeout: 10000}).contains(operacao.IncluirEndereco, {timeout: 20000})
-        cy.get(path.operacaoEndereco.tipoEndereco).click({force: true})
-        .get(path.operacaoEndereco.correspondencia)
+        cy.wait('@endereco')
+        cy.get(path.operacaoEndereco.tipoEndereco).contains('Comercial', {timeout: 60000}).click({force: true})
+        .get(path.operacaoEndereco.listaEndereco)
         .contains('Correspondência').click({force: true})
 
         cy.get(path.operacaoEndereco.cep)
-        .type(cep).next()
+        .type(cep)
+
         cy.get(path.operacaoEndereco.logradouro, {timeout: 20000}).trigger('mouseover').click({force: true})
 
         // cy.get('.q-inner-loading', {timeout: 30000}).should('be.visible')
@@ -605,8 +687,7 @@ Cypress.Commands.add('incluirEnderecoCorrespondencia', (faker, cep = faker.addre
         // cy.get('.q-inner-loading', {timeout: 50000}).should('not.exist')
         cy.wait('@cep')
         cy.get(path.operacaoEndereco.logradouro, {timeout: 20000})
-        .type(faker.address.streetAddress())
-        
+        .type(faker.address.streetAddress())        
 
         cy.get(path.operacaoEndereco.numero, {timeout: 20000})
         .type(faker.random.number())
@@ -617,37 +698,43 @@ Cypress.Commands.add('incluirEnderecoCorrespondencia', (faker, cep = faker.addre
         cy.get(path.operacaoEndereco.bairro, {timeout: 20000})
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.cidade, {timeout: 20000})
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.cidade, {timeout: 20000})
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
         cy.get(path.operacaoEndereco.pontoDeReferencia, {timeout: 20000})
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.uf).click()        
-        .get(path.generic.listaVirtual)        
-        .contains(uf.nome).click({force: true})               
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .get(path.generic.listaVirtual)        
+        // .contains(uf.nome).click({force: true})               
         
         cy.get(path.generic.botaoSubmit).click({force: true})
+
+        cy.wait('@enderecoCOR', {timeout:30000})
         cy.wait('@salvarEndereco', {timeout:30000})
 })
+
 
 Cypress.Commands.add('excluirEnderecoCorrespondencia', (faker, cep = faker.address.zipCodeValid()) => {
   let uf = faker.random.arrayElement(path.generic.uf)
   cy.intercept('GET', 'https://sitcargaapitest/util/Cep/**').as('cep')
-  cy.intercept('GET', '**/endereco/COM').as('salvarEndereco')
-  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido**').as('tipoEndereco')
+  cy.intercept('GET', '**/endereco/COR').as('enderecoCOR')
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('endereco')
+  cy.intercept('POST','**/endereco/salvar' ).as('salvarEndereco')
 
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Endereço').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Excluir').click({force: true})
   
         cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirEndereco)
-        cy.get(path.operacaoEndereco.tipoEndereco).click({force: true})
-        .get(path.operacaoEndereco.correspondencia)
+        cy.wait('@endereco')
+        cy.get(path.operacaoEndereco.tipoEndereco).contains(`Comercial|Residencial`, {timeout: 60000}).click({force: true})
+        .get(path.operacaoEndereco.listaEndereco)
         .contains('Correspondência').click({force: true})
 
         cy.get(path.operacaoEndereco.cep)
-        .type(cep).next()
+        .type(cep)
+
         cy.get(path.operacaoEndereco.logradouro, {timeout: 20000}).trigger('mouseover').click({force: true})
         // cy.get('.q-inner-loading', {timeout: 30000}).should('be.visible')
 
@@ -668,17 +755,74 @@ Cypress.Commands.add('excluirEnderecoCorrespondencia', (faker, cep = faker.addre
         cy.get(path.operacaoEndereco.bairro, {timeout: 20000})
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.cidade, {timeout: 20000})
-        .type(faker.lorem.word({strategy: 'shortext'}))
+        // cy.get(path.operacaoEndereco.cidade, {timeout: 20000})
+        // .type(faker.lorem.word({strategy: 'shortext'}))
 
         cy.get(path.operacaoEndereco.pontoDeReferencia, {timeout: 20000})
         .type(faker.lorem.word({strategy: 'shortext'}))
 
-        cy.get(path.operacaoEndereco.uf).click()        
-        .get(path.generic.listaVirtual)        
-        .contains(uf.nome).click({force: true})               
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .get(path.generic.listaVirtual)        
+        // .contains(uf.nome).click({force: true})               
         
         cy.get(path.generic.botaoSubmit).click({force: true})
+        cy.wait('@enderecoCOR', {timeout:30000})        
+        cy.wait('@salvarEndereco', {timeout:30000})
+
+})
+
+Cypress.Commands.add('excluirEnderecoCorrespondenciaTAC', (faker, cep = faker.address.zipCodeValid()) => {
+  let uf = faker.random.arrayElement(path.generic.uf)
+  cy.intercept('GET', 'https://sitcargaapitest/util/Cep/**').as('cep')
+  cy.intercept('GET', '**/endereco/COR').as('enderecoCOR')
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('endereco')
+  cy.intercept('POST','**/endereco/salvar' ).as('salvarEndereco')
+
+  cy.get(path.detalhamentoAtendimentoPage.operacao)
+  .contains('Endereço').click({force: true})
+  .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Excluir').click({force: true})
+  
+        cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirEndereco)
+        cy.wait('@endereco')
+        cy.get(path.operacaoEndereco.tipoEndereco).contains(`Residencial`, {timeout: 60000}).click({force: true})
+        .get(path.operacaoEndereco.listaEndereco)
+        .contains('Correspondência').click({force: true})
+
+        cy.get(path.operacaoEndereco.cep)
+        .type(cep)
+
+        cy.get(path.operacaoEndereco.logradouro, {timeout: 20000}).trigger('mouseover').click({force: true})
+        // cy.get('.q-inner-loading', {timeout: 30000}).should('be.visible')
+
+        // cy.get('.q-inner-loading', {timeout: 50000}).should('not.exist')
+
+        cy.wait('@cep')
+
+        cy.get(path.operacaoEndereco.logradouro, {timeout: 20000})
+        .type(faker.address.streetAddress())
+        
+
+        cy.get(path.operacaoEndereco.numero, {timeout: 20000})
+        .type(faker.random.number())
+
+        cy.get(path.operacaoEndereco.complemento, {timeout: 20000})
+        .type(faker.lorem.word({strategy: 'shortext'}))
+
+        cy.get(path.operacaoEndereco.bairro, {timeout: 20000})
+        .type(faker.lorem.word({strategy: 'shortext'}))
+
+        // cy.get(path.operacaoEndereco.cidade, {timeout: 20000})
+        // .type(faker.lorem.word({strategy: 'shortext'}))
+
+        cy.get(path.operacaoEndereco.pontoDeReferencia, {timeout: 20000})
+        .type(faker.lorem.word({strategy: 'shortext'}))
+
+        // cy.get(path.operacaoEndereco.uf).click()        
+        // .get(path.generic.listaVirtual)        
+        // .contains(uf.nome).click({force: true})               
+        
+        cy.get(path.generic.botaoSubmit).click({force: true})
+        cy.wait('@enderecoCOR', {timeout:30000})        
         cy.wait('@salvarEndereco', {timeout:30000})
 
 })
@@ -770,11 +914,13 @@ Cypress.Commands.add('incluirGestor', (gestor, tipoTransportador) => {
 })
 
 Cypress.Commands.add('alterarGestor', (gestor, tipoTransportador)=>{
- 
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('tipogestor') 
+  cy.intercept('POST', '**/salvar**').as('salvargestor')
+  cy.intercept('GET', '**/gestor/**').as('gestor')
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Gestor').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})
-          
+  cy.wait('@tipogestor')          
   cy.get(path.generic.title).contains(operacao.IncluirGestor, {timeout: 20000}).wait(3000)  
         cy.log('cargo do gestor:', gestor.cargo)
         cy.log('tipo transportador', tipoTransportador)
@@ -782,12 +928,23 @@ Cypress.Commands.add('alterarGestor', (gestor, tipoTransportador)=>{
 
         cy.get(path.operacaoGestor.tipoVinculo, {timeout: 10000}).click({force: true})        
         cy.get(path.operacaoGestor.listTipoVinculo).contains(gestor.cargo).click({force: true})
-        cy.get(path.operacaoGestor.cpfCnpj).type(gestor.cpfCnpj, {force: true})
+        cy.get(path.operacaoGestor.cpfCnpj).type(gestor.cpfCnpj, {force: true})        
        
         cy.get(path.operacaoGestor.nome).type(gestor.nome)
-        if(cy.get(path.operacaoGestor.dataNascimento).should('be.visible')){
-          cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
-        }
+        cy.get('input[class="q-field__native q-placeholder"]').then((dataNascimento)=>{
+          return new Cypress.Promise(resolve => {
+            let valor = dataNascimento.length
+            
+            if ( valor === 5) {
+              cy.log('segundo dentro')
+              cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
+            } 
+            cy.log('segundo fora')
+
+            resolve()
+            
+          })
+        })
         cy.get(path.operacaoGestor.cargo).type(gestor.cargo)  
         cy.get(path.operacaoGestor.telefone).type(gestor.telefone)
         cy.get(path.operacaoGestor.email).type(gestor.email)
@@ -796,9 +953,20 @@ Cypress.Commands.add('alterarGestor', (gestor, tipoTransportador)=>{
 
       cy.get(path.operacaoGestor.cpfCnpj).type(gestor.cpfCnpj, {force: true})
         cy.get(path.operacaoGestor.nome).type(gestor.nome)
-        if(cy.get(path.operacaoGestor.dataNascimento).should('be.visible')){
-          cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
-        }
+        cy.get('input[class="q-field__native q-placeholder"]').then((dataNascimento)=>{
+          return new Cypress.Promise(resolve => {
+            let valor = dataNascimento.length
+            
+            if ( valor === 5) {
+              cy.log('segundo dentro')
+              cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
+            } 
+            cy.log('segundo fora')
+
+            resolve()
+            
+          })
+        })
         cy.get(path.operacaoGestor.cargo).type(gestor.cargo)  
         cy.get(path.operacaoGestor.telefone).type(gestor.telefone)
         cy.get(path.operacaoGestor.email).type(gestor.email)
@@ -806,23 +974,38 @@ Cypress.Commands.add('alterarGestor', (gestor, tipoTransportador)=>{
     }else{
       cy.get(path.operacaoGestor.cpfCnpj).type(gestor.cpfCnpj, {force: true})
         cy.get(path.operacaoGestor.nome).type(gestor.nome)
-        if(cy.get(path.operacaoGestor.dataNascimento).should('be.visible')){
-          cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
-        }
+        cy.get('input[class="q-field__native q-placeholder"]').then((dataNascimento)=>{
+          return new Cypress.Promise(resolve => {
+            let valor = dataNascimento.length
+            
+            if ( valor === 5) {
+              cy.log('segundo dentro')
+              cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
+            } 
+            cy.log('segundo fora')
+
+            resolve()
+            
+          })
+        })
         cy.get(path.operacaoGestor.cargo).type(gestor.cargo)  
         cy.get(path.operacaoGestor.telefone).type(gestor.telefone)
         cy.get(path.operacaoGestor.email).type(gestor.email)
     }   
 
   cy.get(path.generic.botaoSubmit).click({force: true})
+  cy.wait('@gestor')
+  cy.wait('@salvargestor')
 })
 
 Cypress.Commands.add('excluirGestor', (gestor, tipoTransportador)=>{
- 
-  cy.get('[data-cy=btnOperacoes]')
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('tipogestor') 
+  cy.intercept('POST', '**/salvar**').as('salvargestor')
+  cy.intercept('GET', '**/gestor/**').as('gestor') 
+  cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Gestor').click({force: true})
-  .get('[data-cy=listIncluirAlterarExcluir]', {timeout: 10000}).contains('Excluir').click({force: true})
-          
+  .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Excluir').click({force: true})
+  cy.wait('@tipogestor')         
   cy.get(path.generic.title).contains(operacao.IncluirGestor, {timeout: 20000}).wait(3000)  
         
     if (tipoTransportador == 'ETC' && gestor.cargo == 'Responsável Legal') {  
@@ -832,9 +1015,20 @@ Cypress.Commands.add('excluirGestor', (gestor, tipoTransportador)=>{
          .click({force: true})
          cy.get(path.operacaoGestor.cpfCnpj).type(gestor.cpfCnpj, {force: true})
          cy.get(path.operacaoGestor.nome).type(gestor.nome)
-         if(cy.get(path.operacaoGestor.dataNascimento).should('be.visible')){
-          cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
-        }
+         cy.get('input[class="q-field__native q-placeholder"]').then((dataNascimento)=>{
+          return new Cypress.Promise(resolve => {
+            let valor = dataNascimento.length
+            
+            if ( valor === 5) {
+              cy.log('segundo dentro')
+              cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
+            } 
+            cy.log('segundo fora')
+
+            resolve()
+            
+          })
+        })
          cy.get(path.operacaoGestor.cargo).type(gestor.cargo)  
          cy.get(path.operacaoGestor.telefone).type(gestor.telefone)
          cy.get(path.operacaoGestor.email).type(gestor.email)
@@ -843,9 +1037,20 @@ Cypress.Commands.add('excluirGestor', (gestor, tipoTransportador)=>{
 
       cy.get(path.operacaoGestor.cpfCnpj).type(gestor.cpfCnpj, {force: true})
         cy.get(path.operacaoGestor.nome).type(gestor.nome)
-        if(cy.get(path.operacaoGestor.dataNascimento).should('be.visible')){
-          cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
-        }
+        cy.get('input[class="q-field__native q-placeholder"]').then((dataNascimento)=>{
+          return new Cypress.Promise(resolve => {
+            let valor = dataNascimento.length
+            
+            if ( valor === 5) {
+              cy.log('segundo dentro')
+              cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
+            } 
+            cy.log('segundo fora')
+
+            resolve()
+            
+          })
+        })
         cy.get(path.operacaoGestor.cargo).type(gestor.cargo)  
         cy.get(path.operacaoGestor.telefone).type(gestor.telefone)
         cy.get(path.operacaoGestor.email).type(gestor.email)
@@ -853,24 +1058,38 @@ Cypress.Commands.add('excluirGestor', (gestor, tipoTransportador)=>{
     }else{
       cy.get(path.operacaoGestor.cpfCnpj).type(gestor.cpfCnpj, {force: true})
         cy.get(path.operacaoGestor.nome).type(gestor.nome)
-        if(cy.get(path.operacaoGestor.dataNascimento).should('be.visible')){
-          cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
-        }
+        cy.get('input[class="q-field__native q-placeholder"]').then((dataNascimento)=>{
+          return new Cypress.Promise(resolve => {
+            let valor = dataNascimento.length
+            
+            if ( valor === 5) {
+              cy.log('segundo dentro')
+              cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
+            } 
+            cy.log('segundo fora')
+
+            resolve()
+            
+          })
+        })
         cy.get(path.operacaoGestor.cargo).type(gestor.cargo)  
         cy.get(path.operacaoGestor.telefone).type(gestor.telefone)
         cy.get(path.operacaoGestor.email).type(gestor.email)
     }   
 
   cy.get(path.generic.botaoSubmit).click({force: true})
+  cy.wait('@gestor')
+  cy.wait('@salvargestor')
 })
 
 Cypress.Commands.add('incluirMotorista', (faker, cpf = faker.br.cpf()) => {
-
+  cy.intercept('GET', '')
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Motorista', {timeout: 20000}).click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})
-          
+            
   cy.get(path.generic.title, {timeout: 10000}).contains(operacao.IncluirMotorista, {timeout: 20000})
+
   cy.get(path.operacaoMotorista.cpf).type(cpf)
   //cy.get(path.generic.alert).should('not.exist')
   cy.get(path.operacaoMotorista.nome).type(`${faker.name.firstName()} ${faker.name.lastName()}`)
@@ -1009,13 +1228,15 @@ Cypress.Commands.add('excluirFilial', (faker, filial)=>{
 Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, rt)=>{
   let uf = fakerBr.random.arrayElement(path.generic.uf)
   let dataFaker = '20/02/2000'
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('rt')
+  cy.intercept('GET', '**/responsaveltecnico/**').as('rtsalvar')
   
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Responsável Técnico').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})  
 
   cy.get(path.generic.title).contains(operacao.IncluirResponsavelTecnico, {timeout: 30000})  
-
+  cy.wait('@rt')
   if (typeof rt === "undefined") {
     cy.get(path.operacaoResponsavelTecnico.cpf).type(fakerBr.br.cpf())
     cy.get(path.operacaoResponsavelTecnico.nome).type(fakerBr.company.companyName())
@@ -1042,17 +1263,21 @@ Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, rt)=>{
   
 
   cy.get(path.generic.botaoSubmit).click({force: true})
+  cy.wait('@rtsalvar')
 })
 
 Cypress.Commands.add('alterarResponsavelTecnico', (fakerBr, rt)=>{
   let uf = fakerBr.random.arrayElement(path.generic.uf)
   let dataFaker = '20/02/2000'
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('rt')
+  cy.intercept('GET', '**/responsaveltecnico/**').as('rtsalvar')
   
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Responsável Técnico').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})  
 
   cy.get(path.generic.title).contains(operacao.IncluirResponsavelTecnico, {timeout: 30000})  
+  cy.wait('@rt')
 
   if (typeof rt === "undefined") {
       cy.get(path.operacaoResponsavelTecnico.cpf).type(fakerBr.br.cpf())
@@ -1080,18 +1305,23 @@ Cypress.Commands.add('alterarResponsavelTecnico', (fakerBr, rt)=>{
   
 
   cy.get(path.generic.botaoSubmit).click({force: true})
+  cy.wait('@rtsalvar')
+
 })
 
 Cypress.Commands.add('excluirResponsavelTecnico', (fakerBr, rt)=>{
   let uf = fakerBr.random.arrayElement(path.generic.uf)
   let dataFaker = '20/02/2000'
+
+  cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('rt')
+  cy.intercept('GET', '**/responsaveltecnico/**').as('rtsalvar')
   
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Responsável Técnico').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Excluir').click({force: true})  
 
   cy.get(path.generic.title).should('have.text', operacao.ExcluirResponsavelTecnico)
-
+  cy.wait('@rt')
     cy.get(path.operacaoResponsavelTecnico.cpf).type(rt.cpf)
     cy.get(path.operacaoResponsavelTecnico.nome).type(rt.nome)
     cy.get(path.operacaoResponsavelTecnico.email).type(fakerBr.internet.email())
@@ -1104,6 +1334,7 @@ Cypress.Commands.add('excluirResponsavelTecnico', (fakerBr, rt)=>{
         .contains(uf.nome).click({force: true})
 
   cy.get(path.generic.botaoSubmit).click({force: true})
+  cy.wait('@rtsalvar')
 })
 
 Cypress.Commands.add('incluirVeiculo', (veiculo)=>{ 

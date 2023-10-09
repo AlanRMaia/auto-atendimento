@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "cypress": "^13.2.0",
+    "cypress": "^13.3.0",
     "cypress-map": "^1.21.1",
     "cypress-recurse": "^1.35.2",
     "cypress-xpath": "^2.0.1"
@@ -8,12 +8,16 @@
   "scripts": {
     "homolog": "cypress open --config baseUrl=https://sitcarga-spa-homologacao.azurewebsites.net/#/ --env ENVIRONMENT=homolog",
     "test": "cypress open --config baseUrl=https://autoatendimentoteste/#/ --env ENVIRONMENT=test",
+    "test:spec": "cypress open --config baseUrl=https://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec",
     "dev": "cypress open --config baseUrl=https://localhost:9000/#/ --env ENVIRONMENT=dev",
+    "dev:spec": "cypress open --config baseUrl=https://localhost:9000/#/ --env ENVIRONMENT=dev --spec",
     "hl:todos": "npm run headless:homolog && npm run headless:test",
     "hl:homolog": "cypress run --config baseUrl=https://sitcarga-spa-homologacao.azurewebsites.net/#/ --env ENVIRONMENT=homolog",
     "hl:dev": "cypress run --config baseUrl=http://localhost:9000/#/ --env ENVIRONMENT=dev",
     "hl:test": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test",
-    "hl:test:spec": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec"
+    "hl:test:autoatendimento": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec cypress/e2e/autoatendimento.cy.js",
+    "hl:test:all": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec cypress/e2e/all.cy.js",
+    "hl:test:sitcarga": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec cypress/e2e/sitcarga.cy.js"
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.2",

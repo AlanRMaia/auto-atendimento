@@ -118,7 +118,10 @@ module.exports = {
     rntrc: '[data-cy=rntrc]',
     tipoTransportador: '[data-cy=tipoTransportador]',
     uf: '[data-cy=uf]',
-    municipios: '[data-cy=municipios]',    
+    municipios: '[data-cy=municipios]',
+    mensagemValidacao: '[data-cy=mensagemValidacao]',
+    rntrcResultado: '[data-cy=rntrcResultado]',
+    cpfCnpjResultado: '[data-cy=cpfCnpjResultado]'    
   },
 
   criarPedidoPage: {
@@ -223,7 +226,7 @@ module.exports = {
 
   operacaoEndereco: {
     tipoEndereco: '[data-cy=tipoEndereco]',
-    comercial: 'div[class="q-virtual-scroll__content"]',
+    listaEndereco: 'div[class="q-virtual-scroll__content"]',
     correspondencia: 'div[class="q-virtual-scroll__content"]',
     cep: '[data-cy=cepInput]',
     logradouro: '[data-cy=logradouroInput]',

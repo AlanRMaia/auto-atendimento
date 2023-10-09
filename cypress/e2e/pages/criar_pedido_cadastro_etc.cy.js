@@ -12,7 +12,7 @@ let veiculoImplemento;
 let veiculoAutomotor;
 let index = 0;
 let doc; 
-let idPrePedido = '2071384';
+let idPrePedido = '2071387';
 const telefone = '(55) 3261-2695'
 let boleto = {
   codigoBarra : '',
@@ -134,7 +134,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
       cy.login()
     });
     
-  describe.only('Criando pedido e incluindo as operações', () => {
+  describe('Criando pedido e incluindo as operações', () => {
       // ------ Abrir Atendimento de Renovação ------//
       it('Acessando a página e criando pedido Cadastro ETC', () => {
         cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)
@@ -165,7 +165,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
         cy.acessarPedido(idPrePedido)       
         cy.url().should('include', `detalhe`)
         cy.wait('@gridoperacao')
-        cy.operacaoTransportador(faker, transportador.sigla, idPrePedido)
+        cy.operacaoTransportador(fakerBr, transportador.sigla, idPrePedido)
         cy.notificacao(mensagem.TransportadorSucesso)      
       });
       
@@ -215,7 +215,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
       });        
 
      // --------- Criar operacao Incluir Gestor Sócio -----//
-     it.only('Criar operacao Incluir Gestor Sócio', () => {         
+     it('Criar operacao Incluir Gestor Sócio', () => {         
         cy.acessarPedido(idPrePedido)
         cy.url().should('include', `detalhe`)
         cy.wait('@gridoperacao')
@@ -224,7 +224,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
      });
      
      // --------- Criar operacao Incluir Gestor Responsável Legal -----//
-      it.only('Criar operacao Incluir Gestor Responsável Legal', () => {         
+      it('Criar operacao Incluir Gestor Responsável Legal', () => {         
         cy.acessarPedido(idPrePedido)
         cy.url().should('include', `detalhe`)
         cy.wait('@gridoperacao')
@@ -316,7 +316,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
     });
 
     // -------- Criar operação Incluir Endereço Correspondência --------//
-    it.only('Criar operação Incluir Endereço Correspondência', () => {         
+    it('Criar operação Incluir Endereço Correspondência', () => {         
       cy.acessarPedido(idPrePedido)
       cy.url().should('include', `detalhe`)
       cy.wait('@gridoperacao')        
@@ -334,7 +334,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
     });
          
   });
-  describe('Selecionar o sindicato e gerar valor', () => {
+  describe.only('Selecionar o sindicato e gerar valor', () => {
       
       // ------- Selecionar o sindicato e gerar valor -------//        
       it('Selecionar o sindicato e gerar valor', () => {
@@ -362,9 +362,9 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
             cy.log(ele.text())
             
               cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
+              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$231.00')
               cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '3')
-              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$450.00')
+              cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$693.00')
           
               cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Cadastro de Transportador (Gratuito)')
               cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
@@ -372,10 +372,10 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
               cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
           
               cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
+              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$154.00')
               cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '2')
-              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$300.00')
-              cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$750.00')          
+              cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$308.00')
+              cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$1001.00')          
             
           });
           
@@ -401,20 +401,20 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
             cy.log(ele.text())
             
             cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-                cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
-                cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '3')
-                cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$450.00')
-            
-                cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Cadastro de Transportador (Gratuito)')
-                cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
-                cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
-                cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
-            
-                cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
-                cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$150.00')
-                cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '2')
-                cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$300.00')
-                cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$750.00')           
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$231.00')
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '3')
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$693.00')
+        
+            cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Cadastro de Transportador (Gratuito)')
+            cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$0.00')
+            cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '1')
+            cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$0.00')
+        
+            cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Inclusão de Implemento')
+            cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$154.00')
+            cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '2')
+            cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$308.00')
+            cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$1001.00')           
               
               cy.get(path.generic.email).type(fakerBr.internet.email())
       

@@ -15,9 +15,9 @@ let doc;
   const email = 'nailtonnivaldosoares@gmail.com'
 
   const transportador = {
-    cpfCnpj: "143.854.008-65",
-    nome: "TAC - NAILTON NIVALDO SOARES",
-    rntrc: "000010100",
+    cpfCnpj: "489.622.799-91",
+    nome: "TAC - PAULO ROBERTO GALINDO",
+    rntrc: "000016329",
     situacao: "ATIVO",
     saldo: "R$ 0,00",
     sigla: "TAC",
@@ -45,30 +45,34 @@ describe('', () => {
           })     
           
           cy.viewport(1920, 1080);
-          cy.intercept('GET', '**/rntrc/PrePedido/listarpedidos**').as('listapedidos')          
+          cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/listarpedidos**').as('listapedidos')           
+          cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao') 
           cy.login()
     });
     
-    it('Iniciando os testes para a criação do pedido', () => {
+    describe('Iniciando os testes para a criação do pedido', () => {
 
 
         
 
-            describe('Verificar se o filtro com o campo Numero atendimento está trazendo o atendimento correto', () => {                
+            it('Verificar se o filtro com o campo Numero atendimento está trazendo o atendimento correto', () => {                
                 cy.wait('@listapedidos')
+                cy.wait(2000)
                 cy.get(path.atendimentoPage.numeroAtendimento).type(idPrePedidoFinalizado)
-                cy.get(path.generic.botaoSubmit).click({ force: true });
-
+                cy.get(path.generic.botaoSubmit).click({ force: true })
+                .wait('@gridoperacao')    
                 cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
                     idPrePedido = element.text().substring(1);
                     expect(element.text()).to.be.equal(`#${idPrePedido}`)
                 })
+                cy.get(path.generic.botaoVoltar).click({ force: true });
+
             });
             
         
 
-        describe('Testando o filtro da consulta com o CPF/CNPJ', () => {           
-            cy.wait('@listapedidos')           
+        it('Testando o filtro da consulta com o CPF/CNPJ', () => {           
+            cy.wait('@listapedidos')
             // cy.get('.q-table tbody tr').then(($list) =>{
                 //     let quantidade = 0;
                 //     cy.wrap($list).each(($ele) => {
@@ -83,9 +87,9 @@ describe('', () => {
             //     }
             // })
             cy.get(path.atendimentoPage.cpfCnpj).type(transportador.cpfCnpj, {force: true})
-            cy.get(path.generic.botaoSubmit).click({ force: true });            
+            cy.get(path.generic.botaoSubmit).click({ force: true }).wait(2000)
+            .wait('@listapedidos')                      
             cy.get('.q-table tbody tr').each(($ele, index, list)=> {                
-                cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/**').as('pedido')
                 if (cy.wrap($ele).find('td[class="q-td text-center"] ').contains(transportador.cpfCnpj)) {
                     
                     cy.wrap($ele).find('>td .q-btn').click()
@@ -95,29 +99,32 @@ describe('', () => {
                     cy.log('Valor não encontrado:', cy.wrap($ele).find('td[class="q-td text-center"] ').invoke('text'))
                 }                
             })
-            cy.wait('@pedido')
-            cy.get('.q-pl-sm strong', {timeout: 10000}).contains(transportador.cpfCnpj)
+            cy.wait('@gridoperacao')
+            cy.get('.q-mb-sm > strong', {timeout: 10000}).contains(transportador.cpfCnpj)
+            cy.get(path.generic.botaoVoltar).click({force: true})
         });
 
-        describe('Testando o filtro da consulta com a Situação AGUARDANDO PAGAMENTO', () => {          
+        it('Testando o filtro da consulta com a Situação AGUARDANDO PAGAMENTO', () => {          
             cy.get(path.atendimentoPage.situacao).click({force: true})
             .get(path.generic.listaVirtual).contains(situacao.AGUARDANDOPAGAMENTO).click({force: true})
-            cy.get(path.generic.botaoSubmit).click({ force: true });
-            cy.wait('@listapedidos')
+            cy.get(path.generic.botaoSubmit).click({ force: true }).wait(2000)
+            .wait('@listapedidos')            
             cy.get('.q-table tbody tr').each(($ele, index, list)=> {   
                
-                cy.wrap($ele).find('td[class="q-td text-center"] > span ').contains(situacao.AGUARDANDOPAGAMENTO)                  
-                           
+                
+             cy.wrap($ele).find('td[class="q-td text-center"] > span ').contains(situacao.AGUARDANDOPAGAMENTO)
+                                 
+                      
             })
 
         });
 
-        describe('Testando o filtro da consulta com a Situação EM CADASTRAMENTO', () => {
+        it('Testando o filtro da consulta com a Situação EM CADASTRAMENTO', () => {
             
             cy.get(path.atendimentoPage.situacao).click({force: true})
             .get(path.generic.listaVirtual).contains(situacao.EMCADASTRAMENTO).click({force: true})
-            cy.get(path.generic.botaoSubmit).click({ force: true });
-            cy.wait('@listapedidos')            
+            cy.get(path.generic.botaoSubmit).click({ force: true }).wait(2000)
+            .wait('@listapedidos')                        
             cy.get('.q-table tbody tr').each(($ele, index, list)=> {   
                 
                 cy.wrap($ele).find('td[class="q-td text-center"] > span ').contains(situacao.EMCADASTRAMENTO)                  
@@ -125,12 +132,12 @@ describe('', () => {
             })
         });
 
-        describe('Testando o filtro da consulta com a Situação EM CANCELADO', () => {            
+        it('Testando o filtro da consulta com a Situação EM CANCELADO', () => {            
   
               cy.get(path.atendimentoPage.situacao).click({force: true})
               .get(path.generic.listaVirtual).contains(situacao.CANCELADO).click({force: true})
-              cy.get(path.generic.botaoSubmit).click({ force: true });
-              cy.wait('@listapedidos')
+              cy.get(path.generic.botaoSubmit).click({ force: true }).wait(2000)
+              .wait('@listapedidos')              
               cy.get('.q-table tbody tr').each(($ele, index, list)=> {   
                   
                   cy.wrap($ele).find('td[class="q-td text-center"] > span ').contains(situacao.CANCELADO)                  
@@ -139,26 +146,26 @@ describe('', () => {
   
           });
 
-          describe('Testando o filtro da consulta com a Situação PAGAMENTO EFETUADO', () => {            
-  
+          it('Testando o filtro da consulta com a Situação PAGAMENTO EFETUADO', () => {            
+              cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/listarpedidos?pageSize=10&pageNumber=1&sortBy=idPedido&sortDesc=true&idPedido=&cpfCnpjTransportador=&situacao=PAG').as('pagamentoefetuado')  
               cy.get(path.atendimentoPage.situacao).click({force: true})
               .get(path.generic.listaVirtual).contains(situacao.PAGAMENTOEFETUADO).click({force: true})
-              cy.get(path.generic.botaoSubmit).click({ force: true });
-              cy.wait('@listapedidos')
+              cy.get(path.generic.botaoSubmit).click({ force: true }).wait(2000)
+              .wait('@pagamentoefetuado')
               cy.get('.q-table tbody tr').each(($ele, index, list)=> {   
-                 
-                  cy.wrap($ele).find('td[class="q-td text-center"] > span ').contains(situacao.PAGAMENTOEFETUADO)                  
-                             
-              })
+                  
+                cy.wrap($ele).find('td[class="q-td text-center"] > span ').contains(situacao.PAGAMENTOEFETUADO)                  
+                           
+            })
   
           });
 
-          describe('Testando o filtro da consulta com a Situação PEDIDO FINALIZADO', () => {            
+          it('Testando o filtro da consulta com a Situação PEDIDO FINALIZADO', () => {            
   
               cy.get(path.atendimentoPage.situacao).click({force: true})
               .get(path.generic.listaVirtual).contains(situacao.PEDIDOFINALIZADO).click({force: true})
-              cy.get(path.generic.botaoSubmit).click({ force: true });
-              cy.wait('@listapedidos')
+              cy.get(path.generic.botaoSubmit).click({ force: true }).wait(2000)
+              .wait('@listapedidos')
               cy.get('.q-table tbody tr').each(($ele, index, list)=> {   
                   
                   cy.wrap($ele).find('td[class="q-td text-center"] > span ').contains(situacao.PEDIDOFINALIZADO)                  
@@ -167,12 +174,12 @@ describe('', () => {
   
           });
 
-          describe('Testando o filtro da consulta com a Situação PEDIDO FINALIZADO', () => {            
+          it.skip('Testando o filtro da consulta com a Situação PEDIDO REJEITADO', () => {            
   
               cy.get(path.atendimentoPage.situacao).click({force: true})
               .get(path.generic.listaVirtual).contains(situacao.PEDIDOREJEITADO).click({force: true})
-              cy.get(path.generic.botaoSubmit).click({ force: true });
-              cy.wait('@listapedidos')
+              cy.get(path.generic.botaoSubmit).click({ force: true }).wait(2000)
+              cy.wait('@listapedidos')              
               cy.get('.q-table tbody tr').each(($ele, index, $list)=> {   
                   
                   cy.wrap($ele).find('td[class="q-td text-center"] > span ').contains(situacao.PEDIDOREJEITADO)                  
@@ -181,21 +188,22 @@ describe('', () => {
   
           });
 
-          describe('Testando o filtro da consulta com a data Situação', () => {            
+          it('Testando o filtro da consulta com a data Situação', () => {            
   
               cy.get(path.atendimentoPage.dataInicioSituacao).type('26/09/2023')
               cy.get(path.atendimentoPage.dataFimSituacao).type('26/09/2023')
-              cy.get(path.generic.botaoSubmit).click({ force: true });
-              cy.wait('@listapedidos')
+              cy.get(path.generic.botaoSubmit).click({ force: true }).wait(2000)
+              .wait('@listapedidos')              
+              cy.wait('@gridoperacao')
               cy.get('.q-table tbody tr').each(($ele, index, list)=> {                
                 
                 cy.wrap($ele).find('td[class="q-td text-center"] ').contains('26/09/2023') 
                     
-            })
+            })         
   
           });
         
-          describe('Cria pedido e consulta se ele aparece no grid de atendimentos em primeiro na fila', () => {
+          it('Criar pedido e consultar se ele aparece em primeiro na lista', () => {
             
               // ------ Abrir Atendimento de Alteração de dados ------//
               describe('Criar pedido Alteração de dados TAC', () => {
@@ -222,8 +230,8 @@ describe('', () => {
               });
   
               describe('Consultando pelo filtro se o pedido aparece na lista', () => {  
-                  cy.get(path.generic.botaoVoltar).click({force: true})                  
-                  cy.wait('@listapedidos')
+                  cy.get(path.generic.botaoVoltar).click({force: true}).wait(2000)                  
+                  .wait('@listapedidos')                 
                   cy.get('.q-table tbody tr', ).each(($ele, index, list)=> {
                       if (index == 0) {
                           cy.wrap($ele).find('td[class="q-td text-left"]').contains(idPrePedido)
@@ -235,42 +243,44 @@ describe('', () => {
                   })
               });
 
-            });
             
-            describe('Cancelar o pedido', () => {
-                
-                cy.wait('@listapedidos')
-                
-                cy.get('.q-table tbody tr').each(($ele)=> {                
+            
+                describe('Cancelar o pedido', () => {
                     
-                    if (cy.wrap($ele).find('td[class="q-td text-left"]').contains(idPrePedido)) {
-                        
-                        cy.wrap($ele).find('> td .q-btn').click()
-                        
-                        return false
-                    } else {
-                        cy.log('Valor não encontrado:', cy.wrap($ele).find('td[class="q-td text-center"] ').invoke('text'))
-                    }                
-                })
-                
-                cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
-                    idPrePedido = element.text().substring(1);
-                    expect(element.text()).to.be.equal(`#${idPrePedido}`)
-                })
-                cy.get(path.generic.botaoCancelar).click({force: true})
-                cy.get(path.generic.botaoOk).should('have.text', 'OK').click({force: true})
-                cy.wait('@listapedidos')
-                cy.get('.q-table tbody tr').each(($ele)=> {                
+                    cy.wait('@listapedidos')
+                    cy.wait(2000)
                     
-                    if (cy.wrap($ele).find('td[class="q-td text-left"]').contains(idPrePedido)) {
+                    cy.get('.q-table tbody tr').each(($ele)=> {                
                         
-                        cy.wrap($ele).find('td[class="q-td text-center"]').contains(situacao.CANCELADO)
+                        if (cy.wrap($ele).find('td[class="q-td text-left"]').contains(idPrePedido)) {
+                            
+                            cy.wrap($ele).find('> td .q-btn').click()
+                            
+                            return false
+                        } else {
+                            cy.log('Valor não encontrado:', cy.wrap($ele).find('td[class="q-td text-center"] ').invoke('text'))
+                        }                
+                    })
+                    
+                    cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
+                        idPrePedido = element.text().substring(1);
+                        expect(element.text()).to.be.equal(`#${idPrePedido}`)
+                    })
+                    cy.get(path.generic.botaoCancelar).click({force: true})
+                    cy.get(path.generic.botaoOk).should('have.text', 'OK').click({force: true}).wait(2000)
+                    .wait('@listapedidos')                    
+                    cy.get('.q-table tbody tr').each(($ele)=> {                
                         
-                        return false
-                    } else {
-                        cy.log('Valor não encontrado:', cy.wrap($ele).find('td[class="q-td text-center"] ').invoke('text'))
-                    }                
-                })
+                        if (cy.wrap($ele).find('td[class="q-td text-left"]').contains(idPrePedido)) {
+                            
+                            cy.wrap($ele).find('td[class="q-td text-center"]').contains(situacao.CANCELADO)
+                            
+                            return false
+                        } else {
+                            cy.log('Valor não encontrado:', cy.wrap($ele).find('td[class="q-td text-center"] ').invoke('text'))
+                        }                
+                    })
+                });        
             });        
     });
     

@@ -262,7 +262,11 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
           it('Iniciando oa testes no Sitcarga', () => {
                 
             describe('Consultando se o pagamento do boleto foi compensado', () => {
-              
+              cy.intercept('POST', '/autoatendimento/prepedido/consultar?gridName=grid').as('listaPrepedido')
+              cy.intercept('POST', '/autoatendimento/prepedido/gerarpedido/').as('gerarpedido')
+              cy.intercept('POST', 'https://sac-evoservicosfinanceiros.ascbrazil.com.br/site-visitantes/monitor-visitante').as('visitante')
+              cy.intercept('POST', 'https://wwwsitcargateste/institucional/authsca').as('autenticacao')
+              cy.intercept('POST', '/rntrc/veiculopedido/listarservicos').as('listaServicos')
               cy.visit(urls.sitcargaInitial);
               cy.get('.cookie-message > :nth-child(1) > p', {timeout: 10000})
                 .should('be.visible')
