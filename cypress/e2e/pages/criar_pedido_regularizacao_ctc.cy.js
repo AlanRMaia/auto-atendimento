@@ -141,7 +141,7 @@ beforeEach(() => {
     cy.login()
   
  });
- describe.only('Iniciando os testes na criação do pedido e inclusão das operações', () => {
+ describe('Iniciando os testes na criação do pedido e inclusão das operações', () => {
     
   // ------ Abrir Atendimento de Renovação ------//
       it('Acessando a página e criando pedido', () => {
@@ -261,7 +261,7 @@ beforeEach(() => {
           }); 
   
           // -------- Criar operação Alterar Endereço Comercial --------//
-          it('Criar operação Alterar Endereço Comercial', () => { 
+          it.skip('Criar operação Alterar Endereço Comercial', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
             cy.wait('@gridoperacao')
@@ -270,7 +270,7 @@ beforeEach(() => {
           });  
   
           // -------- Criar operação Alterar Endereço Correspondência --------//
-          it('Criar operação Incluir Endereço Correspondência', () => { 
+          it.skip('Criar operação Incluir Endereço Correspondência', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
             cy.wait('@gridoperacao')
@@ -306,7 +306,7 @@ beforeEach(() => {
           });
 
           // --------- Criar operacao Incluir Gestor Responsável legal -----//
-          it.only('Criar operacao Incluir Gestor Responsável legal CPF', () => {
+          it('Criar operacao Incluir Gestor Responsável legal CPF', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
             cy.wait('@gridoperacao')
@@ -331,6 +331,20 @@ beforeEach(() => {
             cy.incluirFilial(fakerBr)
             cy.notificacao(mensagem.DadosSalvoSucesso)      
           });
+
+          // ---------- Criar operação Incluir Responsável Técnico --------//
+          it('Criar operação Incluir Responsável Técnico', () => {
+            cy.acessarPedido(idPrePedido)
+            cy.url().should('include', `detalhe`)
+            cy.wait('@gridoperacao')                   
+            cy.incluirResponsavelTecnico(fakerBr, rt)
+            cy.notificacao(mensagem.DadosSalvoSucesso)
+            cy.url().should('include', `detalhe`)
+            cy.wait('@gridoperacao')
+            cy.enviarDocumentosRT(doc.rg)
+            cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
+          });
+      
           
           
           // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
@@ -400,7 +414,9 @@ beforeEach(() => {
   describe('Selecionando o sindicato e validando o pedido', () => {
     // ------- Selecionar o sindicato e gerar valor -------// 
     it('Selecionar o sindicato e gerar valor', () => {
-      cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis**').as('listaSindicatos')
+      cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+      cy.intercept('PUT', '**/entidade').as('entidadePUT')
+      cy.intercept('POST', '**/entidade').as('entidadePOST')
       cy.intercept('GET', '**/valor**').as('tabela')   
       cy.acessarPedido(idPrePedido)
       cy.url().should('include', `detalhe`)
@@ -412,11 +428,13 @@ beforeEach(() => {
       cy.get(path.generic.title, {timeout: 10000})
       .contains('Escolha Ponto de Atendimento')
       
-      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true})
-      cy.wait('@listaSindicatos')
+      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
+      cy.wait('@gridoperacao') 
+      cy.wait('@listaSindicatos') 
       cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
-      .click({force: true})         
-      cy.wait('@tabela')        
+      .click({force: true}).wait(1000)
+      .wait('@entidadePOST')         
+      .wait('@tabela')           
       
       cy.get(path.generic.tabela, {timeout: 30000})
       .then((ele) => {

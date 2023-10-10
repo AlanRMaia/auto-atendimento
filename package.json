@@ -16,6 +16,7 @@
     "hl:dev": "cypress run --config baseUrl=http://localhost:9000/#/ --env ENVIRONMENT=dev",
     "hl:test": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test",
     "hl:test:autoatendimento": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec cypress/e2e/autoatendimento.cy.js",
+    "hl:test:spec": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec",
     "hl:test:all": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec cypress/e2e/all.cy.js",
     "hl:test:sitcarga": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec cypress/e2e/sitcarga.cy.js"
   },

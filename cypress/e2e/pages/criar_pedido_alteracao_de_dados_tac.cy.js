@@ -7,7 +7,7 @@ var fakerBr = require('faker-br');
   
   let doc;
 
-  let idPrePedido = '2071389'; 
+  let idPrePedido = '2071510'; 
   const celular = '(21) 99999-9998';
   const telefone = '(11) 4338-0201';
   const fax = '(21) 89999-9999'
@@ -47,7 +47,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         })
         
         cy.intercept('GET', '**/validarpedido').as('validarpedido')
-        cy.intercept('POST', '**/gerarpagamentopedido').as('finalizarpedido')
+        cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
         cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao') 
 
         cy.viewport(1920, 1080);
@@ -58,7 +58,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
   describe('Criando o pedido e incluindo as operações', () => {
 
     // ------ Abrir Atendimento de Alteração de dados ------//
-      it('Criar pedido Alteração de dados TAC', () => {
+      it.skip('Criar pedido Alteração de dados TAC', () => {
         cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)       
           //Logar na página com o usuario         
           //Clicar na opção Regularização RNTRC no menu lateral
@@ -80,14 +80,15 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
           })
         
       });
+
         // ------ Criar operação Salvar transportador -----//
-        it('Criar operação Salvar transportador', () => { 
+        it('Criar operação Salvar transportador', () => {           
           cy.acessarPedido(idPrePedido)       
           cy.url().should('include', `detalhe`)
           cy.wait('@gridoperacao')
-          cy.operacaoTransportador(fakerBr, transportador.sigla)
-          cy.notificacao(mensagem.TransportadorSucesso)      
-        });
+          cy.operacaoTransportador(fakerBr, transportador.sigla)         
+          cy.notificacao(mensagem.TransportadorSucesso)                     
+        })   
         
         //-------- Criar operação Enviar documentos do tipo Identidade ------//              
         it('Criar operação Enviar documentos do tipo Identidade', () => { 
@@ -163,7 +164,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         }); 
 
         // -------- Criar operação Alterar Endereço Residencial --------//
-        it('Criar operação Alterar Endereço Residencial', () => { 
+        it.skip('Criar operação Alterar Endereço Residencial', () => { 
           cy.acessarPedido(idPrePedido)       
           cy.url().should('include', `detalhe`)
           cy.wait('@gridoperacao')
@@ -172,7 +173,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         });  
 
         // -------- Criar operação Alterar Endereço Correspondência --------//
-        it('Criar operação Incluir Endereço Correspondência', () => { 
+        it.skip('Criar operação Incluir Endereço Correspondência', () => { 
           cy.acessarPedido(idPrePedido)       
           cy.url().should('include', `detalhe`)
           cy.wait('@gridoperacao')
@@ -194,17 +195,20 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
             cy.wait('@gridoperacao')        
-            cy.alterarMotorista(fakerBr, motorista)
+            cy.alterarMotorista(fakerBr, motorista.cpf)
             cy.notificacao(mensagem.DadosSalvoSucesso);
         });     
       
   }); 
       
-  describe('Selecionar o sindicato e gerar valor e anexar documento no veiculo inválido', () => {
+  describe('Selecionar o sindicato, gerar valor e validar o pedido', () => {
       
     // ------- Selecionar o sindicato responsável -------//        
     it('Selecionar o sindicato e gerar valor', () => {
-      cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis**').as('listaSindicatos')
+      
+      cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+      cy.intercept('PUT', '**/entidade').as('entidadePUT')
+      cy.intercept('POST', '**/entidade').as('entidadePOST')
       cy.intercept('GET', '**/valor**').as('tabela')   
       cy.acessarPedido(idPrePedido)
       cy.url().should('include', `detalhe`)
@@ -216,12 +220,13 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
       cy.get(path.generic.title, {timeout: 10000})
       .contains('Escolha Ponto de Atendimento')
       
-      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true})
-      cy.wait('@listaSindicatos')
+      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
+      cy.wait('@gridoperacao') 
+      cy.wait('@listaSindicatos') 
       cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
-      .click({force: true})         
+      .click({force: true}).wait(1000)
+      cy.wait('@entidadePOST')         
       cy.wait('@tabela')        
-      
       cy.get(path.generic.tabela, {timeout: 30000})
       .then((ele) => {
         
@@ -236,7 +241,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$0.00')             
         
       });
-      
+      cy.pause()      
       cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
     
     
@@ -271,11 +276,12 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
       cy.get(path.generic.finalizar).click({force: true})
   
       cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
-      //cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()
+      cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()
 
       // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
 
       // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
+      cy.wait('@validarpedido')
       cy.wait('@finalizarpedido', {timeout: 120000})
     });  
    

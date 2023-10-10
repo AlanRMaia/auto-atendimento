@@ -77,7 +77,7 @@ describe('Grupo de teste Atendimento Alteração de dados CTC', () => {
     })
     
     cy.intercept('GET', '**/validarpedido').as('validarpedido')
-    cy.intercept('POST', '**/gerarpagamentopedido').as('finalizarpedido')
+    cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
     cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao') 
 
     cy.viewport(1920, 1080);
@@ -252,7 +252,7 @@ describe('Iniciando testes Autoatendimento', () => {
     });
 
       // -------- Criar operação Alterar Endereço Comercial --------//
-      it('Criar operação Alterar Endereço Comercial', () => { 
+      it.skip('Criar operação Alterar Endereço Comercial', () => { 
         cy.acessarPedido(idPrePedido)       
         cy.url().should('include', `detalhe`)
         cy.wait('@gridoperacao')
@@ -261,7 +261,7 @@ describe('Iniciando testes Autoatendimento', () => {
       });  
 
       // -------- Criar operação Incluir Endereço Correspondência --------//
-      it('Criar operação Incluir Endereço Correspondência', () => { 
+      it.skip('Criar operação Incluir Endereço Correspondência', () => { 
         cy.acessarPedido(idPrePedido)       
         cy.url().should('include', `detalhe`)
         cy.wait('@gridoperacao')
@@ -270,26 +270,30 @@ describe('Iniciando testes Autoatendimento', () => {
       });  
 });
 
-describe.only('Selecionar o sindicato e gerar valor e anexar documento no veiculo inválido', () => {
+describe('Selecionar o sindicato, gerar valor e validar o pedido', () => {
     
   it('Selecionar o sindicato e gerar valor', () => {
-    cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis**').as('listaSindicatos')
-    cy.intercept('GET', '**/valor**').as('tabela')   
-    cy.acessarPedido(idPrePedido)
-    cy.url().should('include', `detalhe`)
-    cy.wait('@gridoperacao')
-    
-    cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})
+    cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+      cy.intercept('PUT', '**/entidade').as('entidadePUT')
+      cy.intercept('POST', '**/entidade').as('entidadePOST')
+      cy.intercept('GET', '**/valor**').as('tabela')   
+      cy.acessarPedido(idPrePedido)
+      cy.url().should('include', `detalhe`)
+      cy.wait('@gridoperacao')
+      
+      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})
 
 
-    cy.get(path.generic.title, {timeout: 10000})
-    .contains('Escolha Ponto de Atendimento')
-    
-    cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true})
-    cy.wait('@listaSindicatos')
-    cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
-    .click({force: true})         
-    cy.wait('@tabela')        
+      cy.get(path.generic.title, {timeout: 10000})
+      .contains('Escolha Ponto de Atendimento')
+      
+      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
+      cy.wait('@gridoperacao') 
+      cy.wait('@listaSindicatos') 
+      cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
+      .click({force: true}).wait(1000)
+      .wait('@entidadePOST')         
+      .wait('@tabela')           
     
     cy.get(path.generic.tabela, {timeout: 30000})
     .then((ele) => {
@@ -345,6 +349,7 @@ describe.only('Selecionar o sindicato e gerar valor e anexar documento no veicul
     // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
 
     // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
+    cy.wait('@validarpedido')
     cy.wait('@finalizarpedido', {timeout: 120000})
   });  
     

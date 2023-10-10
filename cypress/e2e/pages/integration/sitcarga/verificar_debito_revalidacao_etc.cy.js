@@ -289,16 +289,27 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           
         // ------- Selecionar o sindicato e gerar valor -------//        
         it('Selecionar o sindicato e gerar valor', () => {
-              cy.login(usuario.cpf, usuario.senha)
-              cy.acessarPedido(idPrePedido)          
-            cy.get(path.generic.botaoConfirmar, {timeout: 10000}).trigger('mouseover').click({force: true})
-            
-            cy.get(path.generic.title, {timeout: 10000})
-            .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)
-            
-            cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-            cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
-            .click({force: true})         
+          cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+          cy.intercept('PUT', '**/entidade').as('entidadePUT')
+          cy.intercept('POST', '**/entidade').as('entidadePOST')
+          cy.intercept('GET', '**/valor**').as('tabela')   
+          cy.acessarPedido(idPrePedido)
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')
+          
+          cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})
+
+
+          cy.get(path.generic.title, {timeout: 10000})
+          .contains('Escolha Ponto de Atendimento')
+          
+          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
+          cy.wait('@gridoperacao') 
+          cy.wait('@listaSindicatos') 
+          cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
+          .click({force: true}).wait(1000)
+          .wait('@entidadePOST')         
+          .wait('@tabela')           
             
             cy.get(path.generic.tabela, {timeout: 30000})
             .then((ele) => {

@@ -97,7 +97,7 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
 
   describe('Iniciando os testes para a criação do pedido e inclusão das operações', () => {
       
-    it.skip('Inclusão de veiculo Cadastro ativo placa próprio', () => {
+    it('Inclusão de veiculo Cadastro ativo placa próprio', () => {
       cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)
        //Logar na página com o usuario       
        //Clicar na opção Regularização RNTRC no menu lateral
@@ -121,7 +121,7 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
 
     });
         // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-        it.skip('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
+        it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
           cy.acessarPedido(idPrePedido)          
           cy.incluirVeiculo(veiculo01)
           cy.notificacao(mensagem.VeiculoSalvoSucesso)     
@@ -266,22 +266,30 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
       
   });
 
-  describe.only('Validação do pedido e inclusão do sindicato', () => {
+  describe('Validação do pedido e inclusão do sindicato', () => {
           
      it('Validação de do Pedido', () => {
-        cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis**').as('listaSindicatos')
-        cy.intercept('GET', '**/valor**').as('tabela')
-        cy.acessarPedido(idPrePedido)
-    
-        cy.get(path.generic.botaoConfirmar, {timeout: 20000}).click({force: true})        
-    
-        cy.get(path.generic.title, {timeout: 10000}).contains('Escolha Ponto de Atendimento')
-    
-        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true})
-        cy.wait('@listaSindicatos')
-        cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 10000})
-        .click({force: true})      
-        cy.wait('@tabela')        
+      cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+      cy.intercept('PUT', '**/entidade').as('entidadePUT')
+      cy.intercept('POST', '**/entidade').as('entidadePOST')
+      cy.intercept('GET', '**/valor**').as('tabela')   
+      cy.acessarPedido(idPrePedido)
+      cy.url().should('include', `detalhe`)
+      cy.wait('@gridoperacao')
+      
+      cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})
+
+
+      cy.get(path.generic.title, {timeout: 10000})
+      .contains('Escolha Ponto de Atendimento')
+      
+      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
+      cy.wait('@gridoperacao') 
+      cy.wait('@listaSindicatos') 
+      cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
+      .click({force: true}).wait(1000)
+      .wait('@entidadePOST')         
+      .wait('@tabela')           
 
         cy.get(path.generic.tabela, {timeout: 30000})
         .then((ele) => {
