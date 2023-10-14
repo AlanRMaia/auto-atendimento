@@ -1,3 +1,4 @@
+/// <reference types="Cypress"/>
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 var fakerBr = require('faker-br');
@@ -121,17 +122,25 @@ let idPrePedido = '2071380';
   
       });
           // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-          it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
-            cy.acessarPedido(idPrePedido)          
-            cy.incluirVeiculo(veiculo01)
-            cy.notificacao(mensagem.VeiculoSalvoSucesso)     
-            
-            cy.incluirVeiculo(veiculo02)
-            cy.notificacao(mensagem.VeiculoSalvoSucesso)             
-            cy.anexarDocumentosVeiculo(doc, veiculo02 )
-            cy.notificacao(mensagem.CRLVContratoSucesso)      
-              
-          });     
+        it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {            
+          cy.acessarPedido(idPrePedido)
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')          
+          cy.incluirVeiculo(veiculo01)
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')      
+          cy.anexarDocumentosVeiculo(doc, veiculo01 )
+          cy.notificacao(mensagem.CRLVSucesso)  
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')
+          cy.incluirVeiculo(veiculo02)
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')  
+          cy.anexarDocumentosVeiculo(doc, veiculo02 )
+          cy.notificacao(mensagem.CRLVContratoSucesso)
+        });     
           
              // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
         it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
@@ -283,13 +292,15 @@ let idPrePedido = '2071380';
         cy.get(path.generic.title, {timeout: 10000})
         .contains('Escolha Ponto de Atendimento')
         
-        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
-        cy.wait('@gridoperacao') 
-        cy.wait('@listaSindicatos') 
-        cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
-        .click({force: true}).wait(1000)
-        .wait('@entidadePOST')         
-        .wait('@tabela')           
+        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click()
+          .type(sindicato.sigla).wait(5000)
+          .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
+          .contains(sindicato.sigla, {timeout: 10000}).click()
+          
+          cy.wait('@gridoperacao') 
+          cy.wait('@listaSindicatos') 
+          cy.wait('@entidadePOST')           
+          cy.wait('@tabela')            
   
           cy.get(path.generic.tabela, {timeout: 30000})
           .then((ele) => {
@@ -352,7 +363,9 @@ let idPrePedido = '2071380';
               // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
       
               // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
-              cy.wait('@finalizarpedido', {timeout: 340000})
+              cy.wait('@validarpedido')
+              cy.wait('@finalizarpedido', {timeout: 120000})
+              cy.notificacao(mensagem.AtendimentofinalizadoSucesso)
           });
             
         });

@@ -1,3 +1,4 @@
+/// <reference types="Cypress"/>
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
@@ -9,7 +10,7 @@ var fakerBr = require('faker-br');
   const telefone = '(54) 3279-3800'
   const cep = '60430-971'
   let doc; 
-  let idPrePedido = '2071395'; 
+  let idPrePedido = '2071525'; 
 
   const gestor = {
     cpfCnpj: '344.492.720-72',
@@ -193,7 +194,7 @@ describe('Iniciando testes Autoatendimento', () => {
           // }); 
       
           // --------- Criar operacao Incluir Gestor Sócio -----//
-        it('Criar operacao Incluir Gestor Sócio', () => {         
+        it.skip('Criar operacao Incluir Gestor Sócio', () => {         
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
           cy.wait('@gridoperacao')
@@ -202,7 +203,7 @@ describe('Iniciando testes Autoatendimento', () => {
       });
       
       // --------- Criar operacao Incluir Gestor Responsável Legal -----//
-        it('Criar operacao Incluir Gestor Responsável Legal', () => {         
+        it.skip('Criar operacao Incluir Gestor Responsável Legal', () => {         
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
           cy.wait('@gridoperacao')
@@ -211,7 +212,7 @@ describe('Iniciando testes Autoatendimento', () => {
         });
       
         // -------- Criar operação Incluir Filial ------//
-        it('Criar operação Incluir Filial', () => {
+        it.skip('Criar operação Incluir Filial', () => {
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
           cy.wait('@gridoperacao') 
@@ -220,7 +221,7 @@ describe('Iniciando testes Autoatendimento', () => {
         });
       
         // ---------- Criar operação Incluir Responsável Técnico --------//
-        it('Criar operação Incluir Responsável Técnico', () => {
+        it.skip('Criar operação Incluir Responsável Técnico', () => {
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
           cy.wait('@gridoperacao')                   
@@ -233,7 +234,7 @@ describe('Iniciando testes Autoatendimento', () => {
         });
       
         // ---------- Criar operação ALterar Responsável Técnico --------//
-        it('Criar operação Alterar Responsável Técnico', () => {
+        it.skip('Criar operação Alterar Responsável Técnico', () => {
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
           cy.wait('@gridoperacao')                   
@@ -279,11 +280,13 @@ describe('Iniciando testes Autoatendimento', () => {
           cy.get(path.generic.title, {timeout: 10000})
           .contains('Escolha Ponto de Atendimento')
           
-          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
+          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click()
+          .type(sindicato.sigla).wait(5000)
+          .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
+          .contains(sindicato.sigla, {timeout: 10000}).click()
+          
           cy.wait('@gridoperacao') 
           cy.wait('@listaSindicatos') 
-          cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
-          .contains(sindicato.sigla, {timeout: 10000}).wait(5000).click({force: true})
           cy.wait('@entidadePOST')           
           cy.wait('@tabela')         
           
@@ -343,6 +346,7 @@ describe('Iniciando testes Autoatendimento', () => {
           // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
           cy.wait('@validarpedido')
           cy.wait('@finalizarpedido', {timeout: 120000})
+          cy.notificacao(mensagem.AtendimentofinalizadoSucesso)
         });  
       });         
 

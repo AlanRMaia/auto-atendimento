@@ -1,3 +1,4 @@
+/// <reference types="Cypress"/>
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
@@ -334,13 +335,15 @@ const enderecoCorrespondencia = {
       cy.get(path.generic.title, {timeout: 10000})
       .contains('Escolha Ponto de Atendimento')
       
-      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
+      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click()
+      .type(sindicato.sigla).wait(5000)
+      .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
+      .contains(sindicato.sigla, {timeout: 10000}).click()
+      
       cy.wait('@gridoperacao') 
       cy.wait('@listaSindicatos') 
-      cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
-      .click({force: true}).wait(1000)
-      .wait('@entidadePOST')         
-      .wait('@tabela')           
+      cy.wait('@entidadePOST')           
+      cy.wait('@tabela')           
           
           cy.get(path.generic.tabela, {timeout: 30000})
           .then((ele) => {
@@ -412,7 +415,9 @@ const enderecoCorrespondencia = {
               // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
       
               // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
+              cy.wait('@validarpedido')
               cy.wait('@finalizarpedido', {timeout: 120000})
+              cy.notificacao(mensagem.AtendimentofinalizadoSucesso)
   
           })     
         

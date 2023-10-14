@@ -19,6 +19,6 @@
     AlterarResponsavelTecnico: 'Responsável Técnico',
     ExcluirResponsavelTecnico: 'Exclusão',
     IncluirVeiculo: 'Veículo',
-    AlterarVeiculo: 'Alterar Veículo',
+    AlterarVeiculo: 'Inclusão/Alteração',
     ExcluirVeiculo: 'Exclusão'
   };

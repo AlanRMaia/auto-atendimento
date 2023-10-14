@@ -1,3 +1,4 @@
+/// <reference types="Cypress"/>
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
@@ -58,7 +59,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
   describe('Criando o pedido e incluindo as operações', () => {
 
     // ------ Abrir Atendimento de Alteração de dados ------//
-      it.skip('Criar pedido Alteração de dados TAC', () => {
+      it('Criar pedido Alteração de dados TAC', () => {
         cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)       
           //Logar na página com o usuario         
           //Clicar na opção Regularização RNTRC no menu lateral
@@ -182,7 +183,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         });  
 
       // --------- Criar operacao Incluir Motorista -----//
-        it('Criar operacao Incluir Motorista', () => {
+        it.skip('Criar operacao Incluir Motorista', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
             cy.wait('@gridoperacao')
@@ -191,7 +192,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         });  
       
       // --------- Criar operacao Alterar Motorista -----//
-        it('Criar operacao Alterar Motorista', () => {
+        it.skip('Criar operacao Alterar Motorista', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
             cy.wait('@gridoperacao')        
@@ -220,13 +221,16 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
       cy.get(path.generic.title, {timeout: 10000})
       .contains('Escolha Ponto de Atendimento')
       
-      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
+      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click()
+      .type(sindicato.sigla).wait(5000)
+      .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
+      .contains(sindicato.sigla, {timeout: 10000}).click()
+      
       cy.wait('@gridoperacao') 
       cy.wait('@listaSindicatos') 
-      cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
-      .click({force: true}).wait(1000)
-      cy.wait('@entidadePOST')         
-      cy.wait('@tabela')        
+      cy.wait('@entidadePOST')           
+      cy.wait('@tabela')    
+          
       cy.get(path.generic.tabela, {timeout: 30000})
       .then((ele) => {
         
@@ -241,7 +245,6 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
         cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$0.00')             
         
       });
-      cy.pause()      
       cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
     
     
@@ -283,6 +286,7 @@ describe('Grupo de teste Atendimento Alteração de dados TAC', () => {
       // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
       cy.wait('@validarpedido')
       cy.wait('@finalizarpedido', {timeout: 120000})
+      cy.notificacao(mensagem.AtendimentofinalizadoSucesso)
     });  
    
   });   

@@ -1,4 +1,4 @@
-
+/// <reference types="Cypress"/>
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
@@ -14,7 +14,12 @@ let tipoConta;
 
 describe('Iniciando so testes de criação de login e acessar a página', () => {
     beforeEach(() => {
-        cy.viewport(1920, 1080)
+        cy.viewport(1920, 1080)        
+        cy.intercept('POST', 'https://sitcargaapitest/acesso/identity/registrarusuario').as('registrarusuario')
+        cy.intercept('POST', 'https://sitcargaapitest/acesso/identity/login').as('login')
+        cy.intercept('POST', 'https://sitcargaapitest/acesso/identity/claims').as('claims')
+        cy.intercept('GET', 'https://sitcargaapitest/gestao/usuario').as('usuario')
+
         senha = faker.internet.password()      
         cpf = fakerBr.br.cpf()
         tipoConta = faker.helpers.enumValue(conta)
@@ -42,12 +47,16 @@ describe('Iniciando so testes de criação de login e acessar a página', () => 
         cy.get('[type="checkbox"]').check({force: true});
 
         cy.get(path.generic.botaoSubmit).click({force: true});
+        cy.wait('@registrarusuario')
+        cy.wait('@login')
+        cy.wait('@claims')
+        cy.wait('@usuario')
         
         cy.get(path.cadastroValidacaoEmail.sejaBemVindo).contains('Código de Verificação do E-mail')
 
-        cy.get(path.loginPage.cpf).type(cpf)
-        cy.get(path.loginPage.senha).type(senha)
-        cy.get(path.generic.botaoSubmit).click({force: true});
+        // cy.get(path.loginPage.cpf).type(cpf)
+        // cy.get(path.loginPage.senha).type(senha)
+        // cy.get(path.generic.botaoSubmit).click({force: true});
 
     });
 

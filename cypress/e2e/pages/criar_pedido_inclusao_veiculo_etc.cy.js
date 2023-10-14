@@ -1,3 +1,4 @@
+/// <reference types="Cypress"/>
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 var fakerBr = require('faker-br');
@@ -11,7 +12,7 @@ var fakerBr = require('faker-br');
   let veiculo05;
   let index = 0;
   let doc; 
-  let idPrePedido = '2071379';
+  let idPrePedido = '2071514';
   let boleto = {
     codigoBarra : '',
     nossoNumero : '',
@@ -21,12 +22,12 @@ var fakerBr = require('faker-br');
     utilizacao: '',
     valorBoleto: '',
     situacao: ''    
-  };  
+  };
   
   const transportador = {
-    cpfCnpj: "13.579.271/0001-95",
-    nome: "ETC - RAJAN TRANSPORTES COMÉRCIO E INDÚSTRIA LTDA",
-    rntrc: "000013425",
+    cpfCnpj: "05.197.808/0001-24",
+    nome: "ETC - TRANSMOIADO TRANSPORTES LTDA EPP",
+    rntrc: "000013672",
     situacao: "ATIVO",
     saldo: "R$ 0,00",
     sigla: "ETC",
@@ -74,14 +75,14 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
       veiculoAutomotor.contrato = doc.contrato
     })
   
-    cy.fixture("data/veiculos/MCK8858").then((mck8858) => {
-      veiculo04 = mck8858
+    cy.fixture("data/veiculos/FDZ1119").then((fdz1119) => {
+      veiculo04 = fdz1119
       veiculo04.crlv = doc.crlv
       veiculo04.contrato = doc.contrato
     })
     
-    cy.fixture("data/veiculos/GFV9E78").then((gfv9e78) => {
-      veiculo05 = gfv9e78
+    cy.fixture("data/veiculos/GIL0259").then((gil0259) => {
+      veiculo05 = gil0259
       veiculo05.crlv = doc.crlv
       veiculo05.contrato = doc.contrato
     })
@@ -121,17 +122,41 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
 
     });
         // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-        it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {
-          cy.acessarPedido(idPrePedido)          
+        it('Criar operação Incluir Veiculo Automotor/Arrendado e Automotor/arrendado', () => {            
+          cy.acessarPedido(idPrePedido)
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')          
           cy.incluirVeiculo(veiculo01)
-          cy.notificacao(mensagem.VeiculoSalvoSucesso)     
-          
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')      
+          cy.anexarDocumentosVeiculo(doc, veiculo01 )
+          cy.notificacao(mensagem.CRLVContratoSucesso)  
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')
           cy.incluirVeiculo(veiculo02)
-          cy.notificacao(mensagem.VeiculoSalvoSucesso)             
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')  
           cy.anexarDocumentosVeiculo(doc, veiculo02 )
-          cy.notificacao(mensagem.CRLVContratoSucesso)      
+          cy.notificacao(mensagem.CRLVContratoSucesso)
+        });    
+
+        // -------- Criar operação Alterar Veiculo Automotor/Leasing e Excluir Implemento/Próprio -------//        
+        it('Criar operação Alterar Veiculo Automotor/Próprio e Excluir Implemento/Próprio', () => {
+          cy.acessarPedido(idPrePedido) 
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')         
+          cy.alterarVeiculo(veiculo05)
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)     
+          cy.wait('@gridoperacao')
+          cy.anexarDocumentosVeiculo(doc, veiculo05 )
+          cy.notificacao(mensagem.CRLVSucesso)     
+          cy.wait('@gridoperacao')
+          cy.excluirVeiculo(veiculo04)
+          cy.notificacao(mensagem.VeiculoSalvoSucesso)        
             
-        });     
+        });
         
            // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
       it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
@@ -253,16 +278,7 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
         cy.anexarDocumentosVeiculo(doc, veiculoAutomotor)        
         cy.notificacao(mensagem.CRLVContratoSucesso)      
         index++
-      });
-            
-      //--------- Anexar crlv na operação de inclusão de veículo -------//        
-      it('Anexar crlv na operação de inclusão de veículo', () => {
-        cy.acessarPedido(idPrePedido)
-        cy.url().should('include', `detalhe`)
-        cy.wait('@gridoperacao')
-        cy.anexarDocumentosVeiculo(doc, veiculo01 )
-        cy.notificacao(mensagem.CRLVContratoSucesso)
-      });
+      });     
       
   });
 
@@ -283,13 +299,15 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
       cy.get(path.generic.title, {timeout: 10000})
       .contains('Escolha Ponto de Atendimento')
       
-      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
-      cy.wait('@gridoperacao') 
-      cy.wait('@listaSindicatos') 
-      cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
-      .click({force: true}).wait(1000)
-      .wait('@entidadePOST')         
-      .wait('@tabela')           
+      cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click()
+          .type(sindicato.sigla).wait(5000)
+          .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
+          .contains(sindicato.sigla, {timeout: 10000}).click()
+          
+          cy.wait('@gridoperacao') 
+          cy.wait('@listaSindicatos') 
+          cy.wait('@entidadePOST')           
+          cy.wait('@tabela')          
 
         cy.get(path.generic.tabela, {timeout: 30000})
         .then((ele) => {
@@ -347,12 +365,15 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
             cy.get(path.generic.finalizar).click({force: true})
     
             cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
-            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()
+            //cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()
     
             // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
     
             // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
-            cy.wait('@finalizarpedido', {timeout: 340000})
+            cy.wait('@validarpedido')
+            cy.wait('@finalizarpedido', {timeout: 120000})
+            cy.notificacao(mensagem.AtendimentofinalizadoSucesso)
+            
         });
           
       });

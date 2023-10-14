@@ -1,3 +1,4 @@
+/// <reference types="Cypress"/>
 import path from '../../selectors/path.sel.cy';
 import mensagem from "../../support/mensagemAlertEnum";
 import urls from "../../support/urls";
@@ -24,14 +25,15 @@ var fakerBr = require('faker-br');
   };  
   
   const transportador = {
-    cpfCnpj: "979.017.920-00",
-    nome: "TAC - RUI CARLOS PADILHA",
-    rntrc: "002496453",
+    cpfCnpj: "313.594.347-04",
+    nome: "TAC - RENALDO ARRUDA DE ALMEIDA",
+    rntrc: "000041330",
     situacao: "ATIVO",
     saldo: "R$ 0,00",
     sigla: "TAC",
     tipo: "Autônomo"
   };
+
   const sindicato = {
     perfil: "FETAC-MG - Master",
     sigla: "FETAC-MG",
@@ -224,37 +226,37 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       //   index++
       // });
       
-      // // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
-      // describe('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
-      //   cy.url().should('include', `detalhe`)
-      //   veiculoImplemento.placa = 'GIZ7148'
-      //   veiculoImplemento.renavam = '01146947299'
-      //   veiculoImplemento.tipoVeiculo = 'Automotor'
-      //   cy.wait('@gridoperacao')
-      //   cy.incluirVeiculo(veiculoImplemento)
-      //   cy.notificacao(mensagem.VeiculoSalvoSucesso)
-      //   cy.wait('@gridoperacao')
-      //   cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
-      //   cy.notificacao(mensagem.CRLVSucesso) 
-      //   cy.notificacao(mensagem.ContratoArrendamentoSucesso)
-      //   index++
-      // });
+      // -------- Criar operação Incluir Veiculo Automotor/Arrendado ------//
+      it('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)
+        veiculoImplemento.placa = 'GIZ7148'
+        veiculoImplemento.renavam = '01146947299'
+        veiculoImplemento.tipoVeiculo = 'Automotor'
+        cy.wait('@gridoperacao')
+        cy.incluirVeiculo(veiculoImplemento)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.wait('@gridoperacao')
+        cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+        cy.notificacao(mensagem.CRLVContratoSucesso) 
+        index++
+      });
       
-      // // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
-      // describe('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
-      //   cy.url().should('include', `detalhe`)        
-      //   veiculoImplemento.placa = 'FIM9923'
-      //   veiculoImplemento.renavam = '01087459874'
-      //   veiculoImplemento.tipoVeiculo = 'Automotor'
-      //   cy.wait('@gridoperacao')
-      //   cy.incluirVeiculo(veiculoImplemento)
-      //   cy.notificacao(mensagem.VeiculoSalvoSucesso)
-      //   cy.wait('@gridoperacao')
-      //   cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
-      //   cy.notificacao(mensagem.CRLVSucesso)      
-      //   cy.notificacao(mensagem.ContratoArrendamentoSucesso)      
-      //   index++
-      // });
+      // -------- Criar operação Incluir Veiculo Automotor/Arrendado ------//
+      it('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
+        cy.acessarPedido(idPrePedido)
+        cy.url().should('include', `detalhe`)        
+        veiculoImplemento.placa = 'FIM9923'
+        veiculoImplemento.renavam = '01087459874'
+        veiculoImplemento.tipoVeiculo = 'Automotor'
+        cy.wait('@gridoperacao')
+        cy.incluirVeiculo(veiculoImplemento)
+        cy.notificacao(mensagem.VeiculoSalvoSucesso)
+        cy.wait('@gridoperacao')
+        cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
+        cy.notificacao(mensagem.CRLVContratoSucesso)      
+        index++
+      });
 
       // describe('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
       //   cy.url().should('include', `detalhe`)
@@ -317,26 +319,32 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
         cy.get(path.generic.title, {timeout: 10000})
         .contains('Escolha Ponto de Atendimento')
         
-        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
-        cy.wait('@gridoperacao') 
-        cy.wait('@listaSindicatos') 
-        cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
-        .click({force: true}).wait(1000)
-        .wait('@entidadePOST')         
-        .wait('@tabela')           
+        cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click()
+          .type(sindicato.sigla).wait(5000)
+          .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
+          .contains(sindicato.sigla, {timeout: 10000}).click()
+          
+          cy.wait('@gridoperacao') 
+          cy.wait('@listaSindicatos') 
+          cy.wait('@entidadePOST')           
+          cy.wait('@tabela')           
 
         cy.get(path.generic.tabela, {timeout: 30000})
         .then((ele) => {
           
           cy.log(ele.text())            
-          
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Implemento')
+
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
             cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '3')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$450.00')          
-              
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
+            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00') 
+          
+            cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Inclusão de Implemento')
+            cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$150.00')
+            cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '3')
+            cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$450.00')            
             
-            cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')          
+            cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$750.00')          
           
         });
     
@@ -356,13 +364,17 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
           
           cy.log(ele.text())
           
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Implemento')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '3')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$450.00')          
-              
-            
-            cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$450.00')            
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$150.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '2')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$300.00') 
+        
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Inclusão de Implemento')
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$150.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '3')
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$450.00')            
+          
+          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$750.00')            
             
             cy.get(path.generic.email).type(fakerBr.internet.email())
     
@@ -374,7 +386,9 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
             // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
     
             // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
+            cy.wait('@validarpedido')
             cy.wait('@finalizarpedido', {timeout: 120000})
+            cy.notificacao(mensagem.AtendimentofinalizadoSucesso)
         });
           
       });

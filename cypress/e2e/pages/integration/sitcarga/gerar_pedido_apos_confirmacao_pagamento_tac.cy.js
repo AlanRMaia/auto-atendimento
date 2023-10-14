@@ -1,3 +1,4 @@
+/// <reference types="Cypress"/>
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../../../selectors/path.sel.cy';
@@ -11,7 +12,7 @@ var fakerBr = require('faker-br');
   let veiculoAutomotor;  
   let index = 0;
   let doc; 
-  let idPrePedido = '2071163';
+  let idPrePedido = '2071540';
   const celular = '(21) 98878-7878';
   const telefone = '(12) 3937-6191';
   const fax = '(21) 9764-9386';
@@ -70,36 +71,26 @@ let boleto = {
 
 describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentação de forta', () => {
       beforeEach(() => {
+        cy.reload()
         cy.fixture("data/doc/documentos").then((data) => {
-            doc = data
-          })
+          doc = data
+        })
+        
+        cy.intercept('GET', '**/validarpedido').as('validarpedido')
+        cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
+        cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao') 
 
-          cy.fixture("data/veiculos/veiculo_lista_implemento").then((implementosList) => {
-            veiculoImplemento = implementosList[index]
-            veiculoImplemento.crlv = doc.crlv
-            veiculoImplemento.contrato = doc.contrato
-          })
-          
-          cy.fixture("data/veiculos/veiculo_lista_automotor").then((automotorList) => {
-            veiculoImplemento = automotorList[index]
-            veiculoImplemento.crlv = doc.crlv
-            veiculoImplemento.contrato = doc.contrato
-          })  
-          cy.intercept('GET', '**/validarpedido').as('validarpedido')
-          cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
-
-          cy.viewport(1920, 1080);
-          cy.login()
-          //cy.acessarPedido(idPrePedido)
+        cy.viewport(1920, 1080);
+        cy.login()          
       });
 
   describe('criação do pedido e inclusão de operações', () => {
-    it('Iniciando so testes', () => {
+    
             
-          describe('Iniciando testes Autoatendimento', () => {
+    describe('Iniciando testes Autoatendimento', () => {
 
             //------ Abrir Atendimento de Alteração de dados ------//
-              describe('Criar pedido Alteração de dados TAC', () => {
+              it('Criar pedido Alteração de dados TAC', () => {
                 cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)       
                   //Logar na página com o usuario         
                   //Clicar na opção Regularização RNTRC no menu lateral
@@ -122,91 +113,130 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 
               });
                 
-          //       //------ Criar operação Salvar transportador -----//
-          //       // describe('Criar operação Salvar transportador', () => { 
-          //       //   cy.operacaoTransportador(fakerBr, transportador.sigla)
-          //       //   cy.notificacao(mensagem.TransportadorSucesso)      
-          //       // });
-                
-                //-------- Criar operação Enviar documentos do tipo Identidade ------//              
-                describe('Criar operação Enviar documentos do tipo Identidade', () => {  
-                  cy.documentosIdentidade(doc.rg)
-                  cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
-                });
+          // ------ Criar operação Salvar transportador -----//
+        it('Criar operação Salvar transportador', () => {           
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')
+          cy.operacaoTransportador(fakerBr, transportador.sigla)         
+          cy.notificacao(mensagem.TransportadorSucesso)                     
+        })   
         
-                // ------ Criar operação Incluir Contato Email ------//
-                describe('Criar operação Incluir Contato Email', () => { 
-                  cy.incluirContatoEmail(faker)
-                  cy.notificacao(mensagem.DadosSalvoSucesso) 
-                });
-                
-                // ------ Criar operação Excluir Contato Email ------//
-                describe('Criar operação Excluir Contato Email', () => { 
-                  cy.excluirContatoEmail(faker, email)
-                  cy.notificacao(mensagem.DadosSalvoSucesso) 
-                });
+        //-------- Criar operação Enviar documentos do tipo Identidade ------//              
+        it('Criar operação Enviar documentos do tipo Identidade', () => { 
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao') 
+          cy.documentosIdentidade(doc.rg)
+          cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
+        });
+
+        // ------ Criar operação Incluir Contato Email ------//
+        it('Criar operação Incluir Contato Email', () => { 
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')
+          cy.incluirContatoEmail(faker)
+          cy.notificacao(mensagem.DadosSalvoSucesso) 
+        });
         
-                
-                // ------ Criar operação Excluir Contato Celular -----//
-                describe('Criar operação Excluir Contato Celular', () => {         
-                  cy.excluirContatoCelular(fakerBr, celular)   
-                  cy.notificacao(mensagem.DadosSalvoSucesso);
-                });
+        // ------ Criar operação Excluir Contato Email ------//
+        it('Criar operação Excluir Contato Email', () => { 
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')
+          cy.incluirContatoEmail(faker, email)
+          cy.notificacao(mensagem.DadosSalvoSucesso) 
+        });
+
         
-                // ------ Criar operação Excluir Contato Telefone -----//
-                describe('Criar operação Excluir Contato Telefone', () => {         
-                  cy.excluirContatoTelefone(faker, telefone)  
-                  cy.notificacao(mensagem.DadosSalvoSucesso);       
-                });
-                
-                // ------ Criar operação Incluir Contato Telefone -----//
-                describe('Criar operação Incluir Contato Telefone', () => {   
-                  cy.incluirContatoTelefone(faker)  
-                  cy.notificacao(mensagem.DadosSalvoSucesso);      
-                });
-                
-                // ------- Criar operação Incluir Contato Fax -------//
-                describe('Criar operação Incluir Contato Fax', () => {
-                  cy.incluirContatoFax(faker)     
-                  cy.notificacao(mensagem.DadosSalvoSucesso);      
-                });       
-                
-                // ------- Criar operação Excluir Contato Fax -------//
-                describe('Criar operação Excluir Contato Fax', () => {
-                  cy.excluirContatoFax(faker, fax)     
-                  cy.notificacao(mensagem.DadosSalvoSucesso);      
-                });              
+        // ------ Criar operação Excluir Contato Celular -----//
+        it('Criar operação Excluir Contato Celular', () => { 
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')        
+          cy.excluirContatoCelular(fakerBr, celular)   
+          cy.notificacao(mensagem.DadosSalvoSucesso);
+        });
+
+        // ------ Criar operação Excluir Contato Telefone -----//
+        it('Criar operação Excluir Contato Telefone', () => { 
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')        
+          cy.excluirContatoTelefone(faker, telefone)  
+          cy.notificacao(mensagem.DadosSalvoSucesso);       
+        });
         
-              // --------- Criar operacao Incluir Motorista -----//
-              describe('Criar operacao Incluir Motorista', () => {
-                  cy.incluirMotorista(fakerBr, motorista.cpf)
-                  cy.notificacao(mensagem.DadosSalvoSucesso);
-              });  
+        // ------ Criar operação Incluir Contato Telefone -----//
+        it('Criar operação Incluir Contato Telefone', () => {
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')   
+          cy.incluirContatoTelefone(faker)  
+          cy.notificacao(mensagem.DadosSalvoSucesso);      
+        });
+        
+        // ------- Criar operação Incluir Contato Fax -------//
+        it('Criar operação Incluir Contato Fax', () => {
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')
+          cy.incluirContatoFax(faker)     
+          cy.notificacao(mensagem.DadosSalvoSucesso);      
+        });       
+        
+        // ------- Criar operação Excluir Contato Fax -------//
+        it('Criar operação Excluir Contato Fax', () => {
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')
+          cy.incluirContatoFax(faker, fax)     
+          cy.notificacao(mensagem.DadosSalvoSucesso);      
+        }); 
+
+        // -------- Criar operação Alterar Endereço Residencial --------//
+        it.skip('Criar operação Alterar Endereço Residencial', () => { 
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')
+          cy.alterarEnderecoResidencial(fakerBr, cep)
+          //cy.notificacao(mensagem.DadosSalvoSucesso);      
+        });  
+
+        // -------- Criar operação Alterar Endereço Correspondência --------//
+        it.skip('Criar operação Incluir Endereço Correspondência', () => { 
+          cy.acessarPedido(idPrePedido)       
+          cy.url().should('include', `detalhe`)
+          cy.wait('@gridoperacao')
+          cy.incluirEnderecoCorrespondenciaTAC(fakerBr, cep)
+          //cy.notificacao(mensagem.DadosSalvoSucesso);      
+        });  
+
+      // --------- Criar operacao Incluir Motorista -----//
+        it.skip('Criar operacao Incluir Motorista', () => {
+            cy.acessarPedido(idPrePedido)       
+            cy.url().should('include', `detalhe`)
+            cy.wait('@gridoperacao')
+            cy.incluirMotorista(fakerBr)
+            cy.notificacao(mensagem.DadosSalvoSucesso);
+        });  
+      
+      // --------- Criar operacao Alterar Motorista -----//
+        it.skip('Criar operacao Alterar Motorista', () => {
+            cy.acessarPedido(idPrePedido)       
+            cy.url().should('include', `detalhe`)
+            cy.wait('@gridoperacao')        
+            cy.alterarMotorista(fakerBr, motorista.cpf)
+            cy.notificacao(mensagem.DadosSalvoSucesso);
+        });     
               
-          //     // // --------- Criar operacao Alterar Motorista -----//
-          //     // describe('Criar operacao Alterar Motorista', () => {        
-          //     //   cy.alterarMotorista(fakerBr, motorista)
-          //     //   cy.notificacao(mensagem.DadosSalvoSucesso);
-          //     // });   
+    });
               
-          //      //   // -------- Criar operação Alterar Endereço Comercial --------//
-          //     //   describe('Criar operação Alterar Endereço Comercial', () => { 
-          //     //     cy.alterarEnderecoResidencial(fakerBr, enderecoComercial.cep )
-          //     //     cy.notificacao(mensagem.DadosSalvoSucesso);      
-          //     //   });  
-        
-                // -------- Criar operação Alterar Endereço Correspondência --------//
-                describe('Criar operação Incluir Endereço Residencial', () => { 
-                  cy.incluirEnderecoResidencial(fakerBr, enderecoResidencial.cep)
-                  //cy.notificacao(mensagem.DadosSalvoSucesso);      
-              }); 
-              
-          });
-              
-          describe('Selecionar o sindicato e gerar valor e anexar documento no veiculo inválido', () => {
+    describe('Selecionar o sindicato e gerar valor e anexar documento no veiculo inválido', () => {
               
             // ------- Selecionar o sindicato responsável -------//        
-            describe('Selecionar o sindicato responsável', () => {
+            it('Selecionar o sindicato responsável', () => {
               cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
               cy.intercept('PUT', '**/entidade').as('entidadePUT')
               cy.intercept('POST', '**/entidade').as('entidadePOST')
@@ -221,13 +251,15 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
               cy.get(path.generic.title, {timeout: 10000})
               .contains('Escolha Ponto de Atendimento')
               
-              cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
+              cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click()
+              .type(sindicato.sigla).wait(5000)
+              .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
+              .contains(sindicato.sigla, {timeout: 10000}).click()
+                
               cy.wait('@gridoperacao') 
               cy.wait('@listaSindicatos') 
-              cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
-              .click({force: true}).wait(1000)
-              .wait('@entidadePOST')         
-              .wait('@tabela')   
+              cy.wait('@entidadePOST')           
+              cy.wait('@tabela')   
                 
                 cy.get(path.generic.tabela, {timeout: 30000})
                 .then((ele) => {
@@ -247,14 +279,13 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({force: true});
               
 
-            });            
+                      
             
-            // ------ Validação do pedido - Pedido rejeitado por não ter anexo na inclusão do veiculo BSG1253 -------//         
-            describe('Validação e finalização do pre-pedido', () => {
+            
               cy.wait('@validarpedido')
               cy.get(path.checkoutAtendimentoPage.botaoConfirmar2, {timeout: 10000}).should('be.visible').click({force: true});
               cy.get(path.generic.title, {timeout: 10000})
-              .contains('Confira o resumo do pedido', {timeout: 10000})             
+              .contains('Confira o Resumo do pedido', {timeout: 10000})             
               
               cy.get(path.generic.tabela, {timeout: 30000})
                 .then((ele) => {
@@ -275,55 +306,65 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
               
               cy.get('.q-ml-sm').contains('Confirma a finalização do atendimento?')
               .get(path.generic.botaoOk).click({force: true})
-                cy.wait('@finalizarpedido')
-            });  
-          });
-    });
-            
-          it('Iniciando oa testes no Sitcarga', () => {
-                
-            describe('Consultando se o pagamento do boleto foi compensado', () => {
-              
-              cy.visit(urls.sitcargaInitial);
-              cy.get('.cookie-message > :nth-child(1) > p', {timeout: 10000})
-                .should('be.visible')
-                .contains('Utilizamos cookies essenciais e tecnologias semelhantes para melhorar a sua experiência no nosso site. Para maiores informações, acesse nossa Política de Privacidade.')
-                .get('#btnAccept').click({force: true})           
-                cy.loginSitcarga()
-                cy.get('.logo > img', {timeout: 30000}).should('have.attr','src', path.sitcargaHomePage.imgLogon)
-                cy.get(':nth-child(1) > .m-r-sm').contains(usuario.nome.toUpperCase()) 
-                cy.get('.dropdown-toggle').click({force: true})
-                .get('#niveis-usuario > li > a').contains(sindicato.perfil, {timeout: 10000}).click({force: true}) 
-                cy.get('.dropdown-toggle').contains(sindicato.perfil, {timeout: 10000})
-                cy.wait('@visitante')
-                cy.get('#side-menu > li > a > span').contains('Auto Atendimento', {timeout: 10000}).click({force: true}).click({force: true})
-                .get('a[href="/autoatendimento/prepedido"]', {timeout: 10000}).contains('Acompanhamento', {timeout: 10000}).click({force: true})
-                         
-                cy.get('#IdPedido').type(idPrePedido)
-                cy.get('#btn-consultar').click({force: true})  
-                cy.wait('@listaPrepedido')
-                cy.get('table > tbody > tr', {timeout: 10000}).each(($ele)=>{
-                  cy.get($ele).find('td', {timeout: 10000}).each(($td, index, list) => {
-                    let texto = $td.text()
-                    cy.log('ID:', idPrePedido)
-                    if (texto == idPrePedido) {
-                      cy.log('valor encontrado', texto)
-                      cy.wrap($ele).find('i[class="i i-search"]', {timeout: 10000}).click({force: true}) 
-                      return false
-                    }else {
-                      cy.log('Valor não encontrado:', texto)
-                    }
-                  })                
-                })
-                cy.wait('@autenticacao')  
-                cy.get('#situacao', {timeout: 20000}).contains(situacao.PAGAMENTOEFETUADO, {timeout: 20000})
-                .get('#btn-gerar-pedido', {timeout:20000}).click({force: true})
-                cy.get('#confirm-ok').click({force: true}) 
-                cy.wait('@gerarpedido')
-                //cy.get('.alert')
+                cy.wait('@validarpedido')
+                cy.wait('@finalizarpedido', {timeout: 120000})
               
             });
-          }); 
+    
+            
+          
+          
+    }); 
+  }); 
+  describe.only('Iniciando oa testes no Sitcarga', () => {
+                
+    it('Consultando se o pagamento do boleto foi compensado', () => {
+      cy.intercept('POST', '/autoatendimento/prepedido/consultar?gridName=grid').as('listaPrepedido')
+      cy.intercept('POST', '/autoatendimento/prepedido/gerarpedido/').as('gerarpedido')
+      cy.intercept('POST', 'https://sac-evoservicosfinanceiros.ascbrazil.com.br/site-visitantes/monitor-visitante').as('visitante')
+      cy.intercept('POST', 'https://wwwsitcargateste/institucional/authsca').as('autenticacao')      
+      
+      cy.visit(urls.sitcargaInitial);
+      cy.get('.cookie-message > :nth-child(1) > p', {timeout: 10000})
+        .should('be.visible')
+        .contains('Utilizamos cookies essenciais e tecnologias semelhantes para melhorar a sua experiência no nosso site. Para maiores informações, acesse nossa Política de Privacidade.')
+        .get('#btnAccept').click({force: true})           
+        cy.loginSitcarga()
+        cy.get('.logo > img', {timeout: 30000}).should('have.attr','src', path.sitcargaHomePage.imgLogon)
+        cy.get(':nth-child(1) > .m-r-sm').contains(Cypress.env('usuario').nome.toUpperCase()) 
+        cy.get('.dropdown-toggle').click({force: true})
+        .get('#niveis-usuario > li > a').contains(sindicato.perfil, {timeout: 10000}).click({force: true}) 
+        cy.get('.dropdown-toggle').contains(sindicato.perfil, {timeout: 10000})
+        cy.wait('@visitante')
+        cy.get('#side-menu > li > a > span').contains('Auto Atendimento', {timeout: 10000}).click({force: true}).click({force: true})
+        .get('a[href="/autoatendimento/prepedido"]', {timeout: 10000}).contains('Acompanhamento', {timeout: 10000}).click({force: true})
+                 
+        cy.get('#IdPedido').type(idPrePedido)
+        cy.get('#btn-consultar').click({force: true})  
+        cy.wait('@listaPrepedido')
+        cy.get('table > tbody > tr', {timeout: 10000}).each(($ele)=>{
+          cy.get($ele).find('td', {timeout: 10000}).each(($td, index, list) => {
+            let texto = $td.text()
+            cy.log('ID:', idPrePedido)
+            if (texto == idPrePedido) {
+              cy.log('valor encontrado', texto)
+              cy.wrap($ele).find('i[class="i i-search"]', {timeout: 10000}).click({force: true}) 
+              return false
+            }else {
+              cy.log('Valor não encontrado:', texto)
+            }
+          })                
+        })
+        cy.wait('@autenticacao')  
+        cy.get('#situacao', {timeout: 20000}).contains(situacao.PAGAMENTOEFETUADO, {timeout: 20000})
+        .get('#btn-gerar-pedido', {timeout:20000}).click({force: true})
+        //cy.get('#confirm-ok').click({force: true}) 
+        cy.wait('@gerarpedido')
+        //cy.get('.alert')
+      
     });
+  }); 
+   
+  
   
 });

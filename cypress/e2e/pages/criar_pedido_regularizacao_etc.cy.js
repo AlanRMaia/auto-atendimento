@@ -1,3 +1,4 @@
+/// <reference types="Cypress"/>
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
@@ -157,7 +158,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
       
     // ------ Abrir Atendimento de Renovação ------//
         it('Acessando a página e criando pedido', () => {
-        cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)         
+           cy.log(`Testes sendo executados no ambiente de ${Cypress.env('ENVIRONMENT')}`)         
             //Logar na página com o usuario       
             //Clicar na opção Regularização RNTRC no menu lateral
             cy.get(path.atendimentoPage.regularizacao, {timeout: 30000}).click({force: true});
@@ -176,8 +177,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
             cy.get(path.generic.idAtendimento, {timeout: 10000}).then((element)=> {          
               idPrePedido = element.text().substring(1);
               expect(element.text()).to.be.equal(`#${idPrePedido}`)
-            })
-          
+            })          
         });
           
            // ------ Criar operação Salvar transportador -----//
@@ -294,7 +294,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
             cy.wait('@gridoperacao')
-            cy.incluirGestor(gestor, transportador.sigla)
+            cy.incluirGestor(gestorIncluir, transportador.sigla)
             cy.notificacao(mensagem.DadosSalvoSucesso);
         });  
       
@@ -429,13 +429,15 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           cy.get(path.generic.title, {timeout: 10000})
           .contains('Escolha Ponto de Atendimento')
           
-          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click({force: true}).wait(5000)
+          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click()
+          .type(sindicato.sigla).wait(5000)
+          .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
+          .contains(sindicato.sigla, {timeout: 10000}).click()
+          
           cy.wait('@gridoperacao') 
           cy.wait('@listaSindicatos') 
-          cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).contains(sindicato.sigla, {timeout: 20000})
-          .click({force: true}).wait(1000)
-          .wait('@entidadePOST')         
-          .wait('@tabela')           
+          cy.wait('@entidadePOST')           
+          cy.wait('@tabela')           
           
           cy.get(path.generic.tabela, {timeout: 30000})
           .then((ele) => {
@@ -507,7 +509,9 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
               // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
       
               // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
+              cy.wait('@validarpedido')
               cy.wait('@finalizarpedido', {timeout: 120000})
+              cy.notificacao(mensagem.AtendimentofinalizadoSucesso)
   
           })     
       });

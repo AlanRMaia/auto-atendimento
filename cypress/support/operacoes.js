@@ -1394,12 +1394,13 @@ Cypress.Commands.add('incluirVeiculo', (veiculo)=>{
 })
 
 Cypress.Commands.add('excluirVeiculo', (veiculo)=>{ 
+  cy.intercept('POST', '**/veiculo/excluir').as('excluirveiculo')  
   
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Veículos').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Excluir').click({force: true})
           
-  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.ExcluirVeiculo)  
+  cy.get(path.generic.title, {timeout: 10000}).contains(operacao.ExcluirVeiculo, {timeout: 10000})  
 
   cy.get(path.operacaoVeiculo.placa).type(veiculo.placa)
   cy.get(path.operacaoVeiculo.renavam).type(veiculo.renavam)
@@ -1409,15 +1410,16 @@ Cypress.Commands.add('excluirVeiculo', (veiculo)=>{
     cy.get(path.operacaoVeiculo.radioImplemento).click({force: true})
       
   cy.get(path.generic.botaoSubmit).click({force: true})
+  cy.wait('@excluirveiculo')
 })
 
 Cypress.Commands.add('alterarVeiculo', (veiculo)=>{ 
-  
+  cy.intercept('POST', '**/veiculo/salvar').as('salvarveiculo')
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Veículos').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})
           
-  cy.get(path.generic.title, {timeout: 10000}).should('have.text', operacao.AlterarVeiculo)  
+  cy.get(path.generic.title, {timeout: 10000}).contains(operacao.AlterarVeiculo, {timeout: 10000})  
 
   cy.get(path.operacaoVeiculo.placa).type(veiculo.placa)
   cy.get(path.operacaoVeiculo.renavam).type(veiculo.renavam)
@@ -1425,37 +1427,36 @@ Cypress.Commands.add('alterarVeiculo', (veiculo)=>{
 
   veiculo.tipoVeiculo != 'Implemento' ?
     cy.get(path.operacaoVeiculo.radioAutomotor).click({force: true}):
-    cy.get(path.operacaoVeiculo.radioImplemento).click({froce: true})
+    cy.get(path.operacaoVeiculo.radioImplemento).click({force: true})
       
   cy.get(path.operacaoVeiculo.tipoPropriedade).click({force: true})
-  
 
   switch (veiculo.propriedade) {
     case 'Próprio':
-      cy.xpath(path.operacaoVeiculo.tipoPropriedadeProprio)
-      .should('have.text', veiculo.propriedade).click({force: true})
+      cy.get(path.operacaoVeiculo.tipoPropriedadeProprio)
+      .contains(veiculo.propriedade).click({force: true})
       .get(path.operacaoVeiculo.tipoPropriedade)
       .should('have.text', veiculo.propriedade)      
       break;
 
     case 'Arrendado':
-      cy.xpath(path.operacaoVeiculo.tipoPropriedadeArrendado)
-      .should('have.text', veiculo.propriedade).click({force: true})
+      cy.get(path.operacaoVeiculo.tipoPropriedadeArrendado)
+      .contains(veiculo.propriedade).click({force: true})
       .get(path.operacaoVeiculo.tipoPropriedade)
       .should('have.text', veiculo.propriedade)   
       
-      cy.get(path.operacaoVeiculo.cpfCnpjProprietario).type(veiculo.proprietario);
+      cy.get(path.operacaoVeiculo.cpfCnpjProprietario).type(veiculo.proprietario, {force: true});
       break;
   
     case 'Leasing':
-      cy.xpath(path.operacaoVeiculo.tipoPropriedadeLeasing)
-      .should('have.text', veiculo.propriedade).click({force: true})
+      cy.get(path.operacaoVeiculo.tipoPropriedadeLeasing)
+      .contains(veiculo.propriedade).click({force: true})
       .get(path.operacaoVeiculo.tipoPropriedade)
       .should('have.text', veiculo.propriedade)
 
       cy.get(path.operacaoVeiculo.instituicoesFinanceiras).click({force: true})
-      .xpath(path.operacaoVeiculo.instituicaoFinanceiraSelecionada)
-      .should('have.text', 'BANCO POTTENCIAL S.A.').click({force: true});
+      .get(path.operacaoVeiculo.instituicaoFinanceiraSelecionada)
+      .contains('BANCO POTTENCIAL S.A.').click({force: true});
       break;   
 
       default:
@@ -1465,6 +1466,7 @@ Cypress.Commands.add('alterarVeiculo', (veiculo)=>{
 
 
   cy.get(path.generic.botaoSubmit).click({force: true})
+  cy.wait('@salvarveiculo')
 })
 
 

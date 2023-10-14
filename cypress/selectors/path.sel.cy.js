@@ -163,6 +163,7 @@ module.exports = {
     operacaoTransportador: '[data-cy=btnTrpDoc]',
     operacaoDocumentos: '[data-cy=btnTrpDoc]',
     operacao: '[data-cy=btnOperacoes]',
+    operacaoVeiculoCard: '[data-cy=operacaoVeiculoCard]',
     abrirOperacao: '[data-cy=listIncluirAlterarExcluir]',
     anexarDocumentoVeiculo: '[data-cy=btnAnexarVeiculo]',
     gridOperacoes: '[data-cy=gridOperacoes]',

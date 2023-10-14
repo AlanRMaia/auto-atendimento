@@ -1,3 +1,4 @@
+/// <reference types="Cypress"/>
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../../../selectors/path.sel.cy';
@@ -348,9 +349,15 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           cy.get(path.generic.title, {timeout: 10000})
           .should('have.text', 'Selecione o Ponto de Atendimento').wait(2000)      
   
-          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().type(sindicato.sigla).wait(2000)
-          cy.get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000}).should('have.text', sindicato.sigla)
-          .click({force: true})       
+          cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).click()
+          .type(sindicato.sigla).wait(5000)
+          .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
+          .contains(sindicato.sigla, {timeout: 10000}).click()
+          
+          cy.wait('@gridoperacao') 
+          cy.wait('@listaSindicatos') 
+          cy.wait('@entidadePOST')           
+          cy.wait('@tabela')      
           
           cy.get(path.generic.tabela, {timeout: 30000})        
           .then((ele) => {

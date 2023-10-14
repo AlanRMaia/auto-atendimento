@@ -1,4 +1,4 @@
-
+/// <reference types="Cypress"/>
 import path from '../../../../selectors/path.sel.cy';
 import urls from '../../../../support/urls';
 

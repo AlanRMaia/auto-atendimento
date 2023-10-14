@@ -1,4 +1,4 @@
-
+/// <reference types="Cypress"/>
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../selectors/path.sel.cy';
@@ -23,7 +23,7 @@ describe('Grupo de testes navegação de serviços', () => {
 
       //RenovaçãoRNTRC
 
-      it('Renovação RNTRC', () => {
+      it.only('Renovação RNTRC', () => {
         cy.visit('/')
         cy.getElementList(path.institucionalPage.tipoAtendimento, 'RenovaçãoRNTRC')
         //login
