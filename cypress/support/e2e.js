@@ -18,6 +18,7 @@ import './commands'
 import './commandsSitcarga'
 import './operacoes'
 import 'cypress-map'
+import './api_commands'
 require('cypress-get-table')
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

@@ -1,8 +1,8 @@
 /// <reference types="Cypress"/>
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
-import path from '../../selectors/path.sel.cy';
-import mensagem from "../../support/mensagemAlertEnum";
+import path from '../../../selectors/path.sel.cy';
+import mensagem from "../../../support/mensagemAlertEnum";
 var fakerBr = require('faker-br');  
 
   const email = 'ana@rodocorso.com.br'

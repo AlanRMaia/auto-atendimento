@@ -1,7 +1,7 @@
 /// <reference types="Cypress"/>
-import path from '../../selectors/path.sel.cy';
-import mensagem from "../../support/mensagemAlertEnum";
-import urls from '../../support/urls';
+import path from '../../../selectors/path.sel.cy';
+import mensagem from "../../../support/mensagemAlertEnum";
+import urls from '../../../support/urls';
 
 const transportador = {
     cpfCnpj: "143.854.008-65",

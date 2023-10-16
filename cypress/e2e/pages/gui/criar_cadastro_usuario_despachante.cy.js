@@ -1,10 +1,10 @@
 /// <reference types="Cypress"/>
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
-import path from '../../selectors/path.sel.cy';
-import mensagem from "../../support/mensagemAlertEnum";
-import urls from '../../support/urls';
-import  conta  from "../../support/TipoContaEnum";
+import path from '../../../selectors/path.sel.cy';
+import mensagem from "../../../support/mensagemAlertEnum";
+import urls from '../../../support/urls';
+import  conta  from "../../../support/TipoContaEnum";
 var fakerBr = require('faker-br');
 
 let senha;

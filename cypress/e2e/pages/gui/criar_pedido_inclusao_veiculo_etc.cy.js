@@ -1,6 +1,6 @@
 /// <reference types="Cypress"/>
-import path from '../../selectors/path.sel.cy';
-import mensagem from "../../support/mensagemAlertEnum";
+import path from '../../../selectors/path.sel.cy';
+import mensagem from "../../../support/mensagemAlertEnum";
 var fakerBr = require('faker-br');
 
   let veiculo01;

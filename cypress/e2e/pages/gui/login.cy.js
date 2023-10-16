@@ -1,6 +1,6 @@
 /// <reference types="Cypress"/>
 
-const urls = require("../../support/urls");
+const urls = require("../../../support/urls");
 
 //import { fakerPT_BR as faker} from '@faker-js/faker';
 
