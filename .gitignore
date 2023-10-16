@@ -2,3 +2,7 @@
 */screenshots
 node_modules/
 cypress.env.json
+cypress/fixtures/intercept/gerarResponsePrePedido.json
+cypress/fixtures/intercept/gerarResponseAcessarPrePedido.json
+cypress/fixtures/intercept/gerarDadosOperacaoTransportador.json
+cypress/fixtures/intercept/gerarDadosResponseOperacaoTransportadorPrePedido.json

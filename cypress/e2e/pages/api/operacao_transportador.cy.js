@@ -1,10 +1,9 @@
-import { faker } from "@faker-js/faker";
+/// <reference types="Cypress"/>
+import { faker } from '@faker-js/faker'
 //import { fakerBR } from 'fakerbr';
 import path from "../../../selectors/path.sel.cy";
 import mensagem from "../../../support/mensagemAlertEnum";
 var fakerBr = require("faker-br");
-
-let idPrePedido = "1000000";
 
 const transportador = {
   cpfCnpj: "143.854.008-65",
@@ -29,8 +28,24 @@ const teste = {
 };
 
 describe("Incluir uma operação de transportador em um pedido", () => {
+  const transportador = require("../../../fixtures/data/transportador/tac_ativo/14385400865");
+  let idPrePedido = faker.number.int({min:10000, max: 20000});
+  const prePedido = {
+    id: `${idPrePedido}`,
+    tipo: "ALT", //ALT
+    tipoDescricao: "Alteração de dados", //tipo de pedido 'Cadastro, Alteração de dados ...'
+    codSituacao: "CAD", //CAD
+    situacao: "EM CADASTRAMENTO", //EM CADASTRAMENTO
+    usuarioNivelAbertura: 249809,
+    motivoRejeicao: "",
+  };
+
   beforeEach(() => {
-    cy.reload();
+    cy.gerarDadosResponsePrePedido(prePedido, transportador);
+    cy.gerarDadosResponseAcessarPrePedido(prePedido, transportador);
+    cy.gerarDadosResponseOperacaoTransportadorPrePedido(prePedido, transportador);
+    cy.gerarDadosOperacaoTransportador(prePedido, transportador);
+
     cy.viewport(1920, 1080);
     cy.login();
   });
@@ -38,33 +53,13 @@ describe("Incluir uma operação de transportador em um pedido", () => {
   it("Criando pedido e incluir uma operação de Transportadr TAC", () => {
     describe("Criando pedido", () => {
       cy.intercept("POST", "https://sitcargaapitest/rntrc/PrePedido", {
-        id: idPrePedido,
-        tipo: "ALT",
-        tipoDescricao: "Alteração de Dados",
-        codSituacao: "CAD",
-        situacao: "EM CADASTRAMENTO",
-        cpfCnpjTransportador: "14385400865",
-        transportador: "NAILTON NIVALDO SOARES",
-        tipoTransportador: "TAC",
-        tipoTransportadorDescricao: "Autônomo",
-        usuarioNivelAbertura: 249809,
-        motivoRejeicao: "string",
+        fixture: "/intercept/gerarResponsePrePedido.json",
       }).as("postprepedido");
-
       cy.intercept(
         "GET",
         `https://sitcargaapitest/rntrc/PrePedido/${idPrePedido}`,
         {
-          id: idPrePedido,
-          ...teste,
-
-          situacao: "EM CADASTRAMENTO",
-          cpfCnpjTransportador: "14385400865",
-          transportador: "NAILTON NIVALDO SOARES",
-          tipoTransportador: "TAC",
-          tipoTransportadorDescricao: "Autônomo",
-          usuarioNivelAbertura: 249809,
-          motivoRejeicao: "string",
+          fixture: "/intercept/gerarResponseAcessarPrePedido",
         }
       ).as("getacessoprepedido");
       cy.log(
@@ -81,9 +76,9 @@ describe("Incluir uma operação de transportador em um pedido", () => {
       cy.get(path.criarPedidoPage.inputTipoTransportador)
         .click({ force: true })
         .get(path.criarPedidoPage.tipoTransportador)
-        .contains(transportador.tipo, { timeout: 200 })
+        .contains(transportador.dadosTransportador.tipo, { timeout: 2000 })
         .click({ force: true });
-      cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.cpfCnpj);
+      cy.get(path.criarPedidoPage.cpfCnpj).type(transportador.dadosTransportador.cpfCnpj);
       cy.get(path.generic.botaoSubmit).click({ force: true });
 
       cy.notificacao(mensagem.AtendimentoCriadoSucesso);
@@ -104,122 +99,33 @@ describe("Incluir uma operação de transportador em um pedido", () => {
         "PUT",
         `https://sitcargaapitest/rntrc/prepedido/${idPrePedido}/transportador`,
         {
-          nome: "Alan Maia",
-          declaracaoCapacidadeFinanceira: true,
-          numeroIdentidade: "234667855",
-          nomeFantasia: "string",
-          inscricaoEstadual: "string",
-          avisoEmailMovimentacaoFrota: true,
-          registroJunta: "string",
-          inscricaoOCB: "string",
-          transporteInternacional: true,
-          adimplenteAssociacao: true,
-          possuiAnexo: true,
+          fixture: '/intercept/gerarDadosOperacaoTransportador'
         }
       ).as("posttransportador");
       cy.intercept(
         "GET",
         `https://sitcargaapitest/rntrc/PrePedido/${idPrePedido}/transportador`,
         {
-          nome: "Alan Maia",
-          declaracaoCapacidadeFinanceira: true,
-          numeroIdentidade: "234667855",
-          nomeFantasia: "string",
-          inscricaoEstadual: "string",
-          avisoEmailMovimentacaoFrota: true,
-          registroJunta: "string",
-          inscricaoOCB: "string",
-          transporteInternacional: true,
-          adimplenteAssociacao: true,
-          possuiAnexo: true,
+          fixture: '/intercept/gerarDadosOperacaoTransportador'
         }
       ).as("detalhartransportador");
       cy.intercept(
         "GET",
         `https://sitcargaapitest/rntrc/PrePedido/${idPrePedido}`,
         {
-          id: idPrePedido,
-          tipo: "ALT",
-          tipoDescricao: "Alteração de Dados",
-          codSituacao: "CAD",
-          situacao: "EM CADASTRAMENTO",
-          cpfCnpjTransportador: "14385400865",
-          transportador: "NAILTON NIVALDO SOARES",
-          tipoTransportador: "TAC",
-          tipoTransportadorDescricao: "Autônomo",
-          usuarioNivelAbertura: 249809,
-          motivoRejeicao: "string",
-          transportadorPedido: {
-            nome: "Alan Maia",
-            declaracaoCapacidadeFinanceira: true,
-            numeroIdentidade: "234667855",
-            nomeFantasia: "string",
-            inscricaoEstadual: "string",
-            avisoEmailMovimentacaoFrota: true,
-            registroJunta: "string",
-            inscricaoOCB: "string",
-            transporteInternacional: true,
-            adimplenteAssociacao: true,
-            possuiAnexo: true,
-          },
+          fixture: '/intercept/gerarDadosResponseOperacaoTransportadorPrePedido'
         }
       ).as("gettransportador");
 
       cy.url().should("include", `detalhe`);
 
       cy.wait("@getacessoprepedido");
-      cy.operacaoTransportador(fakerBr, transportador.sigla);
-      cy.wait("@posttransportador").then((response) => {
-        const {
-          id,
-          codSituacao,
-          cpfCnpjTransportador,
-          entidadePedido,
-          situacao,
-          tipo,
-          tipoDescricao,
-          tipoTransportador,
-          tipoTransportadorDescricao,
-          transportador,
-          transportadorPedido,
-          usuarioNivelAbertura,
-        } = response.response.body;
-      });
+      cy.operacaoTransportador(fakerBr, transportador.dadosTransportador.sigla);
+      cy.wait("@posttransportador")
 
-      cy.wait("@gettransportador").then((response) => {
-        const {
-          id,
-          codSituacao,
-          cpfCnpjTransportador,
-          entidadePedido,
-          situacao,
-          tipo,
-          tipoDescricao,
-          tipoTransportador,
-          tipoTransportadorDescricao,
-          transportador,
-          transportadorPedido,
-          usuarioNivelAbertura,
-        } = response.response.body;
+      cy.wait("@gettransportador")
 
-        cy.log("Resposta ID:", id);
-        cy.log("Resposta codSituacao: ", codSituacao);
-        cy.log("Resposta cpfCnpjTransportador:", cpfCnpjTransportador);
-        cy.log("Resposta entidadePedido:", entidadePedido);
-        cy.log("Resposta situacao:", situacao);
-        cy.log("Resposta tipo:", tipo);
-        cy.log("Resposta tipoDescricao:", tipoDescricao);
-        cy.log("Resposta tipoTransportador:", tipoTransportador);
-        cy.log(
-          "Resposta tipoTransportadorDescricao:",
-          tipoTransportadorDescricao
-        );
-        cy.log("Resposta transportador:", transportador);
-        cy.log("Resposta transportadorPedido:", transportadorPedido);
-        cy.log("Resposta usuarioNivelAbertura:", usuarioNivelAbertura);
-      });
-
-      cy.notificacao(mensagem.TransportadorSucesso);
+      cy.notificacao(mensagem.EdicaoTransportador);
 
       cy.wait("@detalhartransportador");
     });

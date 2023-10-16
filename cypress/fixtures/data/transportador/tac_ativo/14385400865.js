@@ -1,12 +1,17 @@
 module.exports = {
   dadosTransportador: {
-    cpfCnpj: "143.854.008-65",
-    nome: "TAC - NAILTON NIVALDO SOARES",
+    cpfCnpj: "14385400865",
+    nome: "NAILTON NIVALDO SOARES",
     rntrc: "000010100",
     situacao: "ATIVO",
     saldo: "R$ 0,00",
     sigla: "TAC",
     tipo: "Autônomo",
+    rg: '243156868',
+    inscricaoEstadual: "",
+    registroJunta: "",
+    inscricaoOCB: "",
+    nomeFantasia: ""
   },
   contatos: {
     celular: "(21) 99999-9998",
@@ -22,7 +27,7 @@ module.exports = {
     categoria: "C",
   },
   veiculos: [
-    veiculo01 = {
+     {
       placa: "CTH1380",
       renavam: "00413723160",
       tipo: "Autômotor",

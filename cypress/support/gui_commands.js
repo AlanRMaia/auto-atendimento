@@ -199,3 +199,88 @@ Cypress.Commands.add('atendimentosRegularizacao', (atendimento) =>{
         })  
       
     })
+
+    Cypress.Commands.add('gerarDadosResponsePrePedido', (prePedido, transportador) => {
+    
+      cy.writeFile('cypress/fixtures/intercept/gerarResponsePrePedido.json', {
+        id: `${prePedido.id}`,
+        tipo: prePedido.tipo, //ALT 
+        tipoDescricao: prePedido.tipoDescricao , //tipo de pedido 'Cadastro, Alteração de dados ...'
+        codSituacao: prePedido.codSituacao, //CAD
+        situacao: prePedido.situacao, //EM CADASTRAMENTO
+        cpfCnpjTransportador: transportador.dadosTransportador.cpfCnpj,
+        transportador: transportador.dadosTransportador.nome,
+        tipoTransportador: transportador.dadosTransportador.sigla, //TAC ETC CTC
+        tipoTransportadorDescricao: transportador.dadosTransportador.tipo, //Autônomo Empresa Cooperativa
+        usuarioNivelAbertura: 249809,
+        motivoRejeicao: prePedido.motivoRejeicao,
+        
+      })
+    })
+
+    Cypress.Commands.add('gerarDadosResponseAcessarPrePedido', (prePedido, transportador) => {
+    
+      cy.writeFile('cypress/fixtures/intercept/gerarResponseAcessarPrePedido.json', {
+        id: `${prePedido.id}`,
+        tipo: prePedido.tipo, //ALT 
+        tipoDescricao: prePedido.tipoDescricao , //tipo de pedido 'Cadastro, Alteração de dados ...'
+        codSituacao: prePedido.codSituacao, //CAD
+        situacao: prePedido.situacao, //EM CADASTRAMENTO
+        cpfCnpjTransportador: transportador.dadosTransportador.cpfCnpj,
+        transportador: transportador.dadosTransportador.nome,
+        tipoTransportador: transportador.dadosTransportador.sigla, //TAC ETC CTC
+        tipoTransportadorDescricao: transportador.dadosTransportador.tipo, //Autônomo Empresa Cooperativa
+        usuarioNivelAbertura: 249809,
+        motivoRejeicao: prePedido.motivoRejeicao,
+        
+      })
+    })
+
+    Cypress.Commands.add('gerarDadosOperacaoTransportador', (prePedido, transportador) => {
+    
+      cy.writeFile('cypress/fixtures/intercept/gerarDadosOperacaoTransportador.json', {
+        nome: transportador.dadosTransportador.nome,
+          declaracaoCapacidadeFinanceira: true,
+          numeroIdentidade: transportador.dadosTransportador.rg,
+          nomeFantasia: transportador.dadosTransportador.nomeFantasia,
+          inscricaoEstadual: transportador.dadosTransportador.inscricaoEstadual,
+          avisoEmailMovimentacaoFrota: true,
+          registroJunta: transportador.dadosTransportador.registroJunta,
+          inscricaoOCB: transportador.dadosTransportador.inscricaoOCB,
+          transporteInternacional: true,
+          adimplenteAssociacao: true,
+          possuiAnexo: true,        
+      })
+    })
+    
+    Cypress.Commands.add('gerarDadosResponseOperacaoTransportadorPrePedido', (prePedido, transportador) => {
+    
+      cy.writeFile('cypress/fixtures/intercept/gerarDadosResponseOperacaoTransportadorPrePedido.json', {
+        id: prePedido.id,
+        tipo: prePedido.tipo, //ALT
+        tipoDescricao: prePedido.tipoDescricao , //tipo de pedido 'Cadastro, Alteração de dados ...'
+        codSituacao: prePedido.codSituacao, //CAD
+        situacao: prePedido.situacao, //EM CADASTRAMENTO
+        cpfCnpjTransportador: transportador.dadosTransportador.cpfCnpj,
+        transportador: transportador.dadosTransportador.nome,
+        tipoTransportador: transportador.dadosTransportador.sigla, //TAC ETC CTC
+        tipoTransportadorDescricao: transportador.dadosTransportador.tipo, //Autônomo Empresa Cooperativa
+        usuarioNivelAbertura: 249809,
+        motivoRejeicao: prePedido.motivoRejeicao,
+        transportadorPedido: {
+          nome: transportador.dadosTransportador.nome,
+          declaracaoCapacidadeFinanceira: true,
+          numeroIdentidade: transportador.dadosTransportador.rg,
+          nomeFantasia: transportador.dadosTransportador.nomeFantasia,
+          inscricaoEstadual: transportador.dadosTransportador.inscricaoEstadual,
+          avisoEmailMovimentacaoFrota: true,
+          registroJunta: transportador.dadosTransportador.registroJunta,
+          inscricaoOCB: transportador.dadosTransportador.inscricaoOCB,
+          transporteInternacional: true,
+          adimplenteAssociacao: true,
+          possuiAnexo: true,
+        },        
+      })
+    })        
+
+    

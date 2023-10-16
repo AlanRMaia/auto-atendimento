@@ -1,18 +1,30 @@
 
-const accessToken = `Bearer ${Cypress.env('acess_token').token}`;
-
-Cypress.Commands.add("criarPedidoAPI", (transportador, codigoTipo) => {
+Cypress.Commands.add("loginAPI", () => {
   cy.api({
     method: "POST",
-    url: "https://sitcargaapitest/rntrc/PrePedido",
-
+    url: "https://sitcargaapitest/acesso/Identity/login",
     body: {
-      codigoTipo: codigoTipo,
-      codigoTipoTransportador: transportador.sigla,
-      cpfCnpj: transportador.cpfCnpj,
-      transportador: transportador.nome,
-      ipOrigem: ipOrigem,
+      cpf: Cypress.env('usuario').cpf,
+      senha: Cypress.env('usuario').senha,
     },
-    headers: { Authorization: accessToken },
   });
 });
+
+Cypress.Commands.add("criarPedidoAPI", (transportador, codigoTipo) => {
+  cy.loginAPI().then(response => {
+    cy.api({
+      method: "POST",
+      url: "https://sitcargaapitest/rntrc/PrePedido",
+  
+      body: {
+        codigoTipo: codigoTipo,
+        codigoTipoTransportador: transportador.sigla,
+        cpfCnpj: transportador.cpfCnpj,
+        transportador: transportador.nome,
+        ipOrigem: "01",
+      },
+      headers: { Authorization: `Bearer ${response.body.access_token}` },
+    });
+  })
+});
+

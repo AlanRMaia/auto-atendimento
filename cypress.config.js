@@ -16,7 +16,14 @@ module.exports = defineConfig({
       experimentalModifyObstructiveThirdPartyCode: true,
       idPrePedido: {
         id: ''
-      }
+      },
+      hideCredentials: true,
+      hideCredentialsOptions: {
+        headers: ['Authorization'],
+        body: ['cpf', 'senha', "access_token"],        
+      },
+      requestMode: true,
+      snapshotOnly : true 
     },
     video: true
   },
