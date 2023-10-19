@@ -2,7 +2,7 @@
 Cypress.Commands.add("loginAPI", () => {
   cy.api({
     method: "POST",
-    url: "https://sitcargaapitest/acesso/Identity/login",
+    url: "**/acesso/Identity/login",
     body: {
       cpf: Cypress.env('usuario').cpf,
       senha: Cypress.env('usuario').senha,
@@ -14,7 +14,7 @@ Cypress.Commands.add("criarPedidoAPI", (transportador, codigoTipo) => {
   cy.loginAPI().then(response => {
     cy.api({
       method: "POST",
-      url: "https://sitcargaapitest/rntrc/PrePedido",
+      url: "**/rntrc/PrePedido",
   
       body: {
         codigoTipo: codigoTipo,

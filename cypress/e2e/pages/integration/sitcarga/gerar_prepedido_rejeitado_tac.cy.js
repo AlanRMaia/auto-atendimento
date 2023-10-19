@@ -194,7 +194,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
               
             // ------- Selecionar o sindicato responsável -------//        
             describe('Selecionar o sindicato responsável', () => {
-              cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+              cy.intercept('GET', `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
               cy.intercept('PUT', '**/entidade').as('entidadePUT')
               cy.intercept('POST', '**/entidade').as('entidadePOST')
               cy.intercept('GET', '**/valor**').as('tabela')   
@@ -277,7 +277,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
               cy.intercept('POST', '/autoatendimento/prepedido/gerarpedido/').as('gerarpedido')
               cy.intercept('POST', 'https://sac-evoservicosfinanceiros.ascbrazil.com.br/site-visitantes/monitor-visitante').as('visitante')
               cy.intercept('POST', 'https://wwwsitcargateste/institucional/authsca').as('autenticacao')
-              cy.intercept('POST', '/rntrc/veiculopedido/listarservicos').as('listaServicos')
+              cy.intercept('POST', '**/rntrc/veiculopedido/listarservicos').as('listaServicos')
               cy.visit(urls.sitcargaInitial);
               cy.get('.cookie-message > :nth-child(1) > p', {timeout: 10000})
                 .should('be.visible')

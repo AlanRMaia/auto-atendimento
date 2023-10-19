@@ -29,7 +29,7 @@ const teste = {
 
 describe("Incluir uma operação de transportador em um pedido", () => {
   const transportador = require("../../../fixtures/data/transportador/tac_ativo/14385400865");
-  let idPrePedido = faker.number.int({min:10000, max: 20000});
+  let idPrePedido = faker.number.int({min:200000, max: 300000});
   const prePedido = {
     id: `${idPrePedido}`,
     tipo: "ALT", //ALT
@@ -52,12 +52,12 @@ describe("Incluir uma operação de transportador em um pedido", () => {
 
   it("Criando pedido e incluir uma operação de Transportadr TAC", () => {
     describe("Criando pedido", () => {
-      cy.intercept("POST", "https://sitcargaapitest/rntrc/PrePedido", {
+      cy.intercept("POST", "**/rntrc/PrePedido", {
         fixture: "/intercept/gerarResponsePrePedido.json",
       }).as("postprepedido");
       cy.intercept(
         "GET",
-        `https://sitcargaapitest/rntrc/PrePedido/${idPrePedido}`,
+        `**/rntrc/PrePedido/${idPrePedido}`,
         {
           fixture: "/intercept/gerarResponseAcessarPrePedido",
         }
@@ -92,26 +92,26 @@ describe("Incluir uma operação de transportador em um pedido", () => {
     describe("Incluindo operação Transportador", () => {
       cy.intercept(
         "POST",
-        `https://sitcargaapitest/rntrc/prepedido/${idPrePedido}/transportador`,
+        `**/rntrc/prepedido/${idPrePedido}/transportador`,
         []
       ).as("posttransportador");
       cy.intercept(
         "PUT",
-        `https://sitcargaapitest/rntrc/prepedido/${idPrePedido}/transportador`,
+        `**/rntrc/prepedido/${idPrePedido}/transportador`,
         {
           fixture: '/intercept/gerarDadosOperacaoTransportador'
         }
       ).as("posttransportador");
       cy.intercept(
         "GET",
-        `https://sitcargaapitest/rntrc/PrePedido/${idPrePedido}/transportador`,
+        `**/rntrc/PrePedido/${idPrePedido}/transportador`,
         {
           fixture: '/intercept/gerarDadosOperacaoTransportador'
         }
       ).as("detalhartransportador");
       cy.intercept(
         "GET",
-        `https://sitcargaapitest/rntrc/PrePedido/${idPrePedido}`,
+        `**/rntrc/PrePedido/${idPrePedido}`,
         {
           fixture: '/intercept/gerarDadosResponseOperacaoTransportadorPrePedido'
         }

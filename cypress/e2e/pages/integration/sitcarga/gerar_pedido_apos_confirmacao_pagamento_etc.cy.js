@@ -237,7 +237,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 
     //             cy.get(path.generic.title, {timeout: 10000})
     //             .contains('Selecione o Ponto de Atendimento', {timeout: 10000})
-    //             cy.intercept('GET', 'https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis**').as('listaSindicatos')
+    //             cy.intercept('GET', '**/rntrc/PrePedido/listarentidadesdisponiveis**').as('listaSindicatos')
     //             cy.intercept('GET', '**/valor**').as('tabela')
                 
     //             cy.get(path.checkoutAtendimentoPage.pontosAtendimento, {timeout: 10000}).clear().click({force: true})

@@ -205,7 +205,7 @@ it('Iniciando so testes no autoatendimento', () => {
               
             // ------- Selecionar o sindicato responsável -------//        
             describe('Selecionar o sindicato responsável', () => {
-              cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+              cy.intercept('GET', `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
               cy.intercept('PUT', '**/entidade').as('entidadePUT')
               cy.intercept('POST', '**/entidade').as('entidadePOST')
               cy.intercept('GET', '**/valor**').as('tabela')   
@@ -287,8 +287,8 @@ it('Iniciando so testes no autoatendimento', () => {
               cy.intercept('POST', '/autoatendimento/prepedido/consultar?gridName=grid').as('listaPrepedido')
               cy.intercept('POST', '/autoatendimento/prepedido/gerarpedido/').as('gerarpedido')
               cy.intercept('POST', 'https://sac-evoservicosfinanceiros.ascbrazil.com.br/site-visitantes/monitor-visitante').as('visitante')
-              cy.intercept('POST', 'https://wwwsitcargateste/institucional/authsca').as('autenticacao')
-              cy.intercept('POST', '/rntrc/veiculopedido/listarservicos').as('listaServicos')
+              cy.intercept('POST', '/institucional/authsca').as('autenticacao')
+              cy.intercept('POST', '**/rntrc/veiculopedido/listarservicos').as('listaServicos')
               cy.visit(urls.sitcargaInitial);
               cy.get('.cookie-message > :nth-child(1) > p', {timeout: 10000})
                 .should('be.visible')
@@ -330,7 +330,7 @@ it('Iniciando so testes no autoatendimento', () => {
                 cy.wait('@visitante')
                 cy.get('#side-menu > li > a > span').contains('RNTRC', {timeout: 10000}).click({force: true}).click({force: true})
                 .get('a[href="/rntrc/pedido"]', {timeout: 10000}).contains('Acompanhamento', {timeout: 10000}).click({force: true})
-                cy.intercept('POST', 'https://wwwsitcargateste/rntrc/pedido/consultar?gridName=grid').as('listaPedidos')
+                cy.intercept('POST', '**/rntrc/pedido/consultar?gridName=grid').as('listaPedidos')
                 //cy.get('.alert')
                 cy.get('#IdPedido').type(idPedido, {force: true})
                 cy.get('#btn-consultar').click({force: true})

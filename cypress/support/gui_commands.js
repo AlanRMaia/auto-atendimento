@@ -62,7 +62,7 @@ Cypress.Commands.add('getByData', (selector) => {
 
 Cypress.Commands.add('login', (usuario = Cypress.env('usuario')) => {
   // cy.session(usuario, () => {
-    cy.intercept('POST', 'https://sitcargaapitest/acesso/identity/login').as('loginacesso')
+    cy.intercept('POST', '/acesso/identity/login').as('loginacesso')
     cy.visit(urls.login, {timeout: 20000});
   
     cy.get(path.loginPage.cpf, {timeout:20000}).type(usuario.cpf);
@@ -110,9 +110,11 @@ Cypress.Commands.add('getElementList', (selector, element) => {
   });
 });
 
-Cypress.Commands.add('acessarPedido', (idPedido) => { 
-  cy.get(path.atendimentoPage.numeroAtendimento).type(idPedido).get(path.generic.botaoSubmit).click({force: true})
-  .get(path.generic.idAtendimento, {timeout: 20000}).should('have.text', `#${idPedido}`);
+Cypress.Commands.add('acessarPedido', (idPrePedido) => { 
+  cy.intercept('GET', `/rntrc/PrePedido/${idPrePedido}`).as('acessarPrePedido')
+  cy.get(path.atendimentoPage.numeroAtendimento).type(idPrePedido).get(path.generic.botaoSubmit).click({force: true})
+  cy.wait('@acessarPrePedido')
+  cy.get(path.generic.idAtendimento, {timeout: 20000}).should('have.text', `#${idPrePedido}`);
 });
 
 

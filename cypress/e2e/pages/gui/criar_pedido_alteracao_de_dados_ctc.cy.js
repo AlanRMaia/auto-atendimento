@@ -78,7 +78,7 @@ describe("Grupo de teste Atendimento Alteração de dados CTC", () => {
 
     cy.intercept("GET", "**/validarpedido").as("validarpedido");
     cy.intercept("PUT", "**/finalizar").as("finalizarpedido");
-    cy.intercept("GET", `https://sitcargaapitest/rntrc/PrePedido/**`).as(
+    cy.intercept("GET", `**/rntrc/PrePedido/**`).as(
       "gridoperacao"
     );
 
@@ -278,7 +278,7 @@ describe("Grupo de teste Atendimento Alteração de dados CTC", () => {
     it("Selecionar o sindicato e gerar valor", () => {
       cy.intercept(
         "GET",
-        `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`
+        `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`
       ).as("listaSindicatos");
       cy.intercept("PUT", "**/entidade").as("entidadePUT");
       cy.intercept("POST", "**/entidade").as("entidadePOST");

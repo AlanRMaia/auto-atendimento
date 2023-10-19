@@ -15,10 +15,10 @@ let tipoConta;
 describe('Iniciando so testes de criação de login e acessar a página', () => {
     beforeEach(() => {
         cy.viewport(1920, 1080)        
-        cy.intercept('POST', 'https://sitcargaapitest/acesso/identity/registrarusuario').as('registrarusuario')
-        cy.intercept('POST', 'https://sitcargaapitest/acesso/identity/login').as('login')
-        cy.intercept('POST', 'https://sitcargaapitest/acesso/identity/claims').as('claims')
-        cy.intercept('GET', 'https://sitcargaapitest/gestao/usuario').as('usuario')
+        cy.intercept('POST', '**/acesso/identity/registrarusuario').as('registrarusuario')
+        cy.intercept('POST', '**/acesso/identity/login').as('login')
+        cy.intercept('POST', '**/acesso/identity/claims').as('claims')
+        cy.intercept('GET', '**/gestao/usuario').as('usuario')
 
         senha = faker.internet.password()      
         cpf = fakerBr.br.cpf()

@@ -199,7 +199,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
               
             // ------- Selecionar o sindicato responsável -------//        
             describe('Selecionar o sindicato responsável', () => {
-              cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+              cy.intercept('GET', `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
               cy.intercept('PUT', '**/entidade').as('entidadePUT')
               cy.intercept('POST', '**/entidade').as('entidadePOST')
               cy.intercept('GET', '**/valor**').as('tabela')   

@@ -25,12 +25,12 @@ describe("Grupo de teste Atendimento Renovação TAC", () => {
   beforeEach(() => {
     cy.intercept("GET", "**/validarpedido").as("validarpedido");
     cy.intercept("PUT", "**/finalizar").as("finalizarpedido");
-    cy.intercept("GET", `https://sitcargaapitest/rntrc/PrePedido/**`).as(
+    cy.intercept("GET", `**/rntrc/PrePedido/**`).as(
       "gridoperacao"
     );
     cy.intercept(
       "GET",
-      `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis**`
+      `**/rntrc/PrePedido/listarentidadesdisponiveis**`
     ).as("listaSindicatos");
 
     cy.viewport(1920, 1080);

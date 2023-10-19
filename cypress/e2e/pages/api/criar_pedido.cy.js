@@ -10,12 +10,12 @@ describe("Criação de pedido via API", () => {
   beforeEach(() => {
     cy.intercept("GET", "**/validarpedido").as("validarpedido");
     cy.intercept("PUT", "**/finalizar").as("finalizarpedido");
-    cy.intercept("GET", `https://sitcargaapitest/rntrc/PrePedido/**`).as(
+    cy.intercept("GET", `**/rntrc/PrePedido/**`).as(
       "gridoperacao"
     );
     cy.intercept(
       "GET",
-      "https://sitcargaapitest/rntrc/PrePedido/listarpedidos**"
+      "**/rntrc/PrePedido/listarpedidos**"
     ).as("listapedidos");
 
     cy.intercept("PUT", "**/cancelar").as("cancelar");

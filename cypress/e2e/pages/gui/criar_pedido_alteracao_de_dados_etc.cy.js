@@ -79,7 +79,7 @@ describe('Grupo de teste Atendimento Alteração de dados ETC', () => {
         
         cy.intercept('GET', '**/validarpedido').as('validarpedido')
         cy.intercept('PUT', '**/finalizar').as('finalizarpedido')        
-        cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao') 
+        cy.intercept('GET', `**/rntrc/PrePedido/**`).as('gridoperacao') 
 
         cy.viewport(1920, 1080);
         cy.login() 
@@ -267,7 +267,7 @@ describe('Iniciando testes Autoatendimento', () => {
       describe('Selecionar o sindicato, gerar valor e validar o pedido', () => {
         // ------- Selecionar o sindicato responsável -------//        
         it('Selecionar o sindicato e gerar valor', () => {
-          cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+          cy.intercept('GET', `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
           cy.intercept('PUT', '**/entidade').as('entidadePUT')
           cy.intercept('POST', '**/entidade').as('entidadePOST')
           cy.intercept('GET', '**/valor**').as('tabela')   

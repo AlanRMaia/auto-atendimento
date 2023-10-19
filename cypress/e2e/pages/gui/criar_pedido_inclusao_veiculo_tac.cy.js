@@ -87,7 +87,7 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
     
     cy.intercept('GET', '**/validarpedido').as('validarpedido')
     cy.intercept('POST', '**/gerarpagamentopedido').as('finalizarpedido')
-    cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao') 
+    cy.intercept('GET', `**/rntrc/PrePedido/**`).as('gridoperacao') 
 
     cy.viewport(1920, 1080);
     cy.login()    
@@ -305,7 +305,7 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
   describe('Validação do pedido e inclusão do sindicato', () => {
       
       it('Validação de do Pedido', () => {
-        cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+        cy.intercept('GET', `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
         cy.intercept('PUT', '**/entidade').as('entidadePUT')
         cy.intercept('POST', '**/entidade').as('entidadePOST')
         cy.intercept('GET', '**/valor**').as('tabela')   

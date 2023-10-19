@@ -100,7 +100,7 @@ describe("Grupo de teste Atendimento Renovação TAC", () => {
 
     cy.intercept("GET", "**/validarpedido").as("validarpedido");
     cy.intercept("POST", "**/gerarpagamentopedido").as("finalizarpedido");
-    cy.intercept("GET", `https://sitcargaapitest/rntrc/PrePedido/**`).as(
+    cy.intercept("GET", `**/rntrc/PrePedido/**`).as(
       "gridoperacao"
     );
 
@@ -319,7 +319,7 @@ describe("Grupo de teste Atendimento Renovação TAC", () => {
     it("Selecionar o sindicato e gerar valor", () => {
       cy.intercept(
         "GET",
-        `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`
+        `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`
       ).as("listaSindicatos");
       cy.intercept("PUT", "**/entidade").as("entidadePUT");
       cy.intercept("POST", "**/entidade").as("entidadePOST");

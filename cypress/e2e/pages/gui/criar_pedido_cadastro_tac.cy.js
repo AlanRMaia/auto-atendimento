@@ -103,7 +103,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
 
       cy.intercept('GET', '**/validarpedido').as('validarpedido')
       cy.intercept('POST', '**/gerarpagamentopedido').as('finalizarpedido')
-      cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao') 
+      cy.intercept('GET', `**/rntrc/PrePedido/**`).as('gridoperacao') 
 
       cy.viewport(1920, 1080);
       cy.login()  
@@ -273,7 +273,7 @@ describe('Grupo de teste Atendimento Cadastro TAC', () => {
   describe('Selecionar o sindicato, gerar serviço e validar o pedido', () => {      
       // ------- Selecionar o sindicato e gerar valor -------//        
     it('Selecionar o sindicato e gerar valor', () => {
-      cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+      cy.intercept('GET', `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
       cy.intercept('PUT', '**/entidade').as('entidadePUT')
       cy.intercept('POST', '**/entidade').as('entidadePOST')
       cy.intercept('GET', '**/valor**').as('tabela')   

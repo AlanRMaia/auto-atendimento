@@ -18,10 +18,10 @@ describe('', () => {
     beforeEach(() => {
 
         cy.reload()     
-         cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao')
-         cy.intercept('GET', 'https://sitcargaapitest/rntrc/cidade/listarCidades**').as('cidade') 
-         cy.intercept('GET', 'https://sitcargaapitest/rntrc/Transportador/Consultar/porlocalidade?**').as('lista')  
-         cy.intercept('GET', 'https://sitcargaapitest/rntrc/Transportador/Consultar?cpfCnpj=**').as('consultarTRP')
+         cy.intercept('GET', `**/rntrc/PrePedido/**`).as('gridoperacao')
+         cy.intercept('GET', '**/rntrc/cidade/listarCidades**').as('cidade') 
+         cy.intercept('GET', '**/rntrc/Transportador/Consultar/porlocalidade?**').as('lista')  
+         cy.intercept('GET', '**/rntrc/Transportador/Consultar?cpfCnpj=**').as('consultarTRP')
          cy.viewport(1920, 1080);
          cy.login()    
          

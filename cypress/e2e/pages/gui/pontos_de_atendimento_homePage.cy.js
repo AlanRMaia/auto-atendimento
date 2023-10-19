@@ -10,7 +10,7 @@ describe('Grupo de testes navegação de serviços', () => {
     beforeEach(() => {
       cy.reload();  
       cy.viewport(1920, 1080);      
-      cy.intercept('GET', 'https://sitcargaapitest/rntrc/entidade/pontosatendimento?tipoTransportador**').as('ponstosatendimento')
+      cy.intercept('GET', '**/rntrc/entidade/pontosatendimento?tipoTransportador**').as('ponstosatendimento')
       cy.intercept('GET', 'https://maps.googleapis.com/maps/api/mapsjs/**').as('mpsjs')
       cy.intercept('POST', 'https://maps.googleapis.com/$rpc/google.internal.maps.mapsjs.v1.MapsJsInternalService/GetViewportInfo').as('getViewportInfo')
       });

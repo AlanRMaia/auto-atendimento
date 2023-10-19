@@ -48,9 +48,9 @@ describe("", () => {
     cy.viewport(1920, 1080);
     cy.intercept(
       "GET",
-      "https://sitcargaapitest/rntrc/PrePedido/listarpedidos**"
+      "**/rntrc/PrePedido/listarpedidos**"
     ).as("listapedidos");
-    cy.intercept("GET", `https://sitcargaapitest/rntrc/PrePedido/**`).as(
+    cy.intercept("GET", `**/rntrc/PrePedido/**`).as(
       "gridoperacao"
     );
     cy.login();
@@ -173,7 +173,7 @@ describe("", () => {
     it("Testando o filtro da consulta com a Situação PAGAMENTO EFETUADO", () => {
       cy.intercept(
         "GET",
-        "https://sitcargaapitest/rntrc/PrePedido/listarpedidos?pageSize=10&pageNumber=1&sortBy=idPedido&sortDesc=true&idPedido=&cpfCnpjTransportador=&situacao=PAG"
+        "**/rntrc/PrePedido/listarpedidos?pageSize=10&pageNumber=1&sortBy=idPedido&sortDesc=true&idPedido=&cpfCnpjTransportador=&situacao=PAG"
       ).as("pagamentoefetuado");
       cy.get(path.atendimentoPage.situacao)
         .click({ force: true })

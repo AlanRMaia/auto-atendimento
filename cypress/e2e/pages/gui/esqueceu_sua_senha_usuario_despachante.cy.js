@@ -29,7 +29,7 @@ describe('Grupo de teste para o processo de Esqueceu a senha', () => {
     });
 
     it('Clicando no link Esqueceu a senha?', () => {
-        cy.intercept('POST', 'https://sitcargaapitest/gestao/usuario/esqueciminhasenha**').as('envioEmailStatus')    
+        cy.intercept('POST', '**/gestao/usuario/esqueciminhasenha**').as('envioEmailStatus')    
         cy.visit(urls.home)
         cy.get(path.institucionalPage.login).should('have.text', 'Entrar').click({force: true})  
         cy.get(path.loginPage.sejaBemVindo, {timeout: 20000}).should('have.text', ' Seja bem-vindo(a)! ')

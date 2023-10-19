@@ -19,10 +19,10 @@ const transportador = {
 describe('', () => {
     beforeEach(() => {
      cy.reload()     
-      cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/**`).as('gridoperacao')
-      cy.intercept('GET', 'https://sitcargaapitest/rntrc/cidade/listarCidades**').as('cidade') 
-      cy.intercept('GET', 'https://sitcargaapitest/rntrc/Transportador/Consultar/porlocalidade?**').as('lista')  
-      cy.intercept('GET', 'https://sitcargaapitest/rntrc/Transportador/Consultar?cpfCnpj=**').as('consultarTRP')      
+      cy.intercept('GET', `**/rntrc/PrePedido/**`).as('gridoperacao')
+      cy.intercept('GET', '**/rntrc/cidade/listarCidades**').as('cidade') 
+      cy.intercept('GET', '**/rntrc/Transportador/Consultar/porlocalidade**').as('lista')  
+      cy.intercept('GET', '**/rntrc/Transportador/Consultar?cpfCnpj=**').as('consultarTRP')  
       cy.viewport(1920, 1080);
       cy.login()  
       
@@ -37,18 +37,18 @@ describe('', () => {
 
         cy.get(path.consultaRNTRCPage.tipoTransportador).click({force: true})
         .get(path.generic.listaVirtual)
-        .contains('Autônomo').click({force: true})        
-
+        .contains('Autônomo').click({force: true}) 
+        
         cy.get(path.consultaRNTRCPage.uf).click({force: true}).type('Espírito Santo')  
         .get(path.generic.listaVirtual)        
         .contains('Espírito Santo').click({force: true})
         cy.wait('@cidade')
-        
+
         cy.get(path.consultaRNTRCPage.municipios).type('ALEGRE',{force: true})
         cy.wait('@cidade')
         cy.get(path.generic.listaVirtual)        
         .contains('ALEGRE').click({force: true})
-        //Logar na página com o usuario
+        
         cy.get(path.generic.botaoSubmit).click({force: true})
         cy.wait('@lista')
 

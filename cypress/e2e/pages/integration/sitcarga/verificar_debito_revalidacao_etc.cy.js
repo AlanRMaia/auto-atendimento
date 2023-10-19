@@ -290,7 +290,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           
         // ------- Selecionar o sindicato e gerar valor -------//        
         it('Selecionar o sindicato e gerar valor', () => {
-          cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+          cy.intercept('GET', `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
           cy.intercept('PUT', '**/entidade').as('entidadePUT')
           cy.intercept('POST', '**/entidade').as('entidadePOST')
           cy.intercept('GET', '**/valor**').as('tabela')   

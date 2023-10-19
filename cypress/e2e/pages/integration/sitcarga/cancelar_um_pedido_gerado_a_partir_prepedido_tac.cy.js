@@ -10,8 +10,8 @@ var fakerBr = require('faker-br');
 
     
   let doc; 
-  let idPrePedido = '2071165';
-  let idPedido = '2071104'
+  let idPrePedido = '2071588';
+  let idPedido = '2071588'
   const celular = '(21) 98878-7878';
   const telefone = '(51) 9996-6952';
   const fax = '(21) 9764-9386';
@@ -78,7 +78,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
           cy.intercept('PUT', '**/finalizar').as('finalizarpedido')
 
           cy.viewport(1920, 1080);
-          //cy.login()
+          cy.login()
           //cy.acessarPedido(idPrePedido)
       });
 
@@ -110,11 +110,11 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 
               });
                 
-          //       //------ Criar operação Salvar transportador -----//
-          //       // describe('Criar operação Salvar transportador', () => { 
-          //       //   cy.operacaoTransportador(fakerBr, transportador.sigla)
-          //       //   cy.notificacao(mensagem.TransportadorSucesso)      
-          //       // });
+                //------ Criar operação Salvar transportador -----//
+                describe('Criar operação Salvar transportador', () => { 
+                  cy.operacaoTransportador(fakerBr, transportador.sigla)
+                  cy.notificacao(mensagem.TransportadorSucesso)      
+                });
                 
                 //-------- Criar operação Enviar documentos do tipo Identidade ------//              
                 describe('Criar operação Enviar documentos do tipo Identidade', () => {  
@@ -195,7 +195,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
               
             // ------- Selecionar o sindicato responsável -------//        
             describe('Selecionar o sindicato responsável', () => {
-              cy.intercept('GET', `https://sitcargaapitest/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
+              cy.intercept('GET', `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
               cy.intercept('PUT', '**/entidade').as('entidadePUT')
               cy.intercept('POST', '**/entidade').as('entidadePOST')
               cy.intercept('GET', '**/valor**').as('tabela')   
@@ -276,8 +276,8 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
               cy.intercept('POST', '/autoatendimento/prepedido/consultar?gridName=grid').as('listaPrepedido')
               cy.intercept('POST', '/autoatendimento/prepedido/gerarpedido/').as('gerarpedido')
               cy.intercept('POST', 'https://sac-evoservicosfinanceiros.ascbrazil.com.br/site-visitantes/monitor-visitante').as('visitante')
-              cy.intercept('POST', 'https://wwwsitcargateste/institucional/authsca').as('autenticacao')
-              cy.intercept('POST', '/rntrc/veiculopedido/listarservicos').as('listaServicos')
+              cy.intercept('POST', '/institucional/authsca').as('autenticacao')
+              cy.intercept('POST', '**/rntrc/veiculopedido/listarservicos').as('listaServicos')
               cy.visit(urls.sitcargaInitial);
               cy.get('.cookie-message > :nth-child(1) > p', {timeout: 10000})
                 .should('be.visible')
@@ -319,7 +319,9 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                 cy.wait('@visitante')
                 cy.get('#side-menu > li > a > span').contains('RNTRC', {timeout: 10000}).click({force: true}).click({force: true})
                 .get('a[href="/rntrc/pedido"]', {timeout: 10000}).contains('Acompanhamento', {timeout: 10000}).click({force: true})
-                cy.intercept('POST', 'https://wwwsitcargateste/rntrc/pedido/consultar?gridName=grid').as('listaPedidos')
+                cy.intercept('POST', '**/rntrc/pedido/consultar?gridName=grid' 
+                  
+                ).as('listaPedidos')
                 //cy.get('.alert')
                 cy.get('#IdPedido').type(idPedido, {force: true})
                 cy.get('#btn-consultar').click({force: true})
@@ -345,7 +347,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
                cy.get('#btnCancelarPedido').should('be.visible').and('have.text', 'Cancelar Pedido').click({force: true})
                .get('#confirm-dialog-body > p').should('be.visible').and('have.text', 'Confirmar o cancelamento deste pedido?')
                .get('#confirm-ok').click({force: true})
-               //cy.get('.toast').contains()   
+               cy.get('.toast').contains()   
                cy.get('#form-resumopedido .row .col-md-6').contains(idPedido)
                cy.get('#form-resumopedido .row .col-md-6').contains('CANCELADO')
 
