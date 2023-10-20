@@ -15,7 +15,7 @@ let doc;
 const telefone = '(55) 3221-7614'
 const fax = '(68) 3221-7614';
 const email = 'cristiane.souza@jdcocenzo.com.br';
-let idPrePedido = '2071405';
+let idPrePedido = '2071943';
 
 let codigoBarra = '03399841145810000015580180001010794340000046200';
   let nossoNumero = ''
@@ -136,7 +136,7 @@ beforeEach(() => {
     
     cy.intercept('GET', '**/validarpedido').as('validarpedido')
     cy.intercept('POST', '**/gerarpagamentopedido').as('finalizarpedido')
-    cy.intercept('GET', `**/rntrc/PrePedido/**`).as('gridoperacao') 
+    cy.intercept('GET', `/rntrc/PrePedido/${idPrePedido}/detalhar`).as('detalheGridOperacao') 
 
     cy.viewport(1920, 1080);
     cy.login()
@@ -174,7 +174,7 @@ beforeEach(() => {
            it('Criar operação Salvar transportador', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.operacaoTransportador(faker, transportador.sigla)
             cy.notificacao(mensagem.TransportadorSucesso)      
           });
@@ -183,7 +183,7 @@ beforeEach(() => {
           it('Criar operação Enviar documentos do tipo Identidade', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao') 
+            cy.wait('@detalheGridOperacao') 
             cy.documentosIdentidade(doc.rg)
             cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
           });
@@ -192,7 +192,7 @@ beforeEach(() => {
           it('Criar operação Incluir Contato Email', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirContatoEmail(faker)
             cy.notificacao(mensagem.DadosSalvoSucesso) 
           });
@@ -201,7 +201,7 @@ beforeEach(() => {
           // it('Criar operação Excluir Contato Email', () => { 
           //   cy.acessarPedido(idPrePedido)       
           //   cy.url().should('include', `detalhe`)
-          //   cy.wait('@gridoperacao')
+          //   cy.wait('@detalheGridOperacao')
           //   cy.incluirContatoEmail(faker, email)
           //   cy.notificacao(mensagem.DadosSalvoSucesso) 
           // });
@@ -210,7 +210,7 @@ beforeEach(() => {
           it('Criar operação Incluir Contato Celular', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirContatoCelular(faker)
             cy.notificacao(mensagem.DadosSalvoSucesso) 
           });
@@ -220,7 +220,7 @@ beforeEach(() => {
           // it('Criar operação Excluir Contato Celular', () => { 
           //   cy.acessarPedido(idPrePedido)       
           //   cy.url().should('include', `detalhe`)
-          //   cy.wait('@gridoperacao')        
+          //   cy.wait('@detalheGridOperacao')        
           //   cy.excluirContatoCelular(fakerBr, celular)   
           //   cy.notificacao(mensagem.DadosSalvoSucesso);
           // });
@@ -229,7 +229,7 @@ beforeEach(() => {
           it('Criar operação Excluir Contato Telefone', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')        
+            cy.wait('@detalheGridOperacao')        
             cy.excluirContatoTelefone(faker, telefone)  
             cy.notificacao(mensagem.DadosSalvoSucesso);       
           });
@@ -238,7 +238,7 @@ beforeEach(() => {
           it('Criar operação Incluir Contato Telefone', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')   
+            cy.wait('@detalheGridOperacao')   
             cy.incluirContatoTelefone(faker)  
             cy.notificacao(mensagem.DadosSalvoSucesso);      
           });
@@ -247,7 +247,7 @@ beforeEach(() => {
           it('Criar operação Incluir Contato Fax', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirContatoFax(faker)     
             cy.notificacao(mensagem.DadosSalvoSucesso);      
           });       
@@ -256,34 +256,34 @@ beforeEach(() => {
           it('Criar operação Excluir Contato Fax', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirContatoFax(faker, fax)     
             cy.notificacao(mensagem.DadosSalvoSucesso);      
           }); 
   
           // -------- Criar operação Alterar Endereço Comercial --------//
-          it.skip('Criar operação Alterar Endereço Comercial', () => { 
+          it('Criar operação Alterar Endereço Comercial', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
-            cy.alterarEnderecoComercial(fakerBr, cep)
-            //cy.notificacao(mensagem.DadosSalvoSucesso);      
+            cy.wait('@detalheGridOperacao')
+            cy.alterarEnderecoComercial(faker)
+            cy.notificacao(mensagem.DadosSalvoSucesso);      
           });  
   
           // -------- Criar operação Alterar Endereço Correspondência --------//
-          it.skip('Criar operação Incluir Endereço Correspondência', () => { 
+          it('Criar operação Incluir Endereço Correspondência', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
-            cy.incluirEnderecoCorrespondencia(fakerBr, cep)
-            //cy.notificacao(mensagem.DadosSalvoSucesso);      
+            cy.wait('@detalheGridOperacao')
+            cy.incluirEnderecoCorrespondencia(faker)
+            cy.notificacao(mensagem.DadosSalvoSucesso);      
           });  
   
         // --------- Criar operacao Incluir Gestor -----//
           // it('Criar operacao Incluir Gestor', () => {
           //     cy.acessarPedido(idPrePedido)       
           //     cy.url().should('include', `detalhe`)
-          //     cy.wait('@gridoperacao')
+          //     cy.wait('@detalheGridOperacao')
           //     cy.incluirGestor(gestor, transportador.sigla)
           //     cy.notificacao(mensagem.DadosSalvoSucesso);
           // });  
@@ -292,7 +292,7 @@ beforeEach(() => {
           // it('Criar operacao Alterar Gestor Sócio', () => {
           //     cy.acessarPedido(idPrePedido)       
           //     cy.url().should('include', `detalhe`)
-          //     cy.wait('@gridoperacao')        
+          //     cy.wait('@detalheGridOperacao')        
           //     cy.alterarGestor(gestor, transportador.sigla )
           //     cy.notificacao(mensagem.DadosSalvoSucesso);
           // }); 
@@ -301,7 +301,7 @@ beforeEach(() => {
           it('Criar operacao Incluir Gestor Responsável legal CNPJ', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirGestor(gestorCnpjincluir, transportador.sigla)
             cy.notificacao(mensagem.DadosSalvoSucesso);
           });
@@ -310,7 +310,7 @@ beforeEach(() => {
           it('Criar operacao Incluir Gestor Responsável legal CPF', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirGestor(gestorCpfIncluir, transportador.sigla)
             cy.notificacao(mensagem.DadosSalvoSucesso);
           });
@@ -319,7 +319,7 @@ beforeEach(() => {
           // it('Criar operacao Alterar Gestor Responsável legal', () => {
           //   cy.acessarPedido(idPrePedido)       
           //   cy.url().should('include', `detalhe`)
-          //   cy.wait('@gridoperacao')        
+          //   cy.wait('@detalheGridOperacao')        
           //   cy.alterarGestor(gestorResponsavelLegal, transportador.sigla )
           //   cy.notificacao(mensagem.DadosSalvoSucesso);
           // });
@@ -328,7 +328,7 @@ beforeEach(() => {
           it('Criar operação Incluir Filial', () => {
             cy.acessarPedido(idPrePedido)
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao') 
+            cy.wait('@detalheGridOperacao') 
             cy.incluirFilial(fakerBr)
             cy.notificacao(mensagem.DadosSalvoSucesso)      
           });
@@ -337,11 +337,11 @@ beforeEach(() => {
           it('Criar operação Incluir Responsável Técnico', () => {
             cy.acessarPedido(idPrePedido)
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')                   
+            cy.wait('@detalheGridOperacao')                   
             cy.incluirResponsavelTecnico(fakerBr, rt)
             cy.notificacao(mensagem.DadosSalvoSucesso)
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.enviarDocumentosRT(doc.rg)
             cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
           });
@@ -352,19 +352,19 @@ beforeEach(() => {
           it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {            
             cy.acessarPedido(idPrePedido)
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')          
+            cy.wait('@detalheGridOperacao')          
             cy.incluirVeiculo(veiculo01)
             cy.notificacao(mensagem.VeiculoSalvoSucesso)
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')      
+            cy.wait('@detalheGridOperacao')      
             cy.anexarDocumentosVeiculo(doc, veiculo01 )
             cy.notificacao(mensagem.CRLVSucesso)  
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirVeiculo(veiculo02)
             cy.notificacao(mensagem.VeiculoSalvoSucesso)
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')  
+            cy.wait('@detalheGridOperacao')  
             cy.anexarDocumentosVeiculo(doc, veiculo02 )
             cy.notificacao(mensagem.CRLVContratoSucesso)
           });     
@@ -373,11 +373,11 @@ beforeEach(() => {
           it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
             cy.acessarPedido(idPrePedido)
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')        
+            cy.wait('@detalheGridOperacao')        
             cy.incluirVeiculo(veiculoImplemento)
             cy.notificacao(mensagem.VeiculoSalvoSucesso)
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
             cy.notificacao(mensagem.CRLVContratoSucesso)      
             index++
@@ -386,11 +386,11 @@ beforeEach(() => {
         it('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')        
+          cy.wait('@detalheGridOperacao')        
           cy.incluirVeiculo(veiculoAutomotor)
           cy.notificacao(mensagem.VeiculoSalvoSucesso)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')
+          cy.wait('@detalheGridOperacao')
           cy.anexarDocumentosVeiculo(doc, veiculoAutomotor )
           cy.notificacao(mensagem.CRLVContratoSucesso)      
           index++
@@ -399,11 +399,11 @@ beforeEach(() => {
         it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
           cy.acessarPedido(idPrePedido) 
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')       
+          cy.wait('@detalheGridOperacao')       
           cy.incluirVeiculo(veiculoImplemento)
           cy.notificacao(mensagem.VeiculoSalvoSucesso)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')
+          cy.wait('@detalheGridOperacao')
           cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
           cy.notificacao(mensagem.CRLVContratoSucesso)      
           index++
@@ -421,7 +421,7 @@ beforeEach(() => {
       cy.intercept('GET', '**/valor**').as('tabela')   
       cy.acessarPedido(idPrePedido)
       cy.url().should('include', `detalhe`)
-      cy.wait('@gridoperacao')
+      cy.wait('@detalheGridOperacao')
       
       cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})
 
@@ -434,7 +434,7 @@ beforeEach(() => {
       .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
       .contains(sindicato.sigla, {timeout: 10000}).click()
       
-      cy.wait('@gridoperacao') 
+      cy.wait('@detalheGridOperacao') 
       cy.wait('@listaSindicatos') 
       cy.wait('@entidadePOST')           
       cy.wait('@tabela')           

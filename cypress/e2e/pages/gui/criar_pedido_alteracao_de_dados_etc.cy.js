@@ -79,7 +79,7 @@ describe('Grupo de teste Atendimento Alteração de dados ETC', () => {
         
         cy.intercept('GET', '**/validarpedido').as('validarpedido')
         cy.intercept('PUT', '**/finalizar').as('finalizarpedido')        
-        cy.intercept('GET', `**/rntrc/PrePedido/**`).as('gridoperacao') 
+        cy.intercept('GET', `/rntrc/PrePedido/${idPrePedido}/detalhar`).as('detalheGridOperacao') 
 
         cy.viewport(1920, 1080);
         cy.login() 
@@ -115,7 +115,7 @@ describe('Iniciando testes Autoatendimento', () => {
           it('Criar operação Salvar transportador', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.operacaoTransportador(faker, transportador.sigla)
             cy.notificacao(mensagem.TransportadorSucesso)      
           });
@@ -124,7 +124,7 @@ describe('Iniciando testes Autoatendimento', () => {
           it('Criar operação Enviar documentos do tipo Identidade', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao') 
+            cy.wait('@detalheGridOperacao') 
             cy.documentosIdentidade(doc.rg)
             cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
           });
@@ -133,7 +133,7 @@ describe('Iniciando testes Autoatendimento', () => {
           it('Criar operação Incluir Contato Email', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirContatoEmail(faker)
             cy.notificacao(mensagem.DadosSalvoSucesso) 
           });
@@ -142,7 +142,7 @@ describe('Iniciando testes Autoatendimento', () => {
           it('Criar operação Excluir Contato Email', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirContatoEmail(faker, email)
             cy.notificacao(mensagem.DadosSalvoSucesso) 
           });
@@ -152,7 +152,7 @@ describe('Iniciando testes Autoatendimento', () => {
           // it('Criar operação Excluir Contato Celular', () => { 
           //   cy.acessarPedido(idPrePedido)       
           //   cy.url().should('include', `detalhe`)
-          //   cy.wait('@gridoperacao')        
+          //   cy.wait('@detalheGridOperacao')        
           //   cy.excluirContatoCelular(fakerBr, celular)   
           //   cy.notificacao(mensagem.DadosSalvoSucesso);
           // });
@@ -161,7 +161,7 @@ describe('Iniciando testes Autoatendimento', () => {
           it('Criar operação Excluir Contato Telefone', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')        
+            cy.wait('@detalheGridOperacao')        
             cy.excluirContatoTelefone(faker, telefone)  
             cy.notificacao(mensagem.DadosSalvoSucesso);       
           });
@@ -170,7 +170,7 @@ describe('Iniciando testes Autoatendimento', () => {
           it('Criar operação Incluir Contato Telefone', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')   
+            cy.wait('@detalheGridOperacao')   
             cy.incluirContatoTelefone(faker)  
             cy.notificacao(mensagem.DadosSalvoSucesso);      
           });
@@ -179,7 +179,7 @@ describe('Iniciando testes Autoatendimento', () => {
           it('Criar operação Incluir Contato Fax', () => {
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirContatoFax(faker)     
             cy.notificacao(mensagem.DadosSalvoSucesso);      
           });       
@@ -188,7 +188,7 @@ describe('Iniciando testes Autoatendimento', () => {
           // it('Criar operação Excluir Contato Fax', () => {
           //   cy.acessarPedido(idPrePedido)       
           //   cy.url().should('include', `detalhe`)
-          //   cy.wait('@gridoperacao')
+          //   cy.wait('@detalheGridOperacao')
           //   cy.incluirContatoFax(faker, fax)     
           //   cy.notificacao(mensagem.DadosSalvoSucesso);      
           // }); 
@@ -197,7 +197,7 @@ describe('Iniciando testes Autoatendimento', () => {
         it.skip('Criar operacao Incluir Gestor Sócio', () => {         
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')
+          cy.wait('@detalheGridOperacao')
           cy.incluirGestor(gestorSocioIncluir, transportador.sigla)
           cy.notificacao(mensagem.DadosSalvoSucesso)
       });
@@ -206,7 +206,7 @@ describe('Iniciando testes Autoatendimento', () => {
         it.skip('Criar operacao Incluir Gestor Responsável Legal', () => {         
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')
+          cy.wait('@detalheGridOperacao')
           cy.incluirGestor(gestorRLegalincluir, transportador.sigla)
           cy.notificacao(mensagem.DadosSalvoSucesso)
         });
@@ -215,7 +215,7 @@ describe('Iniciando testes Autoatendimento', () => {
         it.skip('Criar operação Incluir Filial', () => {
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao') 
+          cy.wait('@detalheGridOperacao') 
           cy.incluirFilial(fakerBr)
           cy.notificacao(mensagem.DadosSalvoSucesso)      
         });
@@ -224,11 +224,11 @@ describe('Iniciando testes Autoatendimento', () => {
         it.skip('Criar operação Incluir Responsável Técnico', () => {
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')                   
+          cy.wait('@detalheGridOperacao')                   
           cy.incluirResponsavelTecnico(fakerBr, rtIncluir)
           cy.notificacao(mensagem.DadosSalvoSucesso)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')
+          cy.wait('@detalheGridOperacao')
           cy.enviarDocumentosRT(doc.rg)
           cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
         });
@@ -237,11 +237,11 @@ describe('Iniciando testes Autoatendimento', () => {
         it.skip('Criar operação Alterar Responsável Técnico', () => {
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')                   
+          cy.wait('@detalheGridOperacao')                   
           cy.alterarResponsavelTecnico(fakerBr, rt)
           cy.notificacao(mensagem.DadosSalvoSucesso)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')
+          cy.wait('@detalheGridOperacao')
           cy.enviarDocumentosRT(doc.rg)
           cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg)      
         });
@@ -250,7 +250,7 @@ describe('Iniciando testes Autoatendimento', () => {
           it.skip('Criar operação Alterar Endereço Comercial', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.alterarEnderecoComercial(fakerBr, cep)
             //cy.notificacao(mensagem.DadosSalvoSucesso);      
           });  
@@ -259,7 +259,7 @@ describe('Iniciando testes Autoatendimento', () => {
           it.skip('Criar operação Incluir Endereço Correspondência', () => { 
             cy.acessarPedido(idPrePedido)       
             cy.url().should('include', `detalhe`)
-            cy.wait('@gridoperacao')
+            cy.wait('@detalheGridOperacao')
             cy.incluirEnderecoCorrespondencia(fakerBr, cep)
             //cy.notificacao(mensagem.DadosSalvoSucesso);      
           });    
@@ -273,7 +273,7 @@ describe('Iniciando testes Autoatendimento', () => {
           cy.intercept('GET', '**/valor**').as('tabela')   
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
-          cy.wait('@gridoperacao')
+          cy.wait('@detalheGridOperacao')
           
           cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})
       
@@ -285,7 +285,6 @@ describe('Iniciando testes Autoatendimento', () => {
           .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
           .contains(sindicato.sigla, {timeout: 10000}).click()
           
-          cy.wait('@gridoperacao') 
           cy.wait('@listaSindicatos') 
           cy.wait('@entidadePOST')           
           cy.wait('@tabela')         

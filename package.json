@@ -1,7 +1,9 @@
 {
   "devDependencies": {
+    "@faker-js/faker": "^8.2.0",
     "cypress": "^13.3.0",
     "cypress-map": "^1.21.1",
+    "cypress-plugin-tab": "^1.0.5",
     "cypress-recurse": "^1.35.2",
     "cypress-xpath": "^2.0.1"
   },
@@ -21,7 +23,6 @@
     "hl:test:sitcarga": "cypress run --config baseUrl=http://autoatendimentoteste/#/ --env ENVIRONMENT=test --spec cypress/e2e/sitcarga.cy.js"
   },
   "dependencies": {
-    "@faker-js/faker": "^8.0.2",
     "@quasar/quasar-app-extension-testing-e2e-cypress": "^4.0.2",
     "cypress-get-table": "^1.0.1",
     "cypress-plugin-api": "^2.11.1",

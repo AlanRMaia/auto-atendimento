@@ -20,7 +20,7 @@ import './operacoes'
 import 'cypress-map'
 import './api_commands'
 import 'cypress-plugin-api'
-require('cypress-get-table')
+require('cypress-plugin-tab')
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 

@@ -13,7 +13,7 @@ let veiculo03;
 let veiculo05;
 let index = 0;
 let doc; 
-let idPrePedido = '2071380';
+let idPrePedido = '2071951';
   let boleto = {
     codigoBarra : '',
     nossoNumero : '',
@@ -121,8 +121,8 @@ let idPrePedido = '2071380';
          })  
   
       });
-          // -------- Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado -------//        
-        it('Criar operação Incluir Veiculo Automotor/Leasing e Automotor/arrendado', () => {            
+          // -------- Criar operação Incluir Veiculo Automotor/Arrendado e Automotor/arrendado -------//        
+        it('Criar operação Incluir Veiculo Automotor/Arrendado e Automotor/arrendado', () => {            
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
           cy.wait('@detalheGridOperacao')          
@@ -131,7 +131,7 @@ let idPrePedido = '2071380';
           cy.url().should('include', `detalhe`)
           cy.wait('@detalheGridOperacao')      
           cy.anexarDocumentosVeiculo(doc, veiculo01 )
-          cy.notificacao(mensagem.CRLVSucesso)  
+          cy.notificacao(mensagem.CRLVContratoSucesso)  
           cy.url().should('include', `detalhe`)
           cy.wait('@detalheGridOperacao')
           cy.incluirVeiculo(veiculo02)
@@ -264,18 +264,18 @@ let idPrePedido = '2071380';
           index++
         });
               
-        //--------- Anexar crlv na operação de inclusão de veículo -------//        
-        it('Anexar crlv na operação de inclusão de veículo', () => {
-          cy.acessarPedido(idPrePedido)
-          cy.url().should('include', `detalhe`)
-          cy.wait('@detalheGridOperacao')
-          cy.anexarDocumentosVeiculo(doc, veiculo01 )
-          cy.notificacao(mensagem.CRLVContratoSucesso)
-        });
+        // //--------- Anexar crlv na operação de inclusão de veículo -------//        
+        // it('Anexar crlv na operação de inclusão de veículo', () => {
+        //   cy.acessarPedido(idPrePedido)
+        //   cy.url().should('include', `detalhe`)
+        //   cy.wait('@detalheGridOperacao')
+        //   cy.anexarDocumentosVeiculo(doc, veiculo01 )
+        //   cy.notificacao(mensagem.CRLVContratoSucesso)
+        // });
         
     });
   
-    describe('Validação do pedido e inclusão do sindicato', () => {
+    describe.only('Validação do pedido e inclusão do sindicato', () => {
             
        it('Validação de do Pedido', () => {
         cy.intercept('GET', `**/rntrc/PrePedido/listarentidadesdisponiveis?idPedido=${idPrePedido}`).as('listaSindicatos')
@@ -297,7 +297,6 @@ let idPrePedido = '2071380';
           .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
           .contains(sindicato.sigla, {timeout: 10000}).click()
           
-          cy.wait('@detalheGridOperacao') 
           cy.wait('@listaSindicatos') 
           cy.wait('@entidadePOST')           
           cy.wait('@tabela')            

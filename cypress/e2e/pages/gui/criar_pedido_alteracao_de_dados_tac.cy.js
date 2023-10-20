@@ -47,9 +47,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
 
     cy.intercept("GET", "**/validarpedido").as("validarpedido");
     cy.intercept("PUT", "**/finalizar").as("finalizarpedido");
-    cy.intercept("GET", `**/rntrc/PrePedido/**`).as(
-      "gridoperacao"
-    );
+    cy.intercept('GET', `/rntrc/PrePedido/${idPrePedido}/detalhar`).as('detalheGridOperacao')
 
     cy.viewport(1920, 1080);
     cy.login();
@@ -89,7 +87,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it("Criar operação Salvar transportador", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.operacaoTransportador(fakerBr, transportador.sigla);
       cy.notificacao(mensagem.TransportadorSucesso);
     });
@@ -98,7 +96,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it("Criar operação Enviar documentos do tipo Identidade", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.documentosIdentidade(doc.rg);
       cy.notificacao(mensagem.ArquivoInclusoSucesso, doc.rg);
     });
@@ -107,7 +105,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it("Criar operação Incluir Contato Email", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.incluirContatoEmail(faker);
       cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -116,7 +114,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it("Criar operação Excluir Contato Email", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.incluirContatoEmail(faker, email);
       cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -125,7 +123,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it("Criar operação Excluir Contato Celular", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.excluirContatoCelular(fakerBr, celular);
       cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -134,7 +132,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it("Criar operação Excluir Contato Telefone", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.excluirContatoTelefone(faker, telefone);
       cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -143,7 +141,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it("Criar operação Incluir Contato Telefone", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.incluirContatoTelefone(faker);
       cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -152,7 +150,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it("Criar operação Incluir Contato Fax", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.incluirContatoFax(faker);
       cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -161,7 +159,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it("Criar operação Excluir Contato Fax", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.incluirContatoFax(faker, fax);
       cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -170,7 +168,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it.skip("Criar operação Alterar Endereço Residencial", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.alterarEnderecoResidencial(fakerBr, cep);
       //cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -179,7 +177,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it.skip("Criar operação Incluir Endereço Correspondência", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.incluirEnderecoCorrespondenciaTAC(fakerBr, cep);
       //cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -188,7 +186,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it.skip("Criar operacao Incluir Motorista", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.incluirMotorista(fakerBr);
       cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -197,7 +195,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
     it.skip("Criar operacao Alterar Motorista", () => {
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
       cy.alterarMotorista(fakerBr, motorista.cpf);
       cy.notificacao(mensagem.DadosSalvoSucesso);
     });
@@ -215,7 +213,7 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
       cy.intercept("GET", "**/valor**").as("tabela");
       cy.acessarPedido(idPrePedido);
       cy.url().should("include", `detalhe`);
-      cy.wait("@gridoperacao");
+      cy.wait("@detalheGridOperacao");
 
       cy.get(path.generic.botaoConfirmar, { timeout: 10000 })
         .should("be.visible")
@@ -233,7 +231,6 @@ describe("Grupo de teste Atendimento Alteração de dados TAC", () => {
         .contains(sindicato.sigla, { timeout: 10000 })
         .click();
 
-      cy.wait("@gridoperacao");
       cy.wait("@listaSindicatos");
       cy.wait("@entidadePOST");
       cy.wait("@tabela");

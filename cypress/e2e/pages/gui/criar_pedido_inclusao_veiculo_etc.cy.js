@@ -12,7 +12,7 @@ var fakerBr = require('faker-br');
   let veiculo05;
   let index = 0;
   let doc; 
-  let idPrePedido = '2071514';
+  let idPrePedido = '2071949';
   let boleto = {
     codigoBarra : '',
     nossoNumero : '',
@@ -303,7 +303,6 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
           .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
           .contains(sindicato.sigla, {timeout: 10000}).click()
           
-          cy.wait('@detalheGridOperacao') 
           cy.wait('@listaSindicatos') 
           cy.wait('@entidadePOST')           
           cy.wait('@tabela')          
@@ -311,21 +310,31 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
         cy.get(path.generic.tabela, {timeout: 30000})
         .then((ele) => {
           
-          cy.log(ele.text())            
+          cy.log(ele.text())    
           
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$231.00')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '5')
-          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$1155.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Alteração de dados')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$0.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '1')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$0.00')
+          
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Inclusão de Automotor')
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$231.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '4')
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$924.00')
+
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Exclusão de Veículo')
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$0.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$0.00')
 
         
-          cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Inclusão de Implemento')
-          cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$154.00')
-          cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '6')
-          cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$924.00')            
+          cy.wrap(ele).get(`tbody>:nth-child(${4})>.text-left`).should('have.text', 'Inclusão de Implemento')
+          cy.wrap(ele).get(`tbody>:nth-child(${4})>:nth-child(2)`).should('have.text', 'R$154.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${4})>.text-center`).should('have.text', '7')
+          cy.wrap(ele).get(`tbody>:nth-child(${4})>:nth-child(4)`).should('have.text', 'R$1078.00')            
            
           
-          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$2079.00')          
+          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$2002.00')          
           
         });
     
@@ -345,19 +354,28 @@ describe('Grupo de testes para inclusão de veículo ETC', () => {
           
           cy.log(ele.text())
 
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Inclusão de Automotor')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$231.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '5')
-            cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$1155.00')
-
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-left`).should('have.text', 'Alteração de dados')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(2)`).should('have.text', 'R$0.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>.text-center`).should('have.text', '1')
+          cy.wrap(ele).get(`tbody>:nth-child(${1})>:nth-child(4)`).should('have.text', 'R$0.00')
           
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Inclusão de Implemento')
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$154.00')
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '6')
-            cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$924.00')            
-             
-            
-            cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$2079.00')            
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-left`).should('have.text', 'Inclusão de Automotor')
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(2)`).should('have.text', 'R$231.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>.text-center`).should('have.text', '4')
+          cy.wrap(ele).get(`tbody>:nth-child(${2})>:nth-child(4)`).should('have.text', 'R$924.00')
+
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-left`).should('have.text', 'Exclusão de Veículo')
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(2)`).should('have.text', 'R$0.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>.text-center`).should('have.text', '1')
+          cy.wrap(ele).get(`tbody>:nth-child(${3})>:nth-child(4)`).should('have.text', 'R$0.00')
+        
+          cy.wrap(ele).get(`tbody>:nth-child(${4})>.text-left`).should('have.text', 'Inclusão de Implemento')
+          cy.wrap(ele).get(`tbody>:nth-child(${4})>:nth-child(2)`).should('have.text', 'R$154.00')
+          cy.wrap(ele).get(`tbody>:nth-child(${4})>.text-center`).should('have.text', '7')
+          cy.wrap(ele).get(`tbody>:nth-child(${4})>:nth-child(4)`).should('have.text', 'R$1078.00')            
+           
+          
+          cy.get('.q-table__bottom > .q-item__section--side').should('have.text', ' R$2002.00')           
             
             cy.get(path.generic.email).type(fakerBr.internet.email())
     

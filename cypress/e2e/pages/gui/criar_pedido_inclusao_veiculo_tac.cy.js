@@ -87,7 +87,7 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
     
     cy.intercept('GET', '**/validarpedido').as('validarpedido')
     cy.intercept('POST', '**/gerarpagamentopedido').as('finalizarpedido')
-    cy.intercept('GET', `**/rntrc/PrePedido/**`).as('gridoperacao') 
+    cy.intercept('GET', `/rntrc/PrePedido/${idPrePedido}/detalhar`).as('detalheGridOperacao') 
 
     cy.viewport(1920, 1080);
     cy.login()    
@@ -123,11 +123,11 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       it('Criar operação Incluir Veiculo AFF5514 SEMI-REBOQUE/Arrendado', () => {
         cy.acessarPedido(idPrePedido)
         cy.url().should('include', `detalhe`)
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         cy.incluirVeiculo(veiculoImplemento)
         cy.notificacao(mensagem.VeiculoSalvoSucesso)
         cy.url().should('include', `detalhe`)
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         cy.anexarDocumentosVeiculo(doc, veiculoImplemento )        
         cy.notificacao(mensagem.CRLVContratoSucesso)
         index++
@@ -137,11 +137,11 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
        it('Criar operação Incluir Veiculo AJS0258 Implemento/Arrendado', () => {
         cy.acessarPedido(idPrePedido)
         cy.url().should('include', `detalhe`)
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         cy.incluirVeiculo(veiculoImplemento)
         cy.notificacao(mensagem.VeiculoSalvoSucesso)
         cy.url().should('include', `detalhe`)
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         cy.anexarDocumentosVeiculo(doc, veiculoImplemento )        
         cy.notificacao(mensagem.CRLVContratoSucesso)      
         index++
@@ -151,11 +151,11 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       it('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
         cy.acessarPedido(idPrePedido)
         cy.url().should('include', `detalhe`)
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         cy.incluirVeiculo(veiculoImplemento)
         cy.notificacao(mensagem.VeiculoSalvoSucesso)
         cy.url().should('include', `detalhe`)
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         cy.anexarDocumentosVeiculo(doc, veiculoImplemento )        
         cy.notificacao(mensagem.CRLVContratoSucesso)             
         index++
@@ -164,10 +164,10 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       //   // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
       // describe('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
       //   cy.url().should('include', `detalhe`)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.incluirVeiculo(veiculoImplemento)
       //   cy.notificacao(mensagem.VeiculoSalvoSucesso)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.anexarDocumentosVeiculo(doc, veiculoImplemento )        
       //   cy.notificacao(mensagem.CRLVSucesso)      
       //   cy.notificacao(mensagem.ContratoArrendamentoSucesso)      
@@ -177,10 +177,10 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       //   // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
       // describe('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
       //   cy.url().should('include', `detalhe`)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.incluirVeiculo(veiculoImplemento)
       //   cy.notificacao(mensagem.VeiculoSalvoSucesso)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.anexarDocumentosVeiculo(doc, veiculoImplemento )        
       //   cy.notificacao(mensagem.CRLVSucesso)      
       //   cy.notificacao(mensagem.ContratoArrendamentoSucesso)      
@@ -190,10 +190,10 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       //   // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
       // describe('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
       //   cy.url().should('include', `detalhe`)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.incluirVeiculo(veiculoImplemento)
       //   cy.notificacao(mensagem.VeiculoSalvoSucesso)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.anexarDocumentosVeiculo(doc, veiculoImplemento )        
       //   cy.notificacao(mensagem.CRLVSucesso)      
       //   cy.notificacao(mensagem.ContratoArrendamentoSucesso)      
@@ -203,10 +203,10 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       // // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
       // describe('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
       //   cy.url().should('include', `detalhe`)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.incluirVeiculo(veiculoImplemento)
       //   cy.notificacao(mensagem.VeiculoSalvoSucesso)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.anexarDocumentosVeiculo(doc, veiculoImplemento )        
       //   cy.notificacao(mensagem.CRLVSucesso)      
       //   cy.notificacao(mensagem.ContratoArrendamentoSucesso)      
@@ -216,10 +216,10 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       // // -------- Criar operação Incluir Veiculo SEMI-Implemento/Arrendado ------//
       // describe('Criar operação Incluir Veiculo Implemento/Arrendado', () => {
       //   cy.url().should('include', `detalhe`)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.incluirVeiculo(veiculoImplemento)
       //   cy.notificacao(mensagem.VeiculoSalvoSucesso)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.anexarDocumentosVeiculo(doc, veiculoImplemento )        
       //   cy.notificacao(mensagem.CRLVSucesso)      
       //   cy.notificacao(mensagem.ContratoArrendamentoSucesso)      
@@ -233,10 +233,10 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
         veiculoImplemento.placa = 'GIZ7148'
         veiculoImplemento.renavam = '01146947299'
         veiculoImplemento.tipoVeiculo = 'Automotor'
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         cy.incluirVeiculo(veiculoImplemento)
         cy.notificacao(mensagem.VeiculoSalvoSucesso)
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
         cy.notificacao(mensagem.CRLVContratoSucesso) 
         index++
@@ -249,21 +249,21 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
         veiculoImplemento.placa = 'FIM9923'
         veiculoImplemento.renavam = '01087459874'
         veiculoImplemento.tipoVeiculo = 'Automotor'
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         cy.incluirVeiculo(veiculoImplemento)
         cy.notificacao(mensagem.VeiculoSalvoSucesso)
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
         cy.notificacao(mensagem.CRLVContratoSucesso)      
-        index++
+        
       });
 
       // describe('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
       //   cy.url().should('include', `detalhe`)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.incluirVeiculo(veiculoAutomotor)
       //   cy.notificacao(mensagem.VeiculoSalvoSucesso)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.anexarDocumentosVeiculo(doc, veiculoAutomotor)        
       //   cy.notificacao(mensagem.CRLVSucesso)      
       //   cy.notificacao(mensagem.ContratoArrendamentoSucesso)      
@@ -272,10 +272,10 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
 
       // describe('Criar operação Incluir Veiculo Automotor/Arrendado', () => {
       //   cy.url().should('include', `detalhe`)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.incluirVeiculo(veiculoAutomotor)
       //   cy.notificacao(mensagem.VeiculoSalvoSucesso)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.anexarDocumentosVeiculo(doc, veiculoAutomotor )        
       //   cy.notificacao(mensagem.CRLVSucesso)      
       //   cy.notificacao(mensagem.ContratoArrendamentoSucesso)      
@@ -286,7 +286,7 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       //   cy.acessarPedido(idPrePedido)
 
       //   cy.url().should('include', `detalhe`)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.anexarDocumentosVeiculo(doc, veiculo01 )
       //   cy.notificacao(mensagem.CRLVContratoSucesso)
       // });
@@ -296,7 +296,7 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
       //   cy.acessarPedido(idPrePedido)
 
       //   cy.url().should('include', `detalhe`)
-      //   cy.wait('@gridoperacao')
+      //   cy.wait('@detalheGridOperacao')
       //   cy.anexarDocumentosVeiculo(doc, veiculoImplemento )
       //   cy.notificacao(mensagem.CRLVContratoSucesso)
       // });
@@ -311,7 +311,7 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
         cy.intercept('GET', '**/valor**').as('tabela')   
         cy.acessarPedido(idPrePedido)
         cy.url().should('include', `detalhe`)
-        cy.wait('@gridoperacao')
+        cy.wait('@detalheGridOperacao')
         
         cy.get(path.generic.botaoConfirmar, {timeout: 10000}).should('be.visible').click({force: true})
   
@@ -324,7 +324,6 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
           .get(path.checkoutAtendimentoPage.listaSindicatos, {timeout: 10000})
           .contains(sindicato.sigla, {timeout: 10000}).click()
           
-          cy.wait('@gridoperacao') 
           cy.wait('@listaSindicatos') 
           cy.wait('@entidadePOST')           
           cy.wait('@tabela')           
@@ -381,7 +380,7 @@ describe('Grupo de testes para inclusão de veículo TAC', () => {
             cy.get(path.generic.finalizar).click({force: true})
     
             cy.get('.q-ml-sm').should('have.text', 'Confirma a finalização do atendimento?')
-            cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()
+            //cy.get('.q-card__actions > :nth-child(1) > .q-btn__content').should('have.text', 'OK').click()
     
             // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
     

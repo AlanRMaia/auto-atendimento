@@ -277,8 +277,8 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           cy.acessarPedido(idPrePedido)       
           cy.url().should('include', `detalhe`)
           cy.wait('@detalheGridOperacao')
-          cy.alterarEnderecoComercial(fakerBr, cep)
-          //cy.notificacao(mensagem.DadosSalvoSucesso);      
+          cy.alterarEnderecoComercial(faker)
+          cy.notificacao(mensagem.DadosSalvoSucesso);      
         });  
 
         // -------- Criar operação Alterar Endereço Correspondência --------//
@@ -286,8 +286,8 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           cy.acessarPedido(idPrePedido)       
           cy.url().should('include', `detalhe`)
           cy.wait('@detalheGridOperacao')
-          cy.incluirEnderecoCorrespondencia(fakerBr, cep)
-          //cy.notificacao(mensagem.DadosSalvoSucesso);      
+          cy.incluirEnderecoCorrespondencia(faker)
+          cy.notificacao(mensagem.DadosSalvoSucesso);      
         });  
 
       // --------- Criar operacao Incluir Gestor -----//
@@ -331,7 +331,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
           cy.acessarPedido(idPrePedido)
           cy.url().should('include', `detalhe`)
           cy.wait('@detalheGridOperacao') 
-          cy.incluirFilial(fakerBr)
+          cy.incluirFilial(faker)
           cy.notificacao(mensagem.DadosSalvoSucesso)      
         });
 
@@ -412,7 +412,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
       });
   });     
       
-  describe.only('Selecionando o sindicato e validando o pedido', () => {
+  describe('Selecionando o sindicato e validando o pedido', () => {
           
         // ------- Selecionar o sindicato e gerar valor -------// 
         it('Selecionar o sindicato e gerar valor', () => {
