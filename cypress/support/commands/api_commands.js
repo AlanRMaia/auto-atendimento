@@ -141,5 +141,38 @@ Cypress.Commands.add("criarOperacaoDocumentoPrePedidoAPI", (doc, id) => {
   })
 });
 
+Cypress.Commands.add("criarOperacaoIncluirVeiculoPrePedidoAPI", (placa, id) => {
+  cy.loginAPI().then(response => {
+    cy.api({
+      method: "POST",
+      url: `${urls.api}/rntrc/PrePedido/${id}/veiculo/salvar`,  
+      body: {
+        "placa": placa.placa,
+        "renavam": placa.renavam,
+        "tipoPropriedadeVeiculo": placa.tipoPropriedadeVeiculo,
+        "cpfCnpjProprietario": placa.cpfCnpjProprietario,
+        "idInstituicaoFinanceira": placa.idInstituicaoFinanceira,
+        "tipoVeiculo": placa.tipoVeiculo
+      },
+      headers: { Authorization: `Bearer ${response.body.access_token}` },
+    });
+  })
+});
+
+Cypress.Commands.add("criarOperacaoDocumentoVeiculoPrePedidoAPI", (placa, doc, id) => {
+  cy.loginAPI().then(response => {
+    cy.api({
+      method: "POST",
+      url: `${urls.api}/rntrc/PrePedido/${id}/veiculo/${placa}/imagem`,  
+      body: {
+        "tipoImagem": doc.tipoImagem,
+        "imagemBase64": doc.imagemBase64,
+        "extensao": doc.extensao,
+        "tipoConteudoImagem": doc.tipoConteudoImagem
+      },
+      headers: { Authorization: `Bearer ${response.body.access_token}` },
+    });
+  })
+});
 
 
