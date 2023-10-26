@@ -2,8 +2,7 @@
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../../selectors/path.sel.cy';
-import mensagem from "../../../support/mensagemAlertEnum";
-import urls from '../../../support/urls';
+import mensagem from "../../../support/enum/mensagemAlertEnum";
 var fakerBr = require('faker-br');
 
 let veiculo01;

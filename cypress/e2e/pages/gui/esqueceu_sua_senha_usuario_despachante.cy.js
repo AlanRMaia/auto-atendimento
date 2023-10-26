@@ -2,7 +2,6 @@
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../../selectors/path.sel.cy';
-import mensagem from "../../../support/mensagemAlertEnum";
 import urls from '../../../support/urls';
 
 let usuario;

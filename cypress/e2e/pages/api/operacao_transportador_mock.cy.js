@@ -2,7 +2,7 @@
 import { faker } from '@faker-js/faker'
 //import { fakerBR } from 'fakerbr';
 import path from "../../../selectors/path.sel.cy";
-import mensagem from "../../../support/mensagemAlertEnum";
+import mensagem from "../../../support/enum/mensagemAlertEnum";
 var fakerBr = require("faker-br");
 
 const transportador = {
@@ -62,6 +62,7 @@ describe("Incluir uma operação de transportador em um pedido", () => {
           fixture: "/intercept/gerarResponseAcessarPrePedido",
         }
       ).as("getacessoprepedido");
+
       cy.log(
         `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
       );

@@ -2,7 +2,7 @@
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../../selectors/path.sel.cy';
-import mensagem from "../../../support/mensagemAlertEnum";
+import mensagem from "../../../support/enum/mensagemAlertEnum";
 var fakerBr = require('faker-br');  
 
   const email = 'ana@rodocorso.com.br'
@@ -56,7 +56,7 @@ var fakerBr = require('faker-br');
   const transportador = {
     cpfCnpj: "88.832.738/0001-66",
     nome: "ETC - RODOVIÁRIO CORSO LTDA-EPP",
-    rntrc: "000010227 ",
+    rntrc: "000010227",
     situacao: "ATIVO",
     saldo: "R$ 0,00",
     sigla: "ETC",

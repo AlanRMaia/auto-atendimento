@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 //import { fakerBR } from 'fakerbr';
 import path from "../../../selectors/path.sel.cy";
-import mensagem from "../../../support/mensagemAlertEnum";
+import mensagem from "../../../support/enum/mensagemAlertEnum";
 var fakerBr = require("faker-br");
 
 describe("Criação de pedido via API", () => {
@@ -26,7 +26,7 @@ describe("Criação de pedido via API", () => {
 
   it("Abrindo pedido de Alteração de dados TAC", () => {
     const tipo = "ALT";
-    cy.criarPedidoAPI(transportador.dadosTransportador, tipo).then(
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, tipo).then(
       (response) => {
         let idPrePedido;
 

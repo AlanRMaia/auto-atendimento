@@ -50,9 +50,9 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import urls from './urls';
-import path from '../selectors/path.sel.cy';
-import operacao from "./OperacaoEnum";
+import urls from '../urls';
+import path from '../../selectors/path.sel.cy';
+import operacao from "../enum/OperacaoEnum";
 require('cypress-xpath');
 
 

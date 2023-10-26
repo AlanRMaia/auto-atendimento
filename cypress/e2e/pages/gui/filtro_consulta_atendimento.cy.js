@@ -2,8 +2,8 @@
 import { faker } from "@faker-js/faker";
 //import { fakerBR } from 'fakerbr';
 import path from "../../../selectors/path.sel.cy";
-import mensagem from "../../../support/mensagemAlertEnum";
-import situacao from "../../../support/SituacaoEnum";
+import mensagem from "../../../support/enum/mensagemAlertEnum";
+import situacao from "../../../support/enum/SituacaoEnum";
 var fakerBr = require("faker-br");
 
 let doc;

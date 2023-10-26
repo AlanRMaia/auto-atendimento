@@ -2,7 +2,7 @@
 import { faker } from "@faker-js/faker";
 //import { fakerBR } from 'fakerbr';
 import path from "../../../selectors/path.sel.cy";
-import mensagem from "../../../support/mensagemAlertEnum";
+import mensagem from "../../../support/enum/mensagemAlertEnum";
 var fakerBr = require("faker-br");
 const celular = '(61)9990-67527'
 const transportador = {
@@ -42,7 +42,7 @@ describe("Grupo de teste Atendimento Renovação TAC", () => {
     cy.log(
       `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
     );
-    cy.criarPedidoAPI(transportador, "ALT").then((response) => {
+    cy.criarPrePedidoAPI(transportador, "ALT").then((response) => {
       return new Cypress.Promise((resolve) => {
         expect(response.status).to.equal(200);
         expect(response.body.cpfCnpjTransportador).to.equal(

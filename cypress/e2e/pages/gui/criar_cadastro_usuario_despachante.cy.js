@@ -2,9 +2,8 @@
 import { faker } from '@faker-js/faker';
 //import { fakerBR } from 'fakerbr';
 import path from '../../../selectors/path.sel.cy';
-import mensagem from "../../../support/mensagemAlertEnum";
 import urls from '../../../support/urls';
-import  conta  from "../../../support/TipoContaEnum";
+import  conta  from "../../../support/enum/TipoContaEnum";
 var fakerBr = require('faker-br');
 
 let senha;

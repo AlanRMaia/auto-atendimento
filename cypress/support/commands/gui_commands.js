@@ -50,11 +50,12 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import urls from './urls';
-import path from '../selectors/path.sel.cy';
-import operacao from "./OperacaoEnum";
+import urls from '../urls';
+import path from '../../selectors/path.sel.cy';
+import operacao from "../enum/OperacaoEnum";
 const each = require('cypress-recurse');
 require('cypress-xpath');
+let formatarCPF = require('../util/formatarCPF')
 
 Cypress.Commands.add('getByData', (selector) => {
   return cy.get(`[data-test=${selector}]`);
@@ -160,6 +161,53 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
     cy.wait('@salvarcontrato')
     cy.wait('@salvarcrlv', {timeout: 10000})
   })
+
+  Cypress.Commands.add('detalharOperacaoMotorista', (motorista) =>{
+     
+    cy.intercept('POST', '**/imagem').as('salvarcrlv')
+      cy.intercept('GET', '**?retornaImagens=true').as('salvarcontrato')
+      cy.get(path.detalhamentoAtendimentoPage.operacaoVeiculoCard,{timeout: 20000}).should('be.visible')
+      cy.document({timeout:20000}).then((doc) => {      
+         let found;
+          return new Cypress.Promise(resolve => {
+            
+            const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
+            resolve(element)
+            cy.wrap(element).each((ele, index, list)=> {
+              return new Cypress.Promise(resolve => {
+                cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
+                    return text.text().substring(0, 7)
+                    // cy.log('valor da placa:', motorista.cpf)          
+                    // if (descricao == motorista.nome ) {                  
+                    //   found = index                  
+                    // }               
+                  }).then(descricao => {
+                    cy.wrap(ele).find('.text-subtitle1').then(title => {
+                      //&&   && descricao == motorista.nome
+                        if (title.text() == 'Motorista' ) {
+                          found = index
+                          cy.log('Indice:', found)
+                        }
+                    })
+                  })
+                  resolve(found)
+              })          
+            }) 
+            cy.wrap(element).then((ele)=>{
+              cy.wrap(ele[found]).click()
+            })    
+          })
+        })  
+      
+      cy.get(path.generic.title).eq(0).contains('Motorista', {timeout: 20000})
+      cy.get(path.generic.title).eq(1).contains('Inclusão')
+        
+      cy.get(path.operacaoMotorista.cpf).should('have.value', formatarCPF(motorista.cpf))
+      
+      cy.get(path.generic.botaoVoltar).contains('Voltar').click({force: true})
+
+      
+    })
 
 
 Cypress.Commands.add('notificacao', (mensagem, arquivo) => {
