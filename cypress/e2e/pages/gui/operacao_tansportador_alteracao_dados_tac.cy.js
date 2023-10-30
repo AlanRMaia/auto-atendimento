@@ -5,177 +5,704 @@ import path from "../../../selectors/path.sel.cy";
 import mensagem from "../../../support/enum/mensagemAlertEnum";
 var fakerBr = require("faker-br");
 
-const transportador = {
-  cpfCnpj: "06009554861",
-  nome: "CARLOS EDUARDO GRECO",
-  rntrc: "000015551",
-  situacao: "ATIVO",
-  saldo: "R$ 0,00",
-  sigla: "TAC",
-  tipo: "Autônomo",
-};
-const sindicato = {
-  perfil: "FETAC-MG - Master",
-  sigla: "FETAC-MG",
-  path: path.generic.perfilSitcarga.FETACMGMaster,
-};
-
-describe("Grupo de teste Atendimento Renovação TAC", () => {
-  let idPrePedido = "";
-  beforeEach(() => {
-    cy.intercept("GET", "**/validarpedido").as("validarpedido");
-    cy.intercept("PUT", "**/finalizar").as("finalizarpedido");
-    cy.intercept("GET", `**/rntrc/PrePedido/**`).as(
-      "gridoperacao"
-    );
-    cy.intercept(
-      "GET",
-      `**/rntrc/PrePedido/listarentidadesdisponiveis**`
-    ).as("listaSindicatos");
-
+describe("Suite de testes operação Transportador", () => {
+  
+  beforeEach(() => { 
     cy.viewport(1920, 1080);
     cy.login();
   });
 
-  // ------ Abrir Atendimento de Renovação ------//
   it("Criando pedido API e incluindo operação transportador", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");
+    const doc = require("../../../fixtures/data/doc/documentos.json");
+    const sindicato = {
+      idEntidade:{
+        banco: 21,
+        sitcarga: 1534
+      },
+      perfil: "FETAC-MG - Master",
+      sigla: "FETAC-MG",
+      path: path.generic.perfilSitcarga.FETACMGMaster,
+    };
+    let idPrePedido;
     cy.log(
       `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
     );
-    cy.criarPrePedidoAPI(transportador, "ALT").then((response) => {
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
       return new Cypress.Promise((resolve) => {
         expect(response.status).to.equal(200);
         expect(response.body.cpfCnpjTransportador).to.equal(
-          transportador.cpfCnpj
+          transportador.dadosTransportador.cpfCnpj
         );
-        expect(response.body.transportador).to.equal(transportador.nome);
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
         expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
         expect(response.body.codSituacao).to.equal("CAD");
         idPrePedido = response.body.id;
         resolve(idPrePedido);
-        cy.visit(`atendimento/${idPrePedido}/detalhe`).wait("@gridoperacao");
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
         cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
           (element) => {
             expect(element.text()).to.be.equal(`#${idPrePedido}`);
           }
         );
+
+        // ------ Criar operação Salvar transportador -----//
+
+        cy.url().should("include", `detalhe`);
+        cy.operacaoTransportador(fakerBr, transportador.dadosTransportador.sigla);
+        cy.notificacao(mensagem.TransportadorSucesso);
+
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+      expect(response.status).to.equal(200);
+    })  
       });
+      
     });
-
-    // ------ Criar operação Salvar transportador -----//
-
-    cy.url().should("include", `detalhe`);
-    cy.wait("@gridoperacao");
-    cy.operacaoTransportador(fakerBr, transportador.sigla);
-    cy.notificacao(mensagem.TransportadorSucesso);
 
     
-    cy.intercept("PUT", "**/entidade").as("entidadePUT");
-    cy.intercept("POST", "**/entidade").as("entidadePOST");
-    cy.intercept("GET", "**/valor**").as("tabela");
-    cy.url().should("include", `detalhe`);
-    cy.wait("@gridoperacao");
-
-    cy.get(path.generic.botaoConfirmar, { timeout: 10000 })
-      .should("be.visible")
-      .click({ force: true });
-
-    cy.get(path.generic.title, { timeout: 10000 }).contains(
-      "Escolha Ponto de Atendimento"
-    );
-
-    cy.get(path.checkoutAtendimentoPage.pontosAtendimento, { timeout: 10000 })
-      .click()      
-      .type(sindicato.sigla)
-      //.wait(5000)
-      .wait('@listaSindicatos')
-      .get(path.checkoutAtendimentoPage.listaSindicatos, { timeout: 10000 })
-      .contains(sindicato.sigla, { timeout: 10000 })
-      .click();
-
-    cy.wait("@gridoperacao");
-    cy.wait("@entidadePOST");
-    cy.wait("@tabela");
-
-    cy.get(path.generic.tabela, { timeout: 30000 }).then((ele) => {
-      cy.log(ele.text());
-
-      cy.wrap(ele)
-        .get(`tbody>:nth-child(${1})>.text-left`)
-        .should("have.text", "Alteração de Dados do Transportador (Gratuito)");
-      cy.wrap(ele)
-        .get(`tbody>:nth-child(${1})>:nth-child(2)`)
-        .should("have.text", "R$0.00");
-      cy.wrap(ele)
-        .get(`tbody>:nth-child(${1})>.text-center`)
-        .should("have.text", "1");
-      cy.wrap(ele)
-        .get(`tbody>:nth-child(${1})>:nth-child(4)`)
-        .should("have.text", "R$0.00");
-
-      cy.get(".q-table__bottom > .q-item__section--side").should(
-        "have.text",
-        " R$0.00"
-      );
-    });
-    cy.get(path.checkoutAtendimentoPage.botaoConfirmar1).click({
-      force: true,
-    });
-
-    // ------ Validação do pedido  -------//
-
-    cy.get(
-      ".q-stepper__tab--active > .q-stepper__label > .q-stepper__title"
-    ).contains("Validar Atendimento");
-
-    cy.get(".text-6").contains("Atendimento Válido");
-    cy.wait("@validarpedido");
-    cy.get(path.checkoutAtendimentoPage.botaoConfirmar2, {
-      timeout: 10000,
-    }).click({ force: true });
-
-    cy.get(path.generic.title, { timeout: 10000 }).contains(
-      "Confira o Resumo do Pedido"
-    );
-
-    cy.get(path.generic.tabela, { timeout: 30000 }).then((ele) => {
-      cy.log(ele.text());
-
-      cy.wrap(ele)
-        .get(`tbody>:nth-child(${1})>.text-left`)
-        .should("have.text", "Alteração de Dados do Transportador (Gratuito)");
-      cy.wrap(ele)
-        .get(`tbody>:nth-child(${1})>:nth-child(2)`)
-        .should("have.text", "R$0.00");
-      cy.wrap(ele)
-        .get(`tbody>:nth-child(${1})>.text-center`)
-        .should("have.text", "1");
-      cy.wrap(ele)
-        .get(`tbody>:nth-child(${1})>:nth-child(4)`)
-        .should("have.text", "R$0.00");
-
-      cy.get(".q-table__bottom > .q-item__section--side").should(
-        "have.text",
-        " R$0.00"
-      );
-    });
-
-    cy.get(path.generic.finalizar).click({ force: true });
-
-    cy.get(".q-ml-sm").should(
-      "have.text",
-      "Confirma a finalização do atendimento?"
-    );
-    cy.get(".q-card__actions > :nth-child(1) > .q-btn__content")
-      .should("have.text", "OK")
-      .click();
-
-    // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('be.visible')
-
-    // cy.xpath('/html/body/div[1]/div/div[2]/div/div[2]/div/div/div/div/div[4]', {timeout: 20000}).should('not.exist')*/
-    cy.wait("@validarpedido");
-    cy.wait("@finalizarpedido", { timeout: 120000 });
-    cy.notificacao(mensagem.AtendimentofinalizadoSucesso);
   });
+
+  
+
+  it("Verificar se os campos da operação Transportador estão na posição correta", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido = 2071817;
+    const listDataCy = [
+      'razaoSocialInput',
+      'identidadeInput'
+    ];
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    );
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );
+
+        // ------ operação Salvar transportador -----//
+        cy.url().should("include", `detalhe`);
+        cy.get(path.detalhamentoAtendimentoPage.operacaoTransportador)
+        .contains('Transportador').click({force: true})
+
+        //cy.acessarPedido(idPrePedido)        
+
+        cy.get('.q-form').then((form) => {
+          cy.wrap(form).find('.q-field__inner').each( (input, index, list) => {
+              cy.wrap(input).find('input.q-field__native.q-placeholder').should('have.attr', 'data-cy', listDataCy[index])
+          })
+        })
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+
+    
+  });
+
+  it("Verificar se o sistema está apresentando a mensagem de erro quando os campos não foram preenchidos", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido = 2071817;
+    const listDataCy = [
+      'razaoSocialInput',
+      'identidadeInput'
+    ];
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    );
+    //*
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );
+
+         // ------ operação Salvar transportador -----//
+         cy.url().should("include", `detalhe`);
+         cy.get(path.detalhamentoAtendimentoPage.operacaoTransportador)
+         .contains('Transportador').click({force: true})
+
+        //cy.acessarPedido(idPrePedido)
+        
+        //*Action
+        cy.get(path.operacaoTransportador.razaoSocial).click().tab()
+        cy.get(path.operacaoTransportador.identidade).click().tab()
+        
+        //*Assert
+        cy.get('.q-form').then((form) => {
+          cy.wrap(form).find('.q-field__inner').each( (input, index, list) => {
+              cy.wrap(input).find('.q-field__bottom > .q-field__messages >').should('contain.text', 'Campo obrigatório' )
+          })
+        })
+        
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+
+    
+  });
+
+  it("Verificar se o sistema está impedindo a criação da operação Transportador clicando no botão salvar quando o campo nome está em branco", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido = 2071817;
+    const listDataCy = [
+      'razaoSocialInput',
+      'identidadeInput'
+    ];
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    );
+    //*
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );
+
+        // ------ operação Salvar transportador -----//
+        cy.url().should("include", `detalhe`);
+        cy.get(path.detalhamentoAtendimentoPage.operacaoTransportador)
+        .contains('Transportador').click({force: true})
+
+        //cy.acessarPedido(idPrePedido)
+        
+        //*Action
+        cy.get(path.operacaoTransportador.identidade).type(transportador.dadosTransportador.rg);
+        
+        cy.get(path.generic.botaoSubmit).click()
+        
+        //*Assert
+        cy.get('.q-form').then((form) => {
+          cy.wrap(form).find('.q-field__inner').each( (input, index, list) => {
+              cy.wrap(input).find('.q-field__bottom > .q-field__messages >').should('contain.text', 'Campo obrigatório' )
+              return false
+          })
+        })
+        
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+
+    
+  });
+
+  it("Verificar se o sistema está impedindo a criação da operação Transportador clicando no botão salvar quando o campo identidade está em branco", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido = 2071829;
+    const listDataCy = [
+      'razaoSocialInput',
+      'identidadeInput'
+    ];
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    ); 
+    //*
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );
+
+        // ------ operação Salvar transportador -----//
+        cy.url().should("include", `detalhe`);
+        cy.get(path.detalhamentoAtendimentoPage.operacaoTransportador)
+        .contains('Transportador').click({force: true})
+
+        //cy.acessarPedido(idPrePedido)
+        
+        //*Action
+        cy.get(path.operacaoTransportador.razaoSocial).type(transportador.dadosTransportador.nome)
+        cy.get(path.generic.botaoSubmit).click()
+        
+        //*Assert
+        cy.get(`form > div:nth-child(2) > label > div > div.q-field__bottom.row.items-start.q-field__bottom--animated > div > div`)
+        .should('contain.text', 'Campo obrigatório' )
+        
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+
+    
+  });
+
+  it("Verificar se o campo identidade da operação transportador está aceitando o preenchimento de caracteres de texto", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido = 2071829;
+    const listDataCy = [
+      'razaoSocialInput',
+      'identidadeInput'
+    ];
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    ); 
+    //*
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );
+
+        // ------ operação Salvar transportador -----//
+        cy.url().should("include", `detalhe`);
+        cy.get(path.detalhamentoAtendimentoPage.operacaoTransportador)
+        .contains('Transportador').click({force: true})
+
+        //*Action
+        cy.get(path.operacaoTransportador.identidade).type('testando campo identidade que não deve aceitar caracteres de texto')
+        cy.get(path.operacaoTransportador.identidade).should('not.have.text')
+        cy.get(path.generic.botaoSubmit).click()
+        
+        //*Assert
+        cy.get(`form > div:nth-child(2) > label > div > div.q-field__bottom.row.items-start.q-field__bottom--animated > div > div`)
+        .should('contain.text', 'Campo obrigatório' )
+        
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+
+    
+  });
+
+  it("Verificar se o detalhamento da operação está funcional", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido;
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    );
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        // ------ Criar operação Salvar transportador -----//
+        cy.criarOperacaoTransportadorAPI(transportador, idPrePedido).then( response => {
+          
+          expect(response.status).to.equal(200);
+
+        })
+
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );
+
+        cy.url().should("include", `detalhe`);        
+        cy.detalharOperacaoTransportador(transportador.dadosTransportador)
+
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+    
+  });
+
+  it("Verificar se o sistema está aceitando editar o nome e identidade na operação transportador sem erros", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido;
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    );
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        // ------ Criar operação Salvar transportador -----//
+        cy.criarOperacaoTransportadorAPI(transportador, idPrePedido).then( response => {
+          
+          expect(response.status).to.equal(200);
+
+        })
+
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );        
+
+        cy.visit(`atendimento/${idPrePedido}/transportador/transportador-detalhar?id=${transportador.dadosTransportador.sigla}`)
+         const name = fakerBr.name.findName(); 
+         const rg = fakerBr.random.number({max: 99999})
+        //*Action
+        cy.get(path.operacaoTransportador.razaoSocial).clear().type(name)
+        cy.get(path.operacaoTransportador.identidade).clear().type(rg)
+        cy.get(path.generic.botaoSubmit).click()  
+        
+        //*Assert
+        cy.notificacao(mensagem.EdicaoTransportador);
+
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+    
+  });
+
+  it("Verificar se após a edição de um transportador se o nome atualizado aparece no card da operação no grid de detalhamento do atendimento", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido = 2071863;
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    );
+    
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        /// ------ Criar operação Salvar transportador -----//
+        cy.criarOperacaoTransportadorAPI(transportador, idPrePedido).then( response => {
+          
+          expect(response.status).to.equal(200);
+
+        })
+
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );        
+
+        cy.visit(`atendimento/${idPrePedido}/transportador/transportador-detalhar?id=${transportador.dadosTransportador.sigla}`)
+         const name = fakerBr.name.findName(); 
+         const rg = fakerBr.random.number({max: 99999})
+        //*Action
+        cy.get(path.operacaoTransportador.razaoSocial).clear().type(name)
+        cy.get(path.operacaoTransportador.identidade).clear().type(rg)
+        cy.get(path.generic.botaoSubmit).click()  
+        cy.notificacao(mensagem.EdicaoTransportador)
+        transportador.dadosTransportador.nome = name;
+        transportador.dadosTransportador.rg = rg;
+
+        //*Assert
+        cy.url().should("include", `detalhe`);        
+        cy.detalharOperacaoTransportador(transportador.dadosTransportador, 'Alteração')
+
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+    
+  });
+
+  it("Verificar detalhando a operação Alterar transportador, se os dados salvos na edição do transportador correspondem aos que foram salvos", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido = 2071857;
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    );
+    
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        // ------ Criar operação Salvar transportador -----//
+        cy.criarOperacaoTransportadorAPI(transportador, idPrePedido).then( response => {
+          
+          expect(response.status).to.equal(200);
+
+        })
+
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );        
+
+        cy.visit(`atendimento/${idPrePedido}/transportador/transportador-detalhar?id=${transportador.dadosTransportador.sigla}`)
+         const name = fakerBr.name.findName(); 
+         const rg = fakerBr.random.number({max: 99999})
+        //*Action
+        cy.get(path.operacaoTransportador.razaoSocial).clear().type(name)
+        cy.get(path.operacaoTransportador.identidade).clear().type(rg)
+        cy.get(path.generic.botaoSubmit).click()  
+        
+        //*Assert
+        cy.notificacao(mensagem.EdicaoTransportador);
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)        
+        cy.visit(`atendimento/${idPrePedido}/transportador/transportador-detalhar?id=${transportador.dadosTransportador.sigla}`)
+
+        cy.get(path.operacaoTransportador.razaoSocial).should('contain.value', name)
+        cy.get(path.operacaoTransportador.identidade).should('contain.value', rg)
+
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+    
+  });
+
+  it("Verificar se os campos estão na posição correta no detalhamento da operação transportador", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido = 2071817;
+    const listDataCy = [
+      'razaoSocialInput',
+      'identidadeInput'
+    ];
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    );
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );
+
+        // ------ operação Salvar transportador -----//
+        
+        cy.criarOperacaoTransportadorAPI(transportador, idPrePedido).then( response => {
+          
+          expect(response.status).to.equal(200);
+
+        })
+
+        cy.visit(`atendimento/${idPrePedido}/transportador/transportador-detalhar?id=${transportador.dadosTransportador.sigla}`)
+
+        //cy.acessarPedido(idPrePedido)        
+
+        cy.get('.q-form').then((form) => {
+          cy.wrap(form).find('.q-field__inner').each( (input, index, list) => {
+              cy.wrap(input).find('input.q-field__native.q-placeholder').should('have.attr', 'data-cy', listDataCy[index])
+          })
+        })
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+    
+  });
+
+  it("Verificar se o sistema está apresentando mensagem de erro quando os campos não foram preenchidos dentro do detalhamento da operação transportador", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido = 2071817;
+    const listDataCy = [
+      'razaoSocialInput',
+      'identidadeInput'
+    ];
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    );
+    //*
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        cy.visit(`atendimento/${idPrePedido}/detalhe`)
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );
+
+         // ------ operação Salvar transportador -----//
+        
+        cy.criarOperacaoTransportadorAPI(transportador, idPrePedido).then( response => {
+          
+          expect(response.status).to.equal(200);
+
+        })
+
+        cy.visit(`atendimento/${idPrePedido}/transportador/transportador-detalhar?id=${transportador.dadosTransportador.sigla}`)
+
+        //cy.acessarPedido(idPrePedido)
+        
+        //*Action
+        cy.get(path.operacaoTransportador.razaoSocial).clear().tab()
+        cy.get(path.operacaoTransportador.identidade).clear().tab()
+        
+        //*Assert
+        cy.get('.q-form').then((form) => {
+          cy.wrap(form).find('.q-field__inner').each( (input, index, list) => {
+              cy.wrap(input).find('.q-field__bottom > .q-field__messages >').should('contain.text', 'Campo obrigatório' )
+          })
+        })
+        
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+
+    
+  });
+
+  it.only("Verificar se ao clicar no botão para desfazer a operação se ela sai do grid de detalhamento do atendimento", () => {
+    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");    
+    let idPrePedido = 2071865;
+    cy.log(
+      `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
+    );
+    //*     
+    cy.criarPrePedidoAPI(transportador.dadosTransportador, "ALT").then((response) => {
+      return new Cypress.Promise((resolve) => {
+        expect(response.status).to.equal(200);
+        expect(response.body.cpfCnpjTransportador).to.equal(
+          transportador.dadosTransportador.cpfCnpj
+        );
+        expect(response.body.transportador).to.equal(transportador.dadosTransportador.nome);
+        expect(response.body.situacao).to.equal("EM CADASTRAMENTO");
+        expect(response.body.codSituacao).to.equal("CAD");
+        idPrePedido = response.body.id;
+        resolve(idPrePedido);
+        // ------ Criar operação Salvar transportador -----//
+        cy.criarOperacaoTransportadorAPI(transportador, idPrePedido).then( response => {          
+          expect(response.status).to.equal(200);
+        })
+
+        cy.visit(`atendimento/${idPrePedido}/detalhe`);
+        cy.get(path.generic.idAtendimento, { timeout: 10000 }).then(
+          (element) => {
+            expect(element.text()).to.be.equal(`#${idPrePedido}`);
+          }
+        );
+        cy.url().should('include', 'detalhe');    
+          
+        cy.desfazerOperacaoTransportador(transportador.dadosTransportador, 'Alteração');
+
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
+          expect(response.status).to.equal(200);
+        })  
+      });
+      
+    });
+    
+  });
+
+  
   
 });
+

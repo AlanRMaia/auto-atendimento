@@ -175,4 +175,21 @@ Cypress.Commands.add("criarOperacaoDocumentoVeiculoPrePedidoAPI", (placa, doc, i
   })
 });
 
+Cypress.Commands.add("criarOperacaoFilialPrePedidoAPI", (id) => {
+  cy.loginAPI().then(response => {
+    cy.api({
+      method: "POST", 
+      url: `${urls.api}/rntrc/PrePedido/${id}/contato/salvar`,  
+      body: {
+        "cnpj": "string",
+        "nome": "string",
+        "valorCapitalSocial": 0,
+        "siglaUF": "string",
+        "idCidade": 0
+      },
+      headers: { Authorization: `Bearer ${response.body.access_token}` },
+    });
+  })
+});
+
 

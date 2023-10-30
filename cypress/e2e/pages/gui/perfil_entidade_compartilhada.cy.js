@@ -250,7 +250,10 @@ describe("Suite de testes no compartilhamento do ferfil dos sindicatos com os us
     const usuario = require("../../../fixtures/usuario.json");
     let idPrePedido;
     const sindicato = {
-      idEntidade: 1534,
+      idEntidade:{
+        banco: 21,
+        sitcarga: 1534
+      },
       perfil: "FETAC-MG - Master",
       sigla: "FETAC-MG",
       path: path.generic.perfilSitcarga.FETACMGMaster,

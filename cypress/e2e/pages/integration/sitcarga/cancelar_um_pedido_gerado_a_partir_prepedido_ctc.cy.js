@@ -187,7 +187,7 @@ it('Iniciando so testes no autoatendimento', () => {
       //     //   });  
              // -------- Criar operação Incluir Filial ------//
             it.skip('Criar operação Incluir Filial', () => {                 
-              cy.incluirFilial(fakerBr)
+              cy.incluirFilial()
               cy.notificacao(mensagem.DadosSalvoSucesso)      
             });
             

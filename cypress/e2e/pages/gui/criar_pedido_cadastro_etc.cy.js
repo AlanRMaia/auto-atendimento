@@ -237,7 +237,7 @@ describe('Grupo de teste Atendimento Cadastro ETC', () => {
         cy.acessarPedido(idPrePedido)
         cy.url().should('include', `detalhe`)
         cy.wait('@detalheGridOperacao') 
-        cy.incluirFilial(fakerBr)
+        cy.incluirFilial()
         cy.notificacao(mensagem.DadosSalvoSucesso)      
       });
 

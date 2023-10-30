@@ -27,13 +27,23 @@ module.exports = {
     categoria: "C",
   },
   gestor: {
-    cpfCnpj: '344.492.720-72',
+    cpfCnpj: '34449272072',
     nome: 'CELSO LUIZ CORSO',
     cargo: 'Sócio',
     telefone: '2188888888',
     email: 'texte#@teste.com',
     dataNascimento: '06/04/1948'
   },
+
+  filial: {
+    cnpj: "20919777000161",
+    nome: "EVO SA",
+    valorCapitalSocial: 0,
+    estado: 'Rio de Janeiro',
+    siglaUF: "RJ",
+    idCidade: 7043
+  },
+
   gestorResponsavelLegal: {
     cpfCnpj: '28155637034',
     nome: 'ANA CAROLINA DIAS DE SOUZA',
@@ -43,10 +53,12 @@ module.exports = {
     dataNascimento: '20/02/20000'
   },
   responsavelTecnico: {
-    cpf: '344.492.720-72',
+    cpf: '34449272072',
     nome: 'CELSO LUIZ CORSO',
     identidade: '2008419323',
-    dataNascimento: '15/03/1962'
+    dataNascimento: '15/03/1962',
+    email: 'contato@rodocorso.com.br',
+    telefone: "(54) 3279-3800"
   },
   veiculos: [
      {

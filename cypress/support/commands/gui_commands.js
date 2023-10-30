@@ -53,9 +53,11 @@
 import urls from '../urls';
 import path from '../../selectors/path.sel.cy';
 import operacao from "../enum/OperacaoEnum";
+import mensagem from "../enum/mensagemAlertEnum";
+import formatarCPFCNPJ from '../util/formatarCPF';
+import formatarPLACA from '../util/formatarPLACA';
 const each = require('cypress-recurse');
 require('cypress-xpath');
-let formatarCPF = require('../util/formatarCPF')
 
 Cypress.Commands.add('getByData', (selector) => {
   return cy.get(`[data-test=${selector}]`);
@@ -162,10 +164,8 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
     cy.wait('@salvarcrlv', {timeout: 10000})
   })
 
-  Cypress.Commands.add('detalharOperacaoMotorista', (motorista) =>{
-     
-    cy.intercept('POST', '**/imagem').as('salvarcrlv')
-      cy.intercept('GET', '**?retornaImagens=true').as('salvarcontrato')
+  Cypress.Commands.add('detalharOperacaoMotorista', (motorista) =>{     
+    
       cy.get(path.detalhamentoAtendimentoPage.operacaoVeiculoCard,{timeout: 20000}).should('be.visible')
       cy.document({timeout:20000}).then((doc) => {      
          let found;
@@ -184,7 +184,7 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
                   }).then(descricao => {
                     cy.wrap(ele).find('.text-subtitle1').then(title => {
                       //&&   && descricao == motorista.nome
-                        if (title.text() == 'Motorista' ) {
+                        if (title.text() == 'Motorista' && cy.wrap(descricao).contains(motorista.nome) ) {
                           found = index
                           cy.log('Indice:', found)
                         }
@@ -202,13 +202,277 @@ Cypress.Commands.add('anexarDocumentosVeiculo', (selectFile, veiculo) =>{
       cy.get(path.generic.title).eq(0).contains('Motorista', {timeout: 20000})
       cy.get(path.generic.title).eq(1).contains('Inclusão')
         
-      cy.get(path.operacaoMotorista.cpf).should('have.value', formatarCPF(motorista.cpf))
+      cy.get(path.operacaoMotorista.cpf).should('have.value', formatarCPFCNPJ(motorista.cpf))
       
       cy.get(path.generic.botaoVoltar).contains('Voltar').click({force: true})
 
       
     })
 
+    Cypress.Commands.add('detalharOperacaoGestor', (gestor, tipoOperacao) =>{
+     
+        cy.get(path.detalhamentoAtendimentoPage.operacaoVeiculoCard,{timeout: 20000}).should('be.visible')
+        cy.document({timeout:20000}).then((doc) => {      
+           let found;
+            return new Cypress.Promise(resolve => {
+              
+              const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
+              resolve(element)
+              cy.wrap(element).each((ele, index, list)=> {
+                return new Cypress.Promise(resolve => {
+                  cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
+                      return text.text()
+                      // cy.log('valor da placa:', motorista.cpf)          
+                      // if (descricao == motorista.nome ) {                  
+                      //   found = index                  
+                      // }               
+                    }).then(descricao => {
+                      cy.wrap(ele).find('.text-subtitle1').then(title => {
+                        //&&   && descricao == motorista.nome
+                        let textoDescricao = descricao;
+                          if (title.text() == 'Gestor' &&  textoDescricao == `${gestor.nome}${formatarCPFCNPJ(gestor.cpfCnpj)}${gestor.cargo}`) {
+                            found = index
+                            cy.log('Indice:', found)
+                          }
+                      })
+                    })
+                    resolve(found)
+                })          
+              }) 
+              cy.wrap(element).then((ele)=>{
+                cy.wrap(ele[found]).click()
+              })    
+            })
+          })  
+        
+        cy.get(path.generic.title).eq(0).contains('Gestor', {timeout: 20000})
+        cy.get(path.generic.title).eq(1).contains(tipoOperacao)
+          
+        cy.get(path.operacaoGestor.cpfCnpj).should('have.value', formatarCPFCNPJ(gestor.cpfCnpj))
+        
+        cy.get(path.generic.botaoVoltar).contains('Voltar').click({force: true})
+  
+        
+      })
+
+      Cypress.Commands.add('detalharOperacaoResponsavelTecnico', (responsavelTecnico, tipoOperacao) =>{
+     
+        cy.get(path.detalhamentoAtendimentoPage.operacaoVeiculoCard,{timeout: 20000}).should('be.visible')
+        cy.document({timeout:20000}).then((doc) => {      
+           let found;
+            return new Cypress.Promise(resolve => {
+              
+              const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
+              resolve(element)
+              cy.wrap(element).each((ele, index, list)=> {
+                return new Cypress.Promise(resolve => {
+                  cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
+                      return text.text()
+                                    
+                    }).then(descricao => {
+                      cy.wrap(ele).find('.text-subtitle1').then(title => {
+                        let textoDescricao = descricao;
+                        cy.log('Titulo:',title.text())
+                          if (title.text() == 'Responsável Técnico' &&  textoDescricao == `${responsavelTecnico.nome}${formatarCPFCNPJ(responsavelTecnico.cpf)}${responsavelTecnico.email}`) {
+                            found = index
+                            cy.log('Indice:', found)
+                          }
+                      })
+                    })
+                    resolve(found)
+                })          
+              }) 
+              cy.wrap(element).then((ele)=>{
+                cy.wrap(ele[found]).click()
+              })    
+            })
+          })  
+        
+        cy.get(path.generic.title).eq(0).contains('Responsável Técnico', {timeout: 20000})
+        cy.get(path.generic.title).eq(1).contains(tipoOperacao)
+          
+        cy.get(path.operacaoResponsavelTecnico.cpf).should('have.value', formatarCPFCNPJ(responsavelTecnico.cpf))
+        
+        cy.get(path.generic.botaoVoltar).contains('Voltar').click({force: true})
+  
+        
+      })
+
+Cypress.Commands.add('detalharOperacaoIncluirVeiculo', (veiculo, tipoOperacao) =>{
+     
+        cy.get(path.detalhamentoAtendimentoPage.operacaoVeiculoCard,{timeout: 20000}).should('be.visible')
+        cy.document({timeout:20000}).then((doc) => {      
+           let found;
+            return new Cypress.Promise(resolve => {
+              
+              const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
+              resolve(element)
+              cy.wrap(element).each((ele, index, list)=> {
+                return new Cypress.Promise(resolve => {
+                  cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
+                      return text.text()
+                                    
+                    }).then(descricao => {
+                      cy.wrap(ele).find('.text-subtitle1').then(title => {
+                        let textoDescricao = descricao;
+                        cy.log('Titulo:',title.text())
+                          if (title.text() == 'Veículo' &&  textoDescricao == `${veiculo.placa}${veiculo.renavam}${veiculo.propriedade}`) {
+                            found = index
+                            cy.log('Indice:', found)
+                          }
+                      })
+                    })
+                    resolve(found)
+                })          
+              }) 
+              cy.wrap(element).then((ele)=>{
+                cy.wrap(ele[found]).click()
+              })    
+            })
+          })  
+        
+        cy.get(path.generic.title).eq(0).contains('Veículo', {timeout: 20000})
+        cy.get(path.generic.title).eq(1).contains(tipoOperacao)
+          
+        cy.get(path.operacaoVeiculo.placa).should('have.value', formatarPLACA(veiculo.placa))
+        
+        cy.get(path.generic.botaoVoltar).contains('Voltar').click({force: true})
+  
+        
+      })
+
+    Cypress.Commands.add('detalharOperacaoIncluirFilial', (filial, tipoOperacao) =>{
+    
+      cy.get(path.detalhamentoAtendimentoPage.operacaoVeiculoCard,{timeout: 20000}).should('be.visible')
+      cy.document({timeout:20000}).then((doc) => {      
+         let found;
+          return new Cypress.Promise(resolve => {
+            
+            const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
+            resolve(element)
+            cy.wrap(element).each((ele, index, list)=> {
+              return new Cypress.Promise(resolve => {
+                cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
+                    return text.text()
+                                  
+                  }).then(descricao => {
+                    cy.wrap(ele).find('.text-subtitle1').then(title => {
+                      let textoDescricao = descricao;
+                      cy.log('Titulo:',title.text())
+                        if (title.text() == 'Veículo' &&  textoDescricao == `${filial.nome}${filial.cnpj}${filial.estado}`) {
+                          found = index
+                          cy.log('Indice:', found)
+                        }
+                    })
+                  })
+                  resolve(found)
+              })          
+            }) 
+            cy.wrap(element).then((ele)=>{
+              cy.wrap(ele[found]).click()
+            })    
+          })
+        })  
+      
+      cy.get(path.generic.title).eq(0).contains('Filial', {timeout: 20000})
+      cy.get(path.generic.title).eq(1).contains(tipoOperacao)
+        
+      cy.get(path.operacaoFilial.cnpj).should('have.value', formatarCPFCNPJ(filial.cnpj))
+      
+      cy.get(path.generic.botaoVoltar).contains('Voltar').click({force: true})
+
+      
+    })
+
+    Cypress.Commands.add('detalharOperacaoTransportador', (transportador, tipoOperacao) =>{
+    
+      cy.get(path.detalhamentoAtendimentoPage.operacaoVeiculoCard,{timeout: 20000}).should('be.visible')
+      cy.document({timeout:20000}).then((doc) => {      
+         let found;
+          return new Cypress.Promise(resolve => {
+            
+            const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
+            resolve(element)
+            cy.wrap(element).each((ele, index, list)=> {
+              return new Cypress.Promise(resolve => {
+                if (typeof tipoOperacao !== "undefined") {
+                  cy.wrap(ele).find('span.text-bold.q-pb-sm.card-op-label-orange').should('contain.text', tipoOperacao)
+                  cy.log('tipoOperação:', tipoOperacao)  
+                }                             
+
+                cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
+                    return text.text()
+                                  
+                  }).then(descricao => {
+                    cy.wrap(ele).find('.text-subtitle1').then(title => {
+                      let textoDescricao = descricao;
+                      cy.log('Descricao:', textoDescricao)
+                        if (title.text() == 'Transportador' &&  textoDescricao == `${transportador.nome}`) {
+                          found = index
+                          cy.log('Indice:', found)
+                        }
+                    })
+                  })
+                  resolve(found)
+              })          
+            }) 
+            cy.wrap(element).then((ele)=>{              
+              cy.wrap(ele[found]).click()
+            })    
+          })
+        })  
+      
+      cy.get(path.generic.title).eq(0).contains('Transportador', {timeout: 20000})
+        
+      cy.get(path.operacaoTransportador.identidade).should('have.value', transportador.rg)
+      
+      cy.get(path.generic.botaoVoltar).contains('Voltar').click({force: true})
+
+      
+    })
+
+    Cypress.Commands.add('desfazerOperacaoTransportador', (transportador, tipoOperacao) => {
+    
+      cy.get(path.detalhamentoAtendimentoPage.operacaoVeiculoCard,{timeout: 20000}).should('be.visible')
+      cy.document({timeout:20000}).then((doc) => {      
+         let found;
+          return new Cypress.Promise(resolve => {
+            
+            const element = doc.querySelector(path.detalhamentoAtendimentoPage.gridOperacoes).children
+            resolve(element)
+            cy.wrap(element).each((ele, index, list)=> {
+              return new Cypress.Promise(resolve => {
+                if (typeof tipoOperacao !== "undefined") {
+                  cy.wrap(ele).find('span.text-bold.q-pb-sm.card-op-label-orange').should('contain.text', tipoOperacao)
+                  cy.log('tipoOperação:', tipoOperacao)  
+                }                             
+
+                cy.wrap(ele).find(path.detalhamentoAtendimentoPage.descricaoOperacao, {timeout: 20000}).then((text) => {
+                    return text.text()
+                                  
+                  }).then(descricao => {
+                    cy.wrap(ele).find('.text-subtitle1').then(title => {
+                      let textoDescricao = descricao;
+                      cy.log('Descricao:', textoDescricao)
+                        if (title.text() == 'Transportador' &&  textoDescricao == `${transportador.nome}`) {
+                          found = index
+                          cy.log('Indice:', found)
+                        }
+                    })
+                  })
+                  resolve(found)
+              })          
+            }) 
+            cy.wrap(element).then((ele)=>{              
+              cy.wrap(ele[found]).find('div.col-2.self-end i').should('have.attr', 'title', 'Cancelar').click()
+              cy.get('.q-ml-sm').should('contain.text', 'Confirma o cancelamento da operação?').get(path.generic.botaoOk).click()              
+            })    
+          })
+        })
+        cy.notificacao(mensagem.OperacaoCanceladaSucesso);      
+        cy.get(path.detalhamentoAtendimentoPage.operacaoVeiculoCard,{timeout: 20000}).should('not.exist')       
+      
+    })
 
 Cypress.Commands.add('notificacao', (mensagem, arquivo) => {
   if (typeof arquivo === "undefined") {

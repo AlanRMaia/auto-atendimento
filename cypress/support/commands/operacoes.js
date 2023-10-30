@@ -782,7 +782,7 @@ Cypress.Commands.add('incluirGestor', (gestor, tipoTransportador) => {
             
             if ( valor === 5) {
               cy.log('segundo dentro')
-              cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
+              cy.get(path.operacaoGestor.dataNascimento).type(gestor.dataNascimento)
             } 
             cy.log('segundo fora')
 
@@ -804,7 +804,7 @@ Cypress.Commands.add('incluirGestor', (gestor, tipoTransportador) => {
             
             if ( valor === 5) {
               cy.log('segundo dentro')
-              cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
+              cy.get(path.operacaoGestor.dataNascimento).type(gestor.dataNascimento)
             } 
             cy.log('segundo fora')
 
@@ -825,7 +825,7 @@ Cypress.Commands.add('incluirGestor', (gestor, tipoTransportador) => {
             
             if ( valor === 5) {
               cy.log('segundo dentro')
-              cy.get(path.operacaoGestor.dataNascimento).type(gestor.nascimento)
+              cy.get(path.operacaoGestor.dataNascimento).type(gestor.dataNascimento)
             } 
             cy.log('segundo fora')
 
@@ -1102,21 +1102,31 @@ Cypress.Commands.add('excluirMotorista', (faker, cpf) => {
 
 })
 
-Cypress.Commands.add('incluirFilial', (faker)=>{
-  let uf = faker.random.arrayElement(path.generic.uf)
+Cypress.Commands.add('incluirFilial', (filial)=>{  
   
   cy.get(path.detalhamentoAtendimentoPage.operacao)
   .contains('Filial').click({force: true})
   .get(path.detalhamentoAtendimentoPage.abrirOperacao, {timeout: 10000}).contains('Incluir/Alterar').click({force: true})
           
   cy.get(path.generic.title).contains(operacao.IncluirFilial, {timeout: 20000})  
-
-  cy.get(path.operacaoFilial.cnpj).type(faker.br.cnpj())
-  cy.get(path.operacaoFilial.nome).type(faker.company.companyName())
-  cy.get(path.operacaoFilial.capitalSocial).type(faker.random.number())
-  cy.get(path.operacaoFilial.uf).click()        
+  if (typeof filial === "undefined") {
+    const faker = require('faker-br')
+    let uf = faker.random.arrayElement(path.generic.uf)
+    cy.get(path.operacaoFilial.cnpj).type(faker.br.cnpj())
+    cy.get(path.operacaoFilial.nome).type(faker.company.companyName())
+    cy.get(path.operacaoFilial.capitalSocial).type(faker.random.number())
+    cy.get(path.operacaoFilial.uf).click()        
         .get(path.generic.listaVirtual)        
-        .contains(uf.nome).click({force: true}) 
+        .contains(uf.nome).click({force: true})
+  } else {
+    cy.get(path.operacaoFilial.cnpj).type(filial.cnpj)
+    cy.get(path.operacaoFilial.nome).type(filial.nome)
+    cy.get(path.operacaoFilial.capitalSocial).type(filial.valorCapitalSocial)
+    cy.get(path.operacaoFilial.uf).click()        
+        .get(path.generic.listaVirtual)        
+        .contains(filial.estado).click({force: true}) 
+  }
+  
 
   cy.get(path.generic.botaoSubmit).click({force: true})
 })
@@ -1159,9 +1169,9 @@ Cypress.Commands.add('excluirFilial', (faker, filial)=>{
   cy.get(path.generic.botaoSubmit).click({force: true})
 })
 
-Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, rt)=>{
-  let uf = fakerBr.random.arrayElement(path.generic.uf)
-  let dataFaker = '20/02/2000'
+Cypress.Commands.add('incluirResponsavelTecnico', (rt)=>{ 
+  var fakerBr = require('faker-br'); 
+    let uf = fakerBr.random.arrayElement(path.generic.uf) 
   //cy.intercept('GET', '**/rntrc/PrePedido/**').as('rt')
   cy.intercept('GET', '**/responsaveltecnico/**').as('rtsalvar')
   
@@ -1172,6 +1182,8 @@ Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, rt)=>{
   cy.get(path.generic.title).contains(operacao.IncluirResponsavelTecnico, {timeout: 30000})  
   //cy.wait('@rt')
   if (typeof rt === "undefined") {
+  
+    let dataFaker = '20/02/2000'
     cy.get(path.operacaoResponsavelTecnico.cpf).type(fakerBr.br.cpf())
     cy.get(path.operacaoResponsavelTecnico.nome).type(fakerBr.company.companyName())
     cy.get(path.operacaoResponsavelTecnico.email).type(fakerBr.internet.email())
@@ -1185,8 +1197,8 @@ Cypress.Commands.add('incluirResponsavelTecnico', (fakerBr, rt)=>{
   } else {
       cy.get(path.operacaoResponsavelTecnico.cpf).type(rt.cpf)
     cy.get(path.operacaoResponsavelTecnico.nome).type(rt.nome)
-    cy.get(path.operacaoResponsavelTecnico.email).type(fakerBr.internet.email())
-    cy.get(path.operacaoResponsavelTecnico.telefone).type(fakerBr.phone.phoneNumber())
+    cy.get(path.operacaoResponsavelTecnico.email).type(rt.email)
+    cy.get(path.operacaoResponsavelTecnico.telefone).type(rt.telefone)
     cy.get(path.operacaoResponsavelTecnico.identidade).type(rt.identidade)
     cy.get(path.operacaoResponsavelTecnico.orgaoEmissor).type(fakerBr.lorem.word({length: {min: 3, max: 5}}))
     cy.get(path.operacaoResponsavelTecnico.dataNascimento).type(rt.dataNascimento)      

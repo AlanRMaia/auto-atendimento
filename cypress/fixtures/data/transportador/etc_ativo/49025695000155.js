@@ -34,11 +34,21 @@ module.exports = {
     email: 'texte#@teste.com',
     dataNascimento: '06/04/1948'
   },
+  filial: {
+    cnpj: "20919777000161",
+    nome: "EVO SA",
+    valorCapitalSocial: 0,
+    estado: 'Rio de Janeiro',
+    siglaUF: "RJ",
+    idCidade: 7043
+  },
   responsavelTecnico: {
     cpf: '161.182.198-34',
     nome: 'JOSE DOMINGOS COCENZO',
     identidade: '4263470',
-    dataNascimento: '06/04/1948'
+    dataNascimento: '06/04/1948',
+    email: "cristiane.souza@jdcocenzo.com.br",
+    telefone: "(17) 2138-1100"
   },
   veiculos: [
      {

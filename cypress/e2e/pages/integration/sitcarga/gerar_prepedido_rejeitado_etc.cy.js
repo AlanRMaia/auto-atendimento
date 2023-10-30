@@ -177,7 +177,7 @@ describe('Gerar pedido após confirmação do pagamento pre-pedido Movimentaçã
   //     //   });  
          // -------- Criar operação Incluir Filial ------//
         it.skip('Criar operação Incluir Filial', () => {                 
-          cy.incluirFilial(fakerBr)
+          cy.incluirFilial()
           cy.notificacao(mensagem.DadosSalvoSucesso)      
         });
         

@@ -28,17 +28,27 @@ module.exports = {
   },
   gestor: {
     cpfCnpj: "30569320097",
-  nome: "JUAREZ BAY DO NASCIMENTO",
-  cargo: "Responsável Legal",
-  telefone: "2188888888",
-  email: 'volfe@agropan.coop.br',
-  dataNascimento: "26/11/1978",
+    nome: "JUAREZ BAY DO NASCIMENTO",
+    cargo: "Responsável Legal",
+    telefone: "2188888888",
+    email: 'volfe@agropan.coop.br',
+    dataNascimento: "26/11/1978",
+  },
+  filial: {
+    cnpj: "20919777000161",
+    nome: "EVO SA",
+    valorCapitalSocial: 0,
+    estado: 'Rio de Janeiro',
+    siglaUF: "RJ",
+    idCidade: 7043
   },
   responsavelTecnico: {
     cpf: "52951960034",
-  nome: "ALZEMIR MARTINS DA ROSA",
-  identidade: "8039017441",
-  dataNascimento: "14/03/1967",
+    nome: "ALZEMIR MARTINS DA ROSA",
+    identidade: "8039017441",
+    dataNascimento: "14/03/1967",
+    email: "fiscal@agropan.com.br",
+    telefone: "(55) 3272-1919"
   },
   veiculos: [
      {

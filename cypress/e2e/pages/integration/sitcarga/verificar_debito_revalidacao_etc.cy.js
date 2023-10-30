@@ -246,7 +246,7 @@ describe('Grupo de teste Atendimento Renovação ETC', () => {
         it('Criar operação Incluir Filial', () => { 
           cy.login(usuario.cpf, usuario.senha)
           cy.acessarPedido(idPrePedido)        
-        cy.incluirFilial(fakerBr)
+        cy.incluirFilial()
         cy.get(path.generic.mensagemFechar).click({force: true});      
         });
         

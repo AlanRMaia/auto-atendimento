@@ -8,30 +8,27 @@ const celular = '(61)9990-67527'
 
 
 
-describe("Grupo de teste Atendimento Renovação TAC", () => {
-  beforeEach(() => {
-    
-    cy.intercept(
-      "GET",
-      `**/rntrc/PrePedido/listarentidadesdisponiveis**`
-    ).as("listaSindicatos");
+describe("Suite de teste Operação Gestor ETC", () => {
+  beforeEach(() => {  
 
     cy.viewport(1920, 1080);
     cy.login();
   });
 
   // ------ Abrir Atendimento de Renovação ------//
-  it("Criando pedido API e incluindo operação Motorista", () => {
-    const transportador = require("../../../fixtures/data/transportador/tac_ativo/04265777104");
-    const sindicato = {
-      perfil: "FETAC-MG - Master",
-      sigla: "FETAC-MG",
-      path: path.generic.perfilSitcarga.FETACMGMaster,
-    };
-
+  it("Criando pedido API e incluindo operação Gestor", () => {
+    const transportador = require("../../../fixtures/data/transportador/etc_ativo/88832738000166");
+    const usuario = require("../../../fixtures/usuario.json");
     let idPrePedido;
-    const idEntidade = 21 
-    cy.intercept('GET', `/rntrc/PrePedido/${idPrePedido}/detalhar`).as('detalheGridOperacao') 
+    const sindicato = {
+      idEntidade: {
+        sitcarga: 116,
+        banco: 37
+      },
+      perfil: "SETCAL  - Operador",
+      sigla: "SETCAL",
+      path: path.generic.perfilSitcarga.SETCALOperador,
+    };
     cy.log(
       `Testes sendo executados no ambiente de ${Cypress.env("ENVIRONMENT")}`
     );
@@ -53,16 +50,15 @@ describe("Grupo de teste Atendimento Renovação TAC", () => {
           }
         );
 
-          // ------ Criar operação Incluir Motorista ------//
+          // ------ Criar operação Incluir Gestor ------//
         cy.url().should("include", `detalhe`);
-        cy.incluirMotorista(fakerBr, transportador.motorista.cpf);
-        cy.notificacao(mensagem.DadosSalvoSucesso);
-        
+        cy.incluirGestor(transportador.gestor, transportador.dadosTransportador.sigla)
+        cy.notificacao(mensagem.DadosSalvoSucesso);        
 
         // ------ detalhar a operação motorista e incluir uma entidade no pedido -----//
         cy.url().should("include", `detalhe`);
-        cy.detalharOperacaoMotorista(transportador.motorista);
-        cy.entidadePrePedidoAPI(idEntidade, idPrePedido).then(response => {
+        cy.detalharOperacaoGestor(transportador.gestor, 'Alteração');
+        cy.entidadePrePedidoAPI(sindicato.idEntidade.banco, idPrePedido).then(response => {
           expect(response.status).to.equal(200);
         })
 
@@ -76,7 +72,7 @@ describe("Grupo de teste Atendimento Renovação TAC", () => {
           expect(response.status).to.equal(200);
         })
 
-        cy.finalizarPrePedidoAPI(idPrePedido).then(response => {
+        cy.cancelarPrePedidoAPI(idPrePedido).then(response => {
           expect(response.status).to.equal(200);
         })  
       });
